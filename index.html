@@ -1,0 +1,1110 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI School Object Detection System</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #eef2f7;
+    color: #172554;
+}
+
+header {
+    background: linear-gradient(135deg, #172554, #0f766e);
+    color: white;
+    padding: 25px 20px;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 28px;
+    margin-bottom: 8px;
+}
+
+header p {
+    color: #dbeafe;
+}
+
+.container {
+    max-width: 1250px;
+    margin: auto;
+    padding: 22px 15px;
+}
+
+.school-info {
+    background: white;
+    padding: 18px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 3px 12px #00000010;
+}
+
+.school-info h2 {
+    margin-bottom: 14px;
+}
+
+.school-inputs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+}
+
+input {
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+    width: 100%;
+    font-size: 15px;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px #00000010;
+}
+
+.stat-card h3 {
+    color: #64748b;
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+.stat-card strong {
+    font-size: 30px;
+    color: #0f766e;
+}
+
+.section {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 3px 12px #00000010;
+}
+
+.section h2 {
+    margin-bottom: 15px;
+}
+
+.camera-box {
+    position: relative;
+    width: 100%;
+    max-width: 950px;
+    margin: auto;
+    background: black;
+    border-radius: 12px;
+    overflow: hidden;
+    min-height: 250px;
+}
+
+video {
+    width: 100%;
+    display: block;
+}
+
+canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.controls {
+    text-align: center;
+    margin: 18px 0;
+}
+
+button {
+    padding: 12px 23px;
+    margin: 5px;
+    border: none;
+    border-radius: 7px;
+    background: #172554;
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #0f766e;
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.stop-btn {
+    background: #dc2626;
+}
+
+.voice-btn {
+    background: #7c3aed;
+}
+
+#status {
+    font-weight: bold;
+    margin: 12px 0;
+    text-align: center;
+}
+
+#detected {
+    font-size: 18px;
+    text-align: center;
+    margin: 10px;
+    font-weight: bold;
+}
+
+.object-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+}
+
+.object-item {
+    padding: 13px;
+    background: #f1f5f9;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.history-list {
+    max-height: 260px;
+    overflow-y: auto;
+}
+
+.history-item {
+    padding: 12px;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: left;
+}
+
+.settings {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 12px;
+}
+
+.settings label {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.settings input {
+    width: auto;
+}
+
+.footer {
+    background: #172554;
+    color: white;
+    padding: 22px;
+    text-align: center;
+}
+
+@media(max-width: 600px) {
+    header h1 {
+        font-size: 22px;
+    }
+
+    .container {
+        padding: 12px;
+    }
+
+    .section {
+        padding: 14px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>AI School Object Detection System</h1>
+    <p>YOLO11 Powered Real-Time Classroom Monitoring</p>
+</header>
+
+<div class="container">
+
+    <!-- SCHOOL INFORMATION -->
+
+    <div class="school-info">
+        <h2>School Information</h2>
+
+        <div class="school-inputs">
+            <input id="schoolName"
+                   placeholder="School Name">
+
+            <input id="className"
+                   placeholder="Class / Section">
+
+            <input id="teacherName"
+                   placeholder="Teacher Name">
+
+            <input id="subjectName"
+                   placeholder="Subject">
+        </div>
+    </div>
+
+    <!-- DASHBOARD -->
+
+    <div class="stats">
+
+        <div class="stat-card">
+            <h3>Total Objects Detected</h3>
+            <strong id="totalCount">0</strong>
+        </div>
+
+        <div class="stat-card">
+            <h3>Unique Object Types</h3>
+            <strong id="uniqueCount">0</strong>
+        </div>
+
+        <div class="stat-card">
+            <h3>Detection Sessions</h3>
+            <strong id="sessionCount">0</strong>
+        </div>
+
+        <div class="stat-card">
+            <h3>Camera Status</h3>
+            <strong id="cameraStatus"
+                    style="font-size:19px">OFF</strong>
+        </div>
+
+    </div>
+
+    <!-- CAMERA -->
+
+    <div class="section">
+
+        <h2>Live Camera Detection</h2>
+
+        <div class="camera-box">
+
+            <video id="video"
+                   autoplay
+                   muted
+                   playsinline></video>
+
+            <canvas id="canvas"></canvas>
+
+        </div>
+
+        <div class="controls">
+
+            <button id="startBtn">
+                Start Camera
+            </button>
+
+            <button id="stopBtn"
+                    class="stop-btn"
+                    disabled>
+                Stop Camera
+            </button>
+
+            <button id="voiceBtn"
+                    class="voice-btn">
+                Enable Voice
+            </button>
+
+        </div>
+
+        <p id="status">
+            Ready to connect with YOLO11 API
+        </p>
+
+        <p id="detected">
+            Detected Objects: 0
+        </p>
+
+    </div>
+
+    <!-- OBJECT COUNTS -->
+
+    <div class="section">
+
+        <h2>Detected Object Details</h2>
+
+        <div id="objectList"
+             class="object-list">
+
+            <p>No objects detected yet.</p>
+
+        </div>
+
+    </div>
+
+    <!-- SETTINGS -->
+
+    <div class="section">
+
+        <h2>Detection Settings</h2>
+
+        <div class="settings">
+
+            <label>
+                <input type="checkbox"
+                       id="voiceEnabled">
+                Voice Announcement
+            </label>
+
+            <label>
+                <input type="checkbox"
+                       id="filterEnabled">
+                Classroom Object Filter
+            </label>
+
+        </div>
+
+        <p style="margin-top:12px;color:#64748b">
+            Classroom filter displays Person, Chair,
+            Book, Laptop, Bench, Desk and other selected
+            classroom objects. The filter does not
+            change the YOLO model itself.
+        </p>
+
+    </div>
+
+    <!-- HISTORY -->
+
+    <div class="section">
+
+        <h2>Detection History</h2>
+
+        <div id="history"
+             class="history-list">
+
+            <p>No detection history available.</p>
+
+        </div>
+
+        <div class="controls">
+
+            <button id="clearHistoryBtn"
+                    class="stop-btn">
+                Clear History
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<footer class="footer">
+    <p>AI Powered by YOLO11</p>
+    <p>School & Classroom Object Detection Project</p>
+</footer>
+
+
+<script>
+
+// ======================================
+// 1. API CONFIGURATION
+// ======================================
+
+// Apna current Google Colab ngrok API URL yahan dalein.
+
+const API_URL =
+"https://confident-saturate-divorcee.ngrok-free.dev";
+
+
+// ======================================
+// 2. HTML ELEMENTS
+// ======================================
+
+const video = document.getElementById("video");
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+const statusText = document.getElementById("status");
+const detectedText = document.getElementById("detected");
+
+const startBtn = document.getElementById("startBtn");
+const stopBtn = document.getElementById("stopBtn");
+const voiceBtn = document.getElementById("voiceBtn");
+
+const totalCount = document.getElementById("totalCount");
+const uniqueCount = document.getElementById("uniqueCount");
+const sessionCount = document.getElementById("sessionCount");
+const cameraStatus = document.getElementById("cameraStatus");
+
+const objectList = document.getElementById("objectList");
+const historyBox = document.getElementById("history");
+
+const voiceEnabled = document.getElementById("voiceEnabled");
+const filterEnabled = document.getElementById("filterEnabled");
+
+
+// ======================================
+// 3. VARIABLES
+// ======================================
+
+let cameraStream = null;
+let running = false;
+let busy = false;
+let timer = null;
+
+let totalDetections = 0;
+let sessions = 0;
+
+let objectCounts = {};
+let historyRecords = [];
+
+let voiceAllowed = false;
+let lastSpoken = "";
+let lastSpokenTime = 0;
+
+
+// Classroom objects to display when filter is enabled.
+// Names must match the YOLO model's class labels.
+
+const classroomObjects = [
+    "person",
+    "chair",
+    "book",
+    "laptop",
+    "bench",
+    "desk",
+    "dining table",
+    "backpack",
+    "clock",
+    "cell phone",
+    "keyboard",
+    "mouse",
+    "bottle",
+    "cup",
+    "tv"
+];
+
+
+// ======================================
+// 4. START CAMERA
+// ======================================
+
+async function startCamera() {
+
+    try {
+
+        startBtn.disabled = true;
+
+        statusText.innerText = "Connecting Camera...";
+
+        cameraStream =
+            await navigator.mediaDevices.getUserMedia({
+
+                video: {
+                    facingMode: "environment",
+                    width: { ideal: 640 },
+                    height: { ideal: 480 }
+                },
+
+                audio: false
+
+            });
+
+        video.srcObject = cameraStream;
+
+        await video.play();
+
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+
+        running = true;
+
+        sessions++;
+
+        sessionCount.innerText = sessions;
+
+        cameraStatus.innerText = "ON";
+
+        stopBtn.disabled = false;
+
+        statusText.innerText =
+            "Camera connected. Starting YOLO11...";
+
+        detectObjects();
+
+    }
+
+    catch(error) {
+
+        console.error(error);
+
+        statusText.innerText =
+            "Camera Error: " + error.message;
+
+        startBtn.disabled = false;
+
+    }
+
+}
+
+
+// ======================================
+// 5. OBJECT FILTER
+// ======================================
+
+function filterDetections(detections) {
+
+    if (!filterEnabled.checked) {
+        return detections;
+    }
+
+    return detections.filter(item => {
+
+        return classroomObjects.includes(
+            String(item.name).toLowerCase()
+        );
+
+    });
+
+}
+
+
+// ======================================
+// 6. DRAW DETECTION BOXES
+// ======================================
+
+function drawBoxes(detections) {
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    detections.forEach(item => {
+
+        const [x1, y1, x2, y2] = item.box;
+
+        const label =
+            item.name + " " +
+            item.confidence + "%";
+
+        ctx.strokeStyle = "#00FF66";
+        ctx.lineWidth = 3;
+
+        ctx.strokeRect(
+            x1,
+            y1,
+            x2 - x1,
+            y2 - y1
+        );
+
+        ctx.font = "bold 17px Arial";
+
+        const textWidth =
+            ctx.measureText(label).width;
+
+        ctx.fillStyle = "#00AA44";
+
+        ctx.fillRect(
+            x1,
+            Math.max(0, y1 - 27),
+            textWidth + 12,
+            27
+        );
+
+        ctx.fillStyle = "#FFFFFF";
+
+        ctx.fillText(
+            label,
+            x1 + 6,
+            Math.max(18, y1 - 8)
+        );
+
+    });
+
+}
+
+
+// ======================================
+// 7. VOICE ANNOUNCEMENT
+// ======================================
+
+function speakObjects(detections) {
+
+    if (!voiceAllowed ||
+        !voiceEnabled.checked ||
+        !("speechSynthesis" in window)) {
+        return;
+    }
+
+    if (detections.length === 0) return;
+
+    const names = [
+        ...new Set(
+            detections.map(item => item.name)
+        )
+    ];
+
+    const message = names.join(", ") + " detected";
+
+    const now = Date.now();
+
+    // Avoid repeating the same message too quickly.
+
+    if (message === lastSpoken &&
+        now - lastSpokenTime < 4000) {
+        return;
+    }
+
+    lastSpoken = message;
+    lastSpokenTime = now;
+
+    speechSynthesis.cancel();
+
+    const speech =
+        new SpeechSynthesisUtterance(message);
+
+    speech.lang = "en-US";
+    speech.rate = 1;
+    speech.pitch = 1;
+
+    speechSynthesis.speak(speech);
+
+}
+
+
+// ======================================
+// 8. UPDATE COUNTS
+// ======================================
+
+function updateCounts(detections) {
+
+    const currentCounts = {};
+
+    detections.forEach(item => {
+
+        const name = item.name;
+
+        currentCounts[name] =
+            (currentCounts[name] || 0) + 1;
+
+    });
+
+    objectCounts = currentCounts;
+
+    totalDetections = detections.length;
+
+    totalCount.innerText = totalDetections;
+
+    uniqueCount.innerText =
+        Object.keys(objectCounts).length;
+
+    detectedText.innerText =
+        "Detected Objects: " + totalDetections;
+
+    objectList.innerHTML = "";
+
+    if (Object.keys(objectCounts).length === 0) {
+
+        objectList.innerHTML =
+            "<p>No objects detected.</p>";
+
+        return;
+
+    }
+
+    Object.entries(objectCounts).forEach(
+        ([name, count]) => {
+
+            const item =
+                document.createElement("div");
+
+            item.className = "object-item";
+
+            const label =
+                document.createElement("span");
+
+            label.textContent = name;
+
+            const number =
+                document.createElement("strong");
+
+            number.textContent = count;
+
+            item.appendChild(label);
+            item.appendChild(number);
+
+            objectList.appendChild(item);
+
+        }
+    );
+
+}
+
+
+// ======================================
+// 9. HISTORY
+// ======================================
+
+function addHistory(detections) {
+
+    if (detections.length === 0) return;
+
+    const names = [
+        ...new Set(
+            detections.map(item => item.name)
+        )
+    ];
+
+    const school =
+        document.getElementById("schoolName").value ||
+        "School not specified";
+
+    const classValue =
+        document.getElementById("className").value ||
+        "Class not specified";
+
+    const teacher =
+        document.getElementById("teacherName").value ||
+        "Teacher not specified";
+
+    const record = {
+        time: new Date().toLocaleTimeString(),
+        objects: names.join(", "),
+        school: school,
+        className: classValue,
+        teacher: teacher
+    };
+
+    // Avoid adding identical history repeatedly.
+
+    const previous = historyRecords[0];
+
+    if (previous &&
+        previous.objects === record.objects &&
+        previous.className === record.className &&
+        previous.school === record.school) {
+        return;
+    }
+
+    historyRecords.unshift(record);
+
+    historyRecords =
+        historyRecords.slice(0, 30);
+
+    renderHistory();
+
+}
+
+
+function renderHistory() {
+
+    historyBox.innerHTML = "";
+
+    if (historyRecords.length === 0) {
+
+        historyBox.innerHTML =
+            "<p>No detection history available.</p>";
+
+        return;
+
+    }
+
+    historyRecords.forEach(record => {
+
+        const div =
+            document.createElement("div");
+
+        div.className = "history-item";
+
+        const title =
+            document.createElement("strong");
+
+        title.textContent =
+            record.time + " — " + record.objects;
+
+        const details =
+            document.createElement("p");
+
+        details.textContent =
+            record.school + " | " +
+            record.className + " | " +
+            record.teacher;
+
+        div.appendChild(title);
+        div.appendChild(details);
+
+        historyBox.appendChild(div);
+
+    });
+
+}
+
+
+// ======================================
+// 10. YOLO11 DETECTION
+// ======================================
+
+async function detectObjects() {
+
+    if (!running || busy) return;
+
+    busy = true;
+
+    try {
+
+        if (video.readyState < 2 ||
+            video.videoWidth === 0) {
+            return;
+        }
+
+        const tempCanvas =
+            document.createElement("canvas");
+
+        tempCanvas.width = video.videoWidth;
+        tempCanvas.height = video.videoHeight;
+
+        const tempCtx =
+            tempCanvas.getContext("2d");
+
+        tempCtx.drawImage(
+            video,
+            0,
+            0,
+            tempCanvas.width,
+            tempCanvas.height
+        );
+
+        const imageData =
+            tempCanvas.toDataURL(
+                "image/jpeg",
+                0.65
+            );
+
+        const response = await fetch(
+            API_URL + "/detect",
+            {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json",
+                    "ngrok-skip-browser-warning": "true"
+                },
+
+                body: JSON.stringify({
+                    image: imageData
+                })
+
+            }
+        );
+
+        if (!response.ok) {
+
+            throw new Error(
+                "API Error: " + response.status
+            );
+
+        }
+
+        const result = await response.json();
+
+        if (!result.success) {
+
+            throw new Error(
+                result.error || "Detection failed"
+            );
+
+        }
+
+        const detections =
+            filterDetections(result.detections || []);
+
+        drawBoxes(detections);
+
+        updateCounts(detections);
+
+        addHistory(detections);
+
+        speakObjects(detections);
+
+        statusText.innerText =
+            "YOLO11 Connected - Live Detection Running";
+
+    }
+
+    catch(error) {
+
+        console.error(error);
+
+        statusText.innerText =
+            "Connection Error: " + error.message;
+
+    }
+
+    finally {
+
+        busy = false;
+
+        if (running) {
+
+            timer = setTimeout(
+                detectObjects,
+                500
+            );
+
+        }
+
+    }
+
+}
+
+
+// ======================================
+// 11. STOP CAMERA
+// ======================================
+
+function stopCamera() {
+
+    running = false;
+
+    if (timer) {
+
+        clearTimeout(timer);
+        timer = null;
+
+    }
+
+    if (cameraStream) {
+
+        cameraStream.getTracks().forEach(
+            track => track.stop()
+        );
+
+        cameraStream = null;
+
+    }
+
+    video.srcObject = null;
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    detectedText.innerText =
+        "Detected Objects: 0";
+
+    statusText.innerText =
+        "Camera Stopped";
+
+    cameraStatus.innerText = "OFF";
+
+    startBtn.disabled = false;
+    stopBtn.disabled = true;
+
+    if ("speechSynthesis" in window) {
+        speechSynthesis.cancel();
+    }
+
+}
+
+
+// ======================================
+// 12. VOICE BUTTON
+// ======================================
+
+voiceBtn.addEventListener("click", () => {
+
+    voiceAllowed = true;
+
+    voiceEnabled.checked = true;
+
+    if ("speechSynthesis" in window) {
+
+        speechSynthesis.cancel();
+
+        const speech =
+            new SpeechSynthesisUtterance(
+                "Voice announcement enabled"
+            );
+
+        speech.lang = "en-US";
+
+        speechSynthesis.speak(speech);
+
+    }
+
+    voiceBtn.innerText = "Voice Enabled";
+
+});
+
+
+// ======================================
+// 13. CLEAR HISTORY
+// ======================================
+
+document.getElementById(
+    "clearHistoryBtn"
+).addEventListener("click", () => {
+
+    historyRecords = [];
+
+    renderHistory();
+
+});
+
+
+// ======================================
+// 14. BUTTON EVENTS
+// ======================================
+
+startBtn.addEventListener(
+    "click",
+    startCamera
+);
+
+stopBtn.addEventListener(
+    "click",
+    stopCamera
+);
+
+
+// ======================================
+// 15. CLEANUP
+// ======================================
+
+window.addEventListener(
+    "beforeunload",
+    stopCamera
+);
+
+
+console.log(
+    "AI School Object Detection System Ready!"
+);
+
+</script>
+
+</body>
+</html>
