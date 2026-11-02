@@ -274,7 +274,7 @@ button:disabled {
     <div class="stats">
 
         <div class="stat-card">
-            <h3>Total Objects Detected</h3>
+            <h3>Objects in Current Frame</h3>
             <strong id="totalCount">0</strong>
         </div>
 
@@ -508,59 +508,73 @@ const classroomObjects = [
 async function startCamera() {
 
     try {
-
         startBtn.disabled = true;
+        statusText.innerText = "Checking YOLO11 API...";
+
+        // Check that the Colab/ngrok backend is reachable before opening the camera.
+        const healthResponse = await fetch(API_URL + "/", {
+            method: "GET",
+            headers: {
+                "ngrok-skip-browser-warning": "true"
+            }
+        });
+
+        if (!healthResponse.ok) {
+            throw new Error("YOLO11 API is not responding. Check the Colab cell and API URL.");
+        }
+
+        const healthResult = await healthResponse.json();
+
+        if (!healthResult.success) {
+            throw new Error("YOLO11 API health check failed.");
+        }
+
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            throw new Error("Camera is unavailable. Open this website using localhost or HTTPS.");
+        }
 
         statusText.innerText = "Connecting Camera...";
 
-        cameraStream =
-            await navigator.mediaDevices.getUserMedia({
-
-                video: {
-                    facingMode: "environment",
-                    width: { ideal: 640 },
-                    height: { ideal: 480 }
-                },
-
-                audio: false
-
-            });
+        cameraStream = await navigator.mediaDevices.getUserMedia({
+            video: {
+                facingMode: "environment",
+                width: { ideal: 640 },
+                height: { ideal: 480 }
+            },
+            audio: false
+        });
 
         video.srcObject = cameraStream;
-
         await video.play();
 
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
 
         running = true;
-
         sessions++;
-
         sessionCount.innerText = sessions;
-
         cameraStatus.innerText = "ON";
-
         stopBtn.disabled = false;
 
-        statusText.innerText =
-            "Camera connected. Starting YOLO11...";
-
+        statusText.innerText = "YOLO11 connected. Live detection starting...";
         detectObjects();
 
-    }
-
-    catch(error) {
-
+    } catch (error) {
         console.error(error);
 
-        statusText.innerText =
-            "Camera Error: " + error.message;
+        // Release the camera if it was opened before an error occurred.
+        if (cameraStream) {
+            cameraStream.getTracks().forEach(track => track.stop());
+            cameraStream = null;
+        }
 
+        video.srcObject = null;
+        running = false;
+        cameraStatus.innerText = "OFF";
+        statusText.innerText = "Error: " + error.message;
         startBtn.disabled = false;
-
+        stopBtn.disabled = true;
     }
-
 }
 
 
@@ -920,7 +934,7 @@ async function detectObjects() {
         if (!response.ok) {
 
             throw new Error(
-                "API Error: " + response.status
+                "API Error: " + response.status + ". Check that the Colab cell is still running."
             );
 
         }
@@ -985,6 +999,7 @@ async function detectObjects() {
 function stopCamera() {
 
     running = false;
+    busy = false;
 
     if (timer) {
 
