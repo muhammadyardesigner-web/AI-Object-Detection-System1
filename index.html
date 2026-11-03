@@ -5,18 +5,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI School Dashboard</title>
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{
- background:#030b18;color:#eaf5ff;
- font-family:Arial,sans-serif;
-}
+body{background:#030b18;color:#eaf5ff;font-family:Arial,sans-serif}
+
 header{
- height:76px;padding:12px 24px;
- display:flex;align-items:center;justify-content:space-between;
+ height:76px;padding:12px 24px;display:flex;
+ align-items:center;justify-content:space-between;
  background:#06152b;border:1px solid #087ed5;
  border-radius:14px;margin:8px;
  box-shadow:0 0 15px #007bff55;
@@ -26,6 +23,7 @@ header{
 h1{font-size:23px;color:#dff5ff}
 .subtitle{font-size:11px;color:#85b9df;margin-top:4px}
 .live{color:#00f0a0;font-weight:bold}
+
 main{padding:8px;max-width:1800px;margin:auto}
 .dashboard{
  display:grid;
@@ -35,10 +33,8 @@ main{padding:8px;max-width:1800px;margin:auto}
 }
 .panel{
  background:linear-gradient(145deg,#071a32,#061225);
- border:1px solid #0876bd;
- border-radius:13px;
- padding:14px;
- box-shadow:0 0 12px #007bff20;
+ border:1px solid #0876bd;border-radius:13px;
+ padding:14px;box-shadow:0 0 12px #007bff20;
  min-width:0;
 }
 .panel-title{
@@ -48,6 +44,7 @@ main{padding:8px;max-width:1800px;margin:auto}
  display:flex;align-items:center;gap:9px;
 }
 .icon{font-size:22px;color:#00bfff}
+
 .left-top{grid-column:1;grid-row:1}
 .camera-panel{grid-column:2;grid-row:1}
 .right-top{grid-column:3;grid-row:1}
@@ -55,16 +52,29 @@ main{padding:8px;max-width:1800px;margin:auto}
 .total-panel{grid-column:2;grid-row:2}
 .right-bottom{grid-column:3;grid-row:2}
 
+/* CAMERA BOX */
 .camera{
- width:100%;aspect-ratio:16/9;
- position:relative;background:#000;
- border:1px solid #22517a;border-radius:8px;
+ width:100%;
+ aspect-ratio:16/9;
+ position:relative;
+ background:#000;
+ border:1px solid #22517a;
+ border-radius:8px;
  overflow:hidden;
 }
+
+/* CAMERA VIDEO AND DETECTION CANVAS */
 video,.overlay{
- position:absolute;inset:0;width:100%;height:100%;
- object-fit:contain;
+ position:absolute;
+ top:0;
+ left:0;
+ width:100%;
+ height:100%;
+ object-fit:fill;
 }
+
+.overlay{pointer-events:none}
+
 .camera-placeholder{
  position:absolute;inset:0;
  display:flex;flex-direction:column;
@@ -72,7 +82,10 @@ video,.overlay{
  color:#7193b6;gap:8px;text-align:center;
 }
 .camera-placeholder span{font-size:38px;color:#00bfff}
-.camera-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}
+
+.camera-actions{
+ display:flex;gap:8px;flex-wrap:wrap;margin-top:11px
+}
 button{
  padding:9px 14px;border:0;border-radius:6px;
  background:#087fca;color:white;cursor:pointer;
@@ -85,44 +98,54 @@ button:hover{filter:brightness(1.2)}
 
 .metric{
  display:grid;grid-template-columns:1fr 1.15fr;
- align-items:center;gap:7px;
- padding:10px 3px;
+ align-items:center;gap:7px;padding:10px 3px;
  border-bottom:1px solid #17304b;
 }
 .metric:last-child{border-bottom:0}
 .metric-label{font-size:12px;color:#b8d3eb}
-.metric-value{font-size:27px;color:#37b9ff;font-weight:bold;margin-top:5px}
+.metric-value{
+ font-size:27px;color:#37b9ff;font-weight:bold;margin-top:5px
+}
 .metric canvas{width:100%!important;height:65px!important}
+
 .ratio{
  display:flex;align-items:center;justify-content:center;
  gap:12px;padding-top:12px;
 }
 .ratio-chart{width:75px;height:75px}
 .ratio-text{font-size:12px;color:#c1d9ee;max-width:100px}
-.ratio-text strong{font-size:20px;color:#36d6ff;display:block}
+.ratio-text strong{
+ font-size:20px;color:#36d6ff;display:block
+}
+
 .total-content{
  display:grid;grid-template-columns:.8fr 1.4fr;
  align-items:center;gap:10px;
 }
-.total-number{font-size:65px;font-weight:bold;color:#00e99a;text-align:center}
+.total-number{
+ font-size:65px;font-weight:bold;
+ color:#00e99a;text-align:center;
+}
 .total-caption{text-align:center;font-size:12px;color:#b8d3eb}
 .total-chart{height:160px;position:relative}
 .total-chart canvas{width:100%!important;height:100%!important}
+
 .history-panel{margin-top:12px}
-.history-list{max-height:150px;overflow-y:auto}
+.history-list{max-height:180px;overflow-y:auto}
 .history-row{
  display:flex;gap:12px;align-items:center;
  padding:9px 4px;border-bottom:1px solid #17304b;
  font-size:12px;color:#c6d9ed;
 }
-.history-dot{width:7px;height:7px;border-radius:50%;background:#00bfff;flex-shrink:0}
+.history-dot{
+ width:7px;height:7px;border-radius:50%;
+ background:#00bfff;flex-shrink:0
+}
 .history-time{color:#52b9ff;min-width:75px}
 footer{text-align:center;color:#54799b;font-size:10px;padding:15px}
+
 @media(max-width:950px){
- .dashboard{
-  grid-template-columns:1fr 1fr;
-  grid-template-rows:auto;
- }
+ .dashboard{grid-template-columns:1fr 1fr;grid-template-rows:auto}
  .left-top{grid-column:1;grid-row:1}
  .camera-panel{grid-column:1/3;grid-row:2}
  .right-top{grid-column:2;grid-row:1}
@@ -130,6 +153,7 @@ footer{text-align:center;color:#54799b;font-size:10px;padding:15px}
  .total-panel{grid-column:1/3;grid-row:4}
  .right-bottom{grid-column:2;grid-row:3}
 }
+
 @media(max-width:600px){
  header{height:auto;padding:12px}
  h1{font-size:17px}
@@ -165,34 +189,25 @@ footer{text-align:center;color:#54799b;font-size:10px;padding:15px}
 <main>
 <div class="dashboard">
 
-<!-- LEFT TOP: PEOPLE AND CHAIRS -->
+<!-- STUDENTS AND CHAIRS -->
 <section class="panel left-top">
- <div class="panel-title">
-  <span class="icon">👥</span> Students & Chairs
- </div>
+ <div class="panel-title"><span class="icon">👥</span> Students & Chairs</div>
 
  <div class="metric">
-  <div>
-   <div class="metric-label">Students / Persons</div>
-   <div class="metric-value" id="peopleCount">0</div>
-  </div>
+  <div><div class="metric-label">Students / Persons</div>
+  <div class="metric-value" id="peopleCount">0</div></div>
   <canvas id="peopleMini"></canvas>
  </div>
 
  <div class="metric">
-  <div>
-   <div class="metric-label">Chairs</div>
-   <div class="metric-value" id="chairCount">0</div>
-  </div>
+  <div><div class="metric-label">Chairs</div>
+  <div class="metric-value" id="chairCount">0</div></div>
   <canvas id="chairMini"></canvas>
  </div>
 
  <div class="ratio">
   <div class="ratio-chart"><canvas id="peopleRatio"></canvas></div>
-  <div class="ratio-text">
-   <strong id="peopleRatioText">0%</strong>
-   People / Chairs
-  </div>
+  <div class="ratio-text"><strong id="peopleRatioText">0%</strong>People / Chairs</div>
  </div>
 </section>
 
@@ -219,118 +234,85 @@ footer{text-align:center;color:#54799b;font-size:10px;padding:15px}
   <button class="secondary" onclick="detectNow()">Detect Now</button>
  </div>
 
- <div class="camera-info" id="cameraInfo">
-  Camera stopped | Waiting for detection
- </div>
+ <div class="camera-info" id="cameraInfo">Camera stopped | Waiting for detection</div>
 </section>
 
-<!-- RIGHT TOP: LAPTOP AND MOBILE -->
+<!-- LAPTOP AND MOBILE -->
 <section class="panel right-top">
- <div class="panel-title">
-  <span class="icon">💻</span> Laptop & Mobile
- </div>
+ <div class="panel-title"><span class="icon">💻</span> Laptop & Mobile</div>
 
  <div class="metric">
-  <div>
-   <div class="metric-label">Laptops</div>
-   <div class="metric-value" id="laptopCount">0</div>
-  </div>
+  <div><div class="metric-label">Laptops</div>
+  <div class="metric-value" id="laptopCount">0</div></div>
   <canvas id="laptopMini"></canvas>
  </div>
 
  <div class="metric">
-  <div>
-   <div class="metric-label">Mobile Phones</div>
-   <div class="metric-value" id="mobileCount">0</div>
-  </div>
+  <div><div class="metric-label">Mobile Phones</div>
+  <div class="metric-value" id="mobileCount">0</div></div>
   <canvas id="mobileMini"></canvas>
  </div>
 
  <div class="ratio">
   <div class="ratio-chart"><canvas id="techRatio"></canvas></div>
-  <div class="ratio-text">
-   <strong id="techRatioText">0%</strong>
-   Laptop / Mobile
-  </div>
+  <div class="ratio-text"><strong id="techRatioText">0%</strong>Laptop / Mobile</div>
  </div>
 </section>
 
-<!-- LEFT BOTTOM: BOOKS AND BOXES -->
+<!-- BOOKS AND BOXES -->
 <section class="panel left-bottom">
- <div class="panel-title">
-  <span class="icon">📚</span> Books & Boxes
- </div>
+ <div class="panel-title"><span class="icon">📚</span> Books & Boxes</div>
 
  <div class="metric">
-  <div>
-   <div class="metric-label">Books</div>
-   <div class="metric-value" id="bookCount">0</div>
-  </div>
+  <div><div class="metric-label">Books</div>
+  <div class="metric-value" id="bookCount">0</div></div>
   <canvas id="bookMini"></canvas>
  </div>
 
  <div class="metric">
-  <div>
-   <div class="metric-label">Boxes</div>
-   <div class="metric-value" id="boxCount">0</div>
-  </div>
+  <div><div class="metric-label">Boxes</div>
+  <div class="metric-value" id="boxCount">0</div></div>
   <canvas id="boxMini"></canvas>
  </div>
 
  <div class="ratio">
   <div class="ratio-chart"><canvas id="bookRatio"></canvas></div>
-  <div class="ratio-text">
-   <strong id="bookRatioText">0%</strong>
-   Books / Boxes
-  </div>
+  <div class="ratio-text"><strong id="bookRatioText">0%</strong>Books / Boxes</div>
  </div>
 </section>
 
-<!-- CENTER BOTTOM: TOTAL -->
+<!-- TOTAL OBJECTS -->
 <section class="panel total-panel">
- <div class="panel-title">
-  <span class="icon">∑</span> Total Objects
- </div>
+ <div class="panel-title"><span class="icon">∑</span> Total Objects</div>
 
  <div class="total-content">
   <div>
    <div class="total-number" id="totalCount">0</div>
    <div class="total-caption">Total Detected Objects</div>
   </div>
-  <div class="total-chart">
-   <canvas id="totalGraph"></canvas>
-  </div>
+  <div class="total-chart"><canvas id="totalGraph"></canvas></div>
  </div>
 </section>
 
-<!-- RIGHT BOTTOM: BAGS AND OTHERS -->
+<!-- BAGS AND OTHERS -->
 <section class="panel right-bottom">
- <div class="panel-title">
-  <span class="icon">🎒</span> Bags & Others
- </div>
+ <div class="panel-title"><span class="icon">🎒</span> Bags & Others</div>
 
  <div class="metric">
-  <div>
-   <div class="metric-label">Bags</div>
-   <div class="metric-value" id="bagCount">0</div>
-  </div>
+  <div><div class="metric-label">Bags</div>
+  <div class="metric-value" id="bagCount">0</div></div>
   <canvas id="bagMini"></canvas>
  </div>
 
  <div class="metric">
-  <div>
-   <div class="metric-label">Others</div>
-   <div class="metric-value" id="otherCount">0</div>
-  </div>
+  <div><div class="metric-label">Others</div>
+  <div class="metric-value" id="otherCount">0</div></div>
   <canvas id="otherMini"></canvas>
  </div>
 
  <div class="ratio">
   <div class="ratio-chart"><canvas id="bagRatio"></canvas></div>
-  <div class="ratio-text">
-   <strong id="bagRatioText">0%</strong>
-   Bags / Others
-  </div>
+  <div class="ratio-text"><strong id="bagRatioText">0%</strong>Bags / Others</div>
  </div>
 </section>
 
@@ -338,66 +320,54 @@ footer{text-align:center;color:#54799b;font-size:10px;padding:15px}
 
 <!-- DETECTION HISTORY -->
 <section class="panel history-panel">
- <div class="panel-title">
-  <span class="icon">◷</span> Detection History
- </div>
+ <div class="panel-title"><span class="icon">◷</span> Detection History</div>
  <div class="history-list" id="historyList">
   <div class="history-row">Waiting for detection...</div>
  </div>
 </section>
 
-<footer>
- AI SCHOOL OBJECT DETECTION | YOLO11 + FLASK API
-</footer>
+<footer>AI SCHOOL OBJECT DETECTION | YOLO11 + FLASK API</footer>
 </main>
 
 <script>
 
-// ==========================================
-// YOUR EXISTING NGROK API
-// ==========================================
+// ========================================
+// EXISTING NGROK API URL
+// ========================================
 
-const API_URL =
-"https://confident-saturate-divorcee.ngrok-free.dev";
+const API_URL="https://confident-saturate-divorcee.ngrok-free.dev";
 
-// If your ngrok URL changes, update it here.
-
-// ==========================================
+// ========================================
 // VARIABLES
-// ==========================================
+// ========================================
 
-const video = document.getElementById("video");
-const overlay = document.getElementById("overlay");
-const ctx = overlay.getContext("2d");
+const video=document.getElementById("video");
+const overlay=document.getElementById("overlay");
+const ctx=overlay.getContext("2d");
 
-let stream = null;
-let detectionTimer = null;
-let busy = false;
-let detections = [];
+let stream=null;
+let detectionTimer=null;
+let busy=false;
+let detections=[];
 
-const categoryKeys = [
+const categoryKeys=[
  "people","chair","laptop","mobile",
  "book","box","bag","other"
 ];
 
-let currentCounts = {};
-categoryKeys.forEach(k=>currentCounts[k]=0);
-
-const graphHistory = {};
+const graphHistory={};
 categoryKeys.forEach(k=>graphHistory[k]=[]);
 
-const totalHistory = [];
-let lastHistoryTime = 0;
+let lastHistoryTime=0;
 
-// ==========================================
+// ========================================
 // CATEGORY MAPPING
-// ==========================================
+// ========================================
 
 function getCategory(label){
 
- label = String(label).toLowerCase().trim();
+ label=String(label).toLowerCase().trim();
 
- // People: person, student, teacher
  if(["person","people","student","students","teacher","teachers"].includes(label))
   return "people";
 
@@ -407,10 +377,7 @@ function getCategory(label){
  if(["laptop","notebook computer"].includes(label))
   return "laptop";
 
- if([
-  "cell phone","cellphone","mobile",
-  "mobile phone","phone","smartphone"
- ].includes(label))
+ if(["cell phone","cellphone","mobile","mobile phone","phone","smartphone"].includes(label))
   return "mobile";
 
  if(["book","books"].includes(label))
@@ -419,17 +386,15 @@ function getCategory(label){
  if(["box","boxes","cardboard box"].includes(label))
   return "box";
 
- if([
-  "backpack","bag","handbag","suitcase"
- ].includes(label))
+ if(["backpack","bag","handbag","suitcase"].includes(label))
   return "bag";
 
  return "other";
 }
 
-// ==========================================
-// READ CLASS NAME
-// ==========================================
+// ========================================
+// GET DETECTION LABEL
+// ========================================
 
 function getLabel(item){
 
@@ -442,22 +407,19 @@ function getLabel(item){
  ).toLowerCase().trim();
 }
 
-// ==========================================
-// READ API DETECTIONS
-// ==========================================
+// ========================================
+// READ API RESPONSE
+// ========================================
 
 function extractDetections(data){
 
- if(Array.isArray(data)) return data;
+ if(Array.isArray(data))return data;
 
- if(Array.isArray(data.detections))
-  return data.detections;
+ if(Array.isArray(data.detections))return data.detections;
 
- if(Array.isArray(data.results))
-  return data.results;
+ if(Array.isArray(data.results))return data.results;
 
- if(Array.isArray(data.objects))
-  return data.objects;
+ if(Array.isArray(data.objects))return data.objects;
 
  if(data.data && Array.isArray(data.data.detections))
   return data.data.detections;
@@ -466,9 +428,9 @@ function extractDetections(data){
  return [];
 }
 
-// ==========================================
-// API STATUS
-// ==========================================
+// ========================================
+// API CONNECTION CHECK
+// ========================================
 
 async function checkAPI(){
 
@@ -480,7 +442,7 @@ async function checkAPI(){
    headers:{"ngrok-skip-browser-warning":"true"}
   });
 
-  if(!response.ok) throw new Error("API error");
+  if(!response.ok)throw new Error("API error");
 
   status.textContent="● API CONNECTED";
   status.style.color="#00efa0";
@@ -493,15 +455,15 @@ async function checkAPI(){
  }
 }
 
-// ==========================================
-// CAMERA START
-// ==========================================
+// ========================================
+// START CAMERA
+// ========================================
 
 async function startCamera(){
 
  try{
 
-  if(stream) return;
+  if(stream)return;
 
   stream=await navigator.mediaDevices.getUserMedia({
    video:{
@@ -516,7 +478,6 @@ async function startCamera(){
   await video.play();
 
   document.getElementById("placeholder").style.display="none";
-
   document.getElementById("cameraInfo").textContent=
    "Camera running | AI detection active";
 
@@ -532,9 +493,9 @@ async function startCamera(){
  }
 }
 
-// ==========================================
-// CAMERA STOP
-// ==========================================
+// ========================================
+// STOP CAMERA
+// ========================================
 
 function stopCamera(){
 
@@ -549,6 +510,7 @@ function stopCamera(){
  }
 
  video.srcObject=null;
+ detections=[];
  ctx.clearRect(0,0,overlay.width,overlay.height);
 
  document.getElementById("placeholder").style.display="flex";
@@ -556,13 +518,13 @@ function stopCamera(){
 
 }
 
-// ==========================================
-// SEND FRAME TO YOLO API
-// ==========================================
+// ========================================
+// SEND IMAGE TO YOLO API
+// ========================================
 
 async function detectNow(){
 
- if(!stream || busy || video.readyState<2) return;
+ if(!stream || busy || video.readyState<2)return;
 
  busy=true;
 
@@ -572,9 +534,7 @@ async function detectNow(){
   temp.width=video.videoWidth;
   temp.height=video.videoHeight;
 
-  temp.getContext("2d").drawImage(
-   video,0,0,temp.width,temp.height
-  );
+  temp.getContext("2d").drawImage(video,0,0,temp.width,temp.height);
 
   const image=temp.toDataURL("image/jpeg",0.75);
 
@@ -587,13 +547,11 @@ async function detectNow(){
    body:JSON.stringify({image:image})
   });
 
-  if(!response.ok)
-   throw new Error("HTTP "+response.status);
+  if(!response.ok)throw new Error("HTTP "+response.status);
 
   const data=await response.json();
 
   detections=extractDetections(data);
-
   updateDashboard(detections);
 
   document.getElementById("cameraInfo").textContent=
@@ -602,7 +560,6 @@ async function detectNow(){
  }catch(error){
 
   console.error(error);
-
   document.getElementById("cameraInfo").textContent=
    "Detection error: "+error.message;
 
@@ -613,9 +570,9 @@ async function detectNow(){
  }
 }
 
-// ==========================================
+// ========================================
 // UPDATE COUNTS
-// ==========================================
+// ========================================
 
 function updateDashboard(items){
 
@@ -625,14 +582,11 @@ function updateDashboard(items){
  items.forEach(item=>{
 
   const label=getLabel(item);
-  if(!label) return;
+  if(!label)return;
 
-  const category=getCategory(label);
-  counts[category]++;
+  counts[getCategory(label)]++;
 
  });
-
- currentCounts=counts;
 
  const total=Object.values(counts).reduce((a,b)=>a+b,0);
 
@@ -651,26 +605,23 @@ function updateDashboard(items){
 
 }
 
-// ==========================================
-// UPDATE TEXT
-// ==========================================
-
 function setText(id,value){
  document.getElementById(id).textContent=value;
 }
 
-// ==========================================
+// ========================================
 // CHART SETTINGS
-// ==========================================
+// ========================================
 
 Chart.defaults.color="#a9c8e5";
 Chart.defaults.font.family="Arial";
 
-// ==========================================
-// CREATE MINI BAR CHARTS
-// ==========================================
-
 const miniCharts={};
+const ratioCharts={};
+
+// ========================================
+// MINI BAR CHART
+// ========================================
 
 function makeMini(id,color){
 
@@ -697,11 +648,9 @@ function makeMini(id,color){
 
 }
 
-// ==========================================
-// CREATE RATIO DONUT
-// ==========================================
-
-const ratioCharts={};
+// ========================================
+// DONUT CHART
+// ========================================
 
 function makeRatio(id,color1,color2){
 
@@ -725,9 +674,9 @@ function makeRatio(id,color1,color2){
 
 }
 
-// ==========================================
-// CREATE TOTAL LINE GRAPH
-// ==========================================
+// ========================================
+// TOTAL LINE GRAPH
+// ========================================
 
 const totalGraph=new Chart(
  document.getElementById("totalGraph"),
@@ -750,19 +699,23 @@ const totalGraph=new Chart(
    maintainAspectRatio:false,
    plugins:{legend:{display:false}},
    scales:{
-    x:{ticks:{maxTicksLimit:7,color:"#82a9cc"},
-       grid:{color:"#173451"}},
-    y:{beginAtZero:true,
-       ticks:{precision:0,color:"#82a9cc"},
-       grid:{color:"#173451"}}
+    x:{
+     ticks:{maxTicksLimit:7,color:"#82a9cc"},
+     grid:{color:"#173451"}
+    },
+    y:{
+     beginAtZero:true,
+     ticks:{precision:0,color:"#82a9cc"},
+     grid:{color:"#173451"}
+    }
    }
   }
  }
 );
 
-// ==========================================
-// INITIALIZE MINI CHARTS
-// ==========================================
+// ========================================
+// INITIALIZE ALL CHARTS
+// ========================================
 
 miniCharts.people=makeMini("peopleMini","#168bff");
 miniCharts.chair=makeMini("chairMini","#b44dff");
@@ -778,9 +731,9 @@ ratioCharts.tech=makeRatio("techRatio","#00d7ef","#a64dff");
 ratioCharts.book=makeRatio("bookRatio","#ffbd35","#244363");
 ratioCharts.bag=makeRatio("bagRatio","#f044a4","#244363");
 
-// ==========================================
+// ========================================
 // UPDATE GRAPHS
-// ==========================================
+// ========================================
 
 function updateGraphs(counts,total){
 
@@ -791,44 +744,17 @@ function updateGraphs(counts,total){
   if(graphHistory[key].length>7)
    graphHistory[key].shift();
 
-  miniCharts[key].data.datasets[0].data=
-   graphHistory[key];
-
+  miniCharts[key].data.datasets[0].data=graphHistory[key];
   miniCharts[key].update("none");
 
  });
 
- updateRatio(
-  ratioCharts.people,
-  counts.people,
-  counts.chair,
-  "peopleRatioText"
- );
+ updateRatio(ratioCharts.people,counts.people,counts.chair,"peopleRatioText");
+ updateRatio(ratioCharts.tech,counts.laptop,counts.mobile,"techRatioText");
+ updateRatio(ratioCharts.book,counts.book,counts.box,"bookRatioText");
+ updateRatio(ratioCharts.bag,counts.bag,counts.other,"bagRatioText");
 
- updateRatio(
-  ratioCharts.tech,
-  counts.laptop,
-  counts.mobile,
-  "techRatioText"
- );
-
- updateRatio(
-  ratioCharts.book,
-  counts.book,
-  counts.box,
-  "bookRatioText"
- );
-
- updateRatio(
-  ratioCharts.bag,
-  counts.bag,
-  counts.other,
-  "bagRatioText"
- );
-
- const time=new Date().toLocaleTimeString();
-
- totalGraph.data.labels.push(time);
+ totalGraph.data.labels.push(new Date().toLocaleTimeString());
  totalGraph.data.datasets[0].data.push(total);
 
  if(totalGraph.data.labels.length>20){
@@ -840,43 +766,37 @@ function updateGraphs(counts,total){
 
 }
 
-// ==========================================
-// UPDATE DONUT RATIOS
-// ==========================================
+// ========================================
+// UPDATE DONUT PERCENTAGE
+// ========================================
 
 function updateRatio(chart,a,b,textId){
 
  const sum=a+b;
 
- chart.data.datasets[0].data=
-  sum===0?[0,1]:[a,b];
-
+ chart.data.datasets[0].data=sum===0?[0,1]:[a,b];
  chart.update("none");
 
  const percent=sum===0?0:Math.round(a/sum*100);
-
  setText(textId,percent+"%");
 
 }
 
-// ==========================================
-// HISTORY
-// ==========================================
+// ========================================
+// DETECTION HISTORY
+// ========================================
 
 function updateHistory(counts,total){
 
- if(total===0) return;
-
- if(Date.now()-lastHistoryTime<5000) return;
+ if(total===0)return;
+ if(Date.now()-lastHistoryTime<5000)return;
 
  lastHistoryTime=Date.now();
 
  const found=[];
 
  categoryKeys.forEach(key=>{
-  if(counts[key]>0){
-   found.push(key+": "+counts[key]);
-  }
+  if(counts[key]>0)found.push(key+": "+counts[key]);
  });
 
  const row=document.createElement("div");
@@ -890,8 +810,7 @@ function updateHistory(counts,total){
  time.textContent=new Date().toLocaleTimeString();
 
  const description=document.createElement("span");
- description.textContent=
-  "Total "+total+" | "+found.join(", ");
+ description.textContent="Total "+total+" | "+found.join(", ");
 
  row.append(dot,time,description);
 
@@ -904,17 +823,13 @@ function updateHistory(counts,total){
 
 }
 
-// ==========================================
-// READ BOUNDING BOX
-// ==========================================
+// ========================================
+// READ YOLO BOUNDING BOX
+// ========================================
 
 function getBox(item){
 
- let box=
-  item.bbox ??
-  item.box ??
-  item.xyxy ??
-  item.coordinates;
+ let box=item.bbox ?? item.box ?? item.xyxy ?? item.coordinates;
 
  if(!box && item.x1!==undefined){
   box=[item.x1,item.y1,item.x2,item.y2];
@@ -947,13 +862,13 @@ function getBox(item){
 
 }
 
-// ==========================================
-// DRAW YOLO BOXES ON CAMERA
-// ==========================================
+// ========================================
+// DRAW DETECTION BOXES
+// ========================================
 
 function drawDetectionBoxes(){
 
- if(!stream) return;
+ if(!stream)return;
 
  if(video.readyState>=2){
 
@@ -972,16 +887,13 @@ function drawDetectionBoxes(){
    detections.forEach(item=>{
 
     const box=getBox(item);
-    if(!box) return;
+    if(!box)return;
 
     const [x1,y1,x2,y2]=box;
+    const x=x1,y=y1;
+    const bw=x2-x1,bh=y2-y1;
 
-    const x=x1;
-    const y=y1;
-    const bw=x2-x1;
-    const bh=y2-y1;
-
-    if(bw<=0 || bh<=0) return;
+    if(bw<=0 || bh<=0)return;
 
     const label=getLabel(item);
 
@@ -1009,15 +921,12 @@ function drawDetectionBoxes(){
 
 }
 
-// ==========================================
+// ========================================
 // CLOCK AND STARTUP
-// ==========================================
+// ========================================
 
 function updateClock(){
-
- document.getElementById("clock").textContent=
-  new Date().toLocaleString();
-
+ document.getElementById("clock").textContent=new Date().toLocaleString();
 }
 
 updateClock();
@@ -1027,6 +936,5 @@ checkAPI();
 setInterval(checkAPI,30000);
 
 </script>
-
 </body>
 </html>
