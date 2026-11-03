@@ -436,12 +436,12 @@ async function checkAPI() {
   }
 
   apiConnected = true;
-  status.textContent = "● CONNECTED";
+  status.textContent = "●CONNECTED";
   status.style.color = "#00efa0";
 
  } catch(error) {
   apiConnected = false;
-  status.textContent = "● DISCONNECTED";
+  status.textContent = "●DISCONNECTED";
   status.style.color = "#ff5575";
   console.error("API connection error:", error);
 
