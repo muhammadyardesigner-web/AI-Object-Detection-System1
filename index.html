@@ -4,238 +4,144 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI School Object Detection System</title>
+<title>AI School Dashboard</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+ background:#030b18;color:#eaf5ff;
+ font-family:Arial,sans-serif;
 }
-
-body {
-    font-family: Arial, sans-serif;
-    background: #eef2f7;
-    color: #172554;
+header{
+ height:76px;padding:12px 24px;
+ display:flex;align-items:center;justify-content:space-between;
+ background:#06152b;border:1px solid #087ed5;
+ border-radius:14px;margin:8px;
+ box-shadow:0 0 15px #007bff55;
 }
-
-header {
-    background: linear-gradient(135deg, #172554, #0f766e);
-    color: white;
-    padding: 25px 20px;
-    text-align: center;
+.brand{display:flex;align-items:center;gap:15px}
+.logo{font-size:35px;color:#00bfff}
+h1{font-size:23px;color:#dff5ff}
+.subtitle{font-size:11px;color:#85b9df;margin-top:4px}
+.live{color:#00f0a0;font-weight:bold}
+main{padding:8px;max-width:1800px;margin:auto}
+.dashboard{
+ display:grid;
+ grid-template-columns:1.05fr 1.9fr 1.05fr;
+ grid-template-rows:auto auto;
+ gap:12px;
 }
-
-header h1 {
-    font-size: 28px;
-    margin-bottom: 8px;
+.panel{
+ background:linear-gradient(145deg,#071a32,#061225);
+ border:1px solid #0876bd;
+ border-radius:13px;
+ padding:14px;
+ box-shadow:0 0 12px #007bff20;
+ min-width:0;
 }
-
-header p {
-    color: #dbeafe;
+.panel-title{
+ font-size:16px;font-weight:bold;
+ border-bottom:1px solid #17466b;
+ padding-bottom:10px;margin-bottom:12px;
+ display:flex;align-items:center;gap:9px;
 }
+.icon{font-size:22px;color:#00bfff}
+.left-top{grid-column:1;grid-row:1}
+.camera-panel{grid-column:2;grid-row:1}
+.right-top{grid-column:3;grid-row:1}
+.left-bottom{grid-column:1;grid-row:2}
+.total-panel{grid-column:2;grid-row:2}
+.right-bottom{grid-column:3;grid-row:2}
 
-.container {
-    max-width: 1250px;
-    margin: auto;
-    padding: 22px 15px;
+.camera{
+ width:100%;aspect-ratio:16/9;
+ position:relative;background:#000;
+ border:1px solid #22517a;border-radius:8px;
+ overflow:hidden;
 }
-
-.school-info {
-    background: white;
-    padding: 18px;
-    border-radius: 12px;
-    margin-bottom: 20px;
-    box-shadow: 0 3px 12px #00000010;
+video,.overlay{
+ position:absolute;inset:0;width:100%;height:100%;
+ object-fit:contain;
 }
-
-.school-info h2 {
-    margin-bottom: 14px;
+.camera-placeholder{
+ position:absolute;inset:0;
+ display:flex;flex-direction:column;
+ align-items:center;justify-content:center;
+ color:#7193b6;gap:8px;text-align:center;
 }
-
-.school-inputs {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 12px;
+.camera-placeholder span{font-size:38px;color:#00bfff}
+.camera-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}
+button{
+ padding:9px 14px;border:0;border-radius:6px;
+ background:#087fca;color:white;cursor:pointer;
+ font-weight:bold;
 }
+button.stop{background:#c93c50}
+button.secondary{background:#263c58}
+button:hover{filter:brightness(1.2)}
+.camera-info{font-size:11px;color:#91b4d2;margin-top:10px}
 
-input {
-    padding: 12px;
-    border: 1px solid #cbd5e1;
-    border-radius: 7px;
-    width: 100%;
-    font-size: 15px;
+.metric{
+ display:grid;grid-template-columns:1fr 1.15fr;
+ align-items:center;gap:7px;
+ padding:10px 3px;
+ border-bottom:1px solid #17304b;
 }
-
-.stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 15px;
-    margin-bottom: 20px;
+.metric:last-child{border-bottom:0}
+.metric-label{font-size:12px;color:#b8d3eb}
+.metric-value{font-size:27px;color:#37b9ff;font-weight:bold;margin-top:5px}
+.metric canvas{width:100%!important;height:65px!important}
+.ratio{
+ display:flex;align-items:center;justify-content:center;
+ gap:12px;padding-top:12px;
 }
-
-.stat-card {
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 3px 12px #00000010;
+.ratio-chart{width:75px;height:75px}
+.ratio-text{font-size:12px;color:#c1d9ee;max-width:100px}
+.ratio-text strong{font-size:20px;color:#36d6ff;display:block}
+.total-content{
+ display:grid;grid-template-columns:.8fr 1.4fr;
+ align-items:center;gap:10px;
 }
-
-.stat-card h3 {
-    color: #64748b;
-    font-size: 14px;
-    margin-bottom: 12px;
+.total-number{font-size:65px;font-weight:bold;color:#00e99a;text-align:center}
+.total-caption{text-align:center;font-size:12px;color:#b8d3eb}
+.total-chart{height:160px;position:relative}
+.total-chart canvas{width:100%!important;height:100%!important}
+.history-panel{margin-top:12px}
+.history-list{max-height:150px;overflow-y:auto}
+.history-row{
+ display:flex;gap:12px;align-items:center;
+ padding:9px 4px;border-bottom:1px solid #17304b;
+ font-size:12px;color:#c6d9ed;
 }
-
-.stat-card strong {
-    font-size: 30px;
-    color: #0f766e;
+.history-dot{width:7px;height:7px;border-radius:50%;background:#00bfff;flex-shrink:0}
+.history-time{color:#52b9ff;min-width:75px}
+footer{text-align:center;color:#54799b;font-size:10px;padding:15px}
+@media(max-width:950px){
+ .dashboard{
+  grid-template-columns:1fr 1fr;
+  grid-template-rows:auto;
+ }
+ .left-top{grid-column:1;grid-row:1}
+ .camera-panel{grid-column:1/3;grid-row:2}
+ .right-top{grid-column:2;grid-row:1}
+ .left-bottom{grid-column:1;grid-row:3}
+ .total-panel{grid-column:1/3;grid-row:4}
+ .right-bottom{grid-column:2;grid-row:3}
 }
-
-.section {
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-    margin-bottom: 20px;
-    box-shadow: 0 3px 12px #00000010;
-}
-
-.section h2 {
-    margin-bottom: 15px;
-}
-
-.camera-box {
-    position: relative;
-    width: 100%;
-    max-width: 950px;
-    margin: auto;
-    background: black;
-    border-radius: 12px;
-    overflow: hidden;
-    min-height: 250px;
-}
-
-video {
-    width: 100%;
-    display: block;
-}
-
-canvas {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-}
-
-.controls {
-    text-align: center;
-    margin: 18px 0;
-}
-
-button {
-    padding: 12px 23px;
-    margin: 5px;
-    border: none;
-    border-radius: 7px;
-    background: #172554;
-    color: white;
-    font-size: 15px;
-    cursor: pointer;
-}
-
-button:hover {
-    background: #0f766e;
-}
-
-button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-.stop-btn {
-    background: #dc2626;
-}
-
-.voice-btn {
-    background: #7c3aed;
-}
-
-#status {
-    font-weight: bold;
-    margin: 12px 0;
-    text-align: center;
-}
-
-#detected {
-    font-size: 18px;
-    text-align: center;
-    margin: 10px;
-    font-weight: bold;
-}
-
-.object-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 10px;
-}
-
-.object-item {
-    padding: 13px;
-    background: #f1f5f9;
-    border-radius: 8px;
-    display: flex;
-    justify-content: space-between;
-}
-
-.history-list {
-    max-height: 260px;
-    overflow-y: auto;
-}
-
-.history-item {
-    padding: 12px;
-    border-bottom: 1px solid #e2e8f0;
-    text-align: left;
-}
-
-.settings {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 15px;
-    margin-top: 12px;
-}
-
-.settings label {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-}
-
-.settings input {
-    width: auto;
-}
-
-.footer {
-    background: #172554;
-    color: white;
-    padding: 22px;
-    text-align: center;
-}
-
-@media(max-width: 600px) {
-    header h1 {
-        font-size: 22px;
-    }
-
-    .container {
-        padding: 12px;
-    }
-
-    .section {
-        padding: 14px;
-    }
+@media(max-width:600px){
+ header{height:auto;padding:12px}
+ h1{font-size:17px}
+ .dashboard{display:flex;flex-direction:column}
+ .camera-panel{order:1}
+ .left-top{order:2}
+ .right-top{order:3}
+ .left-bottom{order:4}
+ .right-bottom{order:5}
+ .total-panel{order:6}
+ .camera{aspect-ratio:4/3}
+ .total-number{font-size:48px}
 }
 </style>
 </head>
@@ -243,881 +149,882 @@ button:disabled {
 <body>
 
 <header>
-    <h1>AI School Object Detection System</h1>
-    <p>YOLO11 Powered Real-Time Classroom Monitoring</p>
+ <div class="brand">
+  <div class="logo">🎓</div>
+  <div>
+   <h1>AI School Dashboard</h1>
+   <div class="subtitle">Smart Classroom Monitoring System</div>
+  </div>
+ </div>
+ <div>
+  <div class="live" id="apiStatus">● Connecting API</div>
+  <div class="subtitle" id="clock"></div>
+ </div>
 </header>
 
-<div class="container">
+<main>
+<div class="dashboard">
 
-    <!-- SCHOOL INFORMATION -->
+<!-- LEFT TOP: PEOPLE AND CHAIRS -->
+<section class="panel left-top">
+ <div class="panel-title">
+  <span class="icon">👥</span> Students & Chairs
+ </div>
 
-    <div class="school-info">
-        <h2>School Information</h2>
+ <div class="metric">
+  <div>
+   <div class="metric-label">Students / Persons</div>
+   <div class="metric-value" id="peopleCount">0</div>
+  </div>
+  <canvas id="peopleMini"></canvas>
+ </div>
 
-        <div class="school-inputs">
-            <input id="schoolName"
-                   placeholder="School Name">
+ <div class="metric">
+  <div>
+   <div class="metric-label">Chairs</div>
+   <div class="metric-value" id="chairCount">0</div>
+  </div>
+  <canvas id="chairMini"></canvas>
+ </div>
 
-            <input id="className"
-                   placeholder="Class / Section">
+ <div class="ratio">
+  <div class="ratio-chart"><canvas id="peopleRatio"></canvas></div>
+  <div class="ratio-text">
+   <strong id="peopleRatioText">0%</strong>
+   People / Chairs
+  </div>
+ </div>
+</section>
 
-            <input id="teacherName"
-                   placeholder="Teacher Name">
+<!-- CENTER CAMERA -->
+<section class="panel camera-panel">
+ <div class="panel-title">
+  <span class="icon">🔴</span> Live Camera
+  <span style="margin-left:auto;font-size:11px;color:#54c8ff">YOLO11</span>
+ </div>
 
-            <input id="subjectName"
-                   placeholder="Subject">
-        </div>
-    </div>
+ <div class="camera">
+  <video id="video" autoplay muted playsinline></video>
+  <canvas class="overlay" id="overlay"></canvas>
+  <div class="camera-placeholder" id="placeholder">
+   <span>◉</span>
+   <b>Live Camera Feed</b>
+   <small>Click Start Camera to begin detection</small>
+  </div>
+ </div>
 
-    <!-- DASHBOARD -->
+ <div class="camera-actions">
+  <button onclick="startCamera()">▶ Start Camera</button>
+  <button class="stop" onclick="stopCamera()">■ Stop</button>
+  <button class="secondary" onclick="detectNow()">Detect Now</button>
+ </div>
 
-    <div class="stats">
+ <div class="camera-info" id="cameraInfo">
+  Camera stopped | Waiting for detection
+ </div>
+</section>
 
-        <div class="stat-card">
-            <h3>Objects in Current Frame</h3>
-            <strong id="totalCount">0</strong>
-        </div>
+<!-- RIGHT TOP: LAPTOP AND MOBILE -->
+<section class="panel right-top">
+ <div class="panel-title">
+  <span class="icon">💻</span> Laptop & Mobile
+ </div>
 
-        <div class="stat-card">
-            <h3>Unique Object Types</h3>
-            <strong id="uniqueCount">0</strong>
-        </div>
+ <div class="metric">
+  <div>
+   <div class="metric-label">Laptops</div>
+   <div class="metric-value" id="laptopCount">0</div>
+  </div>
+  <canvas id="laptopMini"></canvas>
+ </div>
 
-        <div class="stat-card">
-            <h3>Detection Sessions</h3>
-            <strong id="sessionCount">0</strong>
-        </div>
+ <div class="metric">
+  <div>
+   <div class="metric-label">Mobile Phones</div>
+   <div class="metric-value" id="mobileCount">0</div>
+  </div>
+  <canvas id="mobileMini"></canvas>
+ </div>
 
-        <div class="stat-card">
-            <h3>Camera Status</h3>
-            <strong id="cameraStatus"
-                    style="font-size:19px">OFF</strong>
-        </div>
+ <div class="ratio">
+  <div class="ratio-chart"><canvas id="techRatio"></canvas></div>
+  <div class="ratio-text">
+   <strong id="techRatioText">0%</strong>
+   Laptop / Mobile
+  </div>
+ </div>
+</section>
 
-    </div>
+<!-- LEFT BOTTOM: BOOKS AND BOXES -->
+<section class="panel left-bottom">
+ <div class="panel-title">
+  <span class="icon">📚</span> Books & Boxes
+ </div>
 
-    <!-- CAMERA -->
+ <div class="metric">
+  <div>
+   <div class="metric-label">Books</div>
+   <div class="metric-value" id="bookCount">0</div>
+  </div>
+  <canvas id="bookMini"></canvas>
+ </div>
 
-    <div class="section">
+ <div class="metric">
+  <div>
+   <div class="metric-label">Boxes</div>
+   <div class="metric-value" id="boxCount">0</div>
+  </div>
+  <canvas id="boxMini"></canvas>
+ </div>
 
-        <h2>Live Camera Detection</h2>
+ <div class="ratio">
+  <div class="ratio-chart"><canvas id="bookRatio"></canvas></div>
+  <div class="ratio-text">
+   <strong id="bookRatioText">0%</strong>
+   Books / Boxes
+  </div>
+ </div>
+</section>
 
-        <div class="camera-box">
+<!-- CENTER BOTTOM: TOTAL -->
+<section class="panel total-panel">
+ <div class="panel-title">
+  <span class="icon">∑</span> Total Objects
+ </div>
 
-            <video id="video"
-                   autoplay
-                   muted
-                   playsinline></video>
+ <div class="total-content">
+  <div>
+   <div class="total-number" id="totalCount">0</div>
+   <div class="total-caption">Total Detected Objects</div>
+  </div>
+  <div class="total-chart">
+   <canvas id="totalGraph"></canvas>
+  </div>
+ </div>
+</section>
 
-            <canvas id="canvas"></canvas>
+<!-- RIGHT BOTTOM: BAGS AND OTHERS -->
+<section class="panel right-bottom">
+ <div class="panel-title">
+  <span class="icon">🎒</span> Bags & Others
+ </div>
 
-        </div>
+ <div class="metric">
+  <div>
+   <div class="metric-label">Bags</div>
+   <div class="metric-value" id="bagCount">0</div>
+  </div>
+  <canvas id="bagMini"></canvas>
+ </div>
 
-        <div class="controls">
+ <div class="metric">
+  <div>
+   <div class="metric-label">Others</div>
+   <div class="metric-value" id="otherCount">0</div>
+  </div>
+  <canvas id="otherMini"></canvas>
+ </div>
 
-            <button id="startBtn">
-                Start Camera
-            </button>
-
-            <button id="stopBtn"
-                    class="stop-btn"
-                    disabled>
-                Stop Camera
-            </button>
-
-            <button id="voiceBtn"
-                    class="voice-btn">
-                Enable Voice
-            </button>
-
-        </div>
-
-        <p id="status">
-            Ready to connect with YOLO11 API
-        </p>
-
-        <p id="detected">
-            Detected Objects: 0
-        </p>
-
-    </div>
-
-    <!-- OBJECT COUNTS -->
-
-    <div class="section">
-
-        <h2>Detected Object Details</h2>
-
-        <div id="objectList"
-             class="object-list">
-
-            <p>No objects detected yet.</p>
-
-        </div>
-
-    </div>
-
-    <!-- SETTINGS -->
-
-    <div class="section">
-
-        <h2>Detection Settings</h2>
-
-        <div class="settings">
-
-            <label>
-                <input type="checkbox"
-                       id="voiceEnabled">
-                Voice Announcement
-            </label>
-
-            <label>
-                <input type="checkbox"
-                       id="filterEnabled">
-                Classroom Object Filter
-            </label>
-
-        </div>
-
-        <p style="margin-top:12px;color:#64748b">
-            Classroom filter displays Person, Chair,
-            Book, Laptop, Bench, Desk and other selected
-            classroom objects. The filter does not
-            change the YOLO model itself.
-        </p>
-
-    </div>
-
-    <!-- HISTORY -->
-
-    <div class="section">
-
-        <h2>Detection History</h2>
-
-        <div id="history"
-             class="history-list">
-
-            <p>No detection history available.</p>
-
-        </div>
-
-        <div class="controls">
-
-            <button id="clearHistoryBtn"
-                    class="stop-btn">
-                Clear History
-            </button>
-
-        </div>
-
-    </div>
+ <div class="ratio">
+  <div class="ratio-chart"><canvas id="bagRatio"></canvas></div>
+  <div class="ratio-text">
+   <strong id="bagRatioText">0%</strong>
+   Bags / Others
+  </div>
+ </div>
+</section>
 
 </div>
 
-<footer class="footer">
-    <p>AI Powered by YOLO11</p>
-    <p>School & Classroom Object Detection Project</p>
-</footer>
+<!-- DETECTION HISTORY -->
+<section class="panel history-panel">
+ <div class="panel-title">
+  <span class="icon">◷</span> Detection History
+ </div>
+ <div class="history-list" id="historyList">
+  <div class="history-row">Waiting for detection...</div>
+ </div>
+</section>
 
+<footer>
+ AI SCHOOL OBJECT DETECTION | YOLO11 + FLASK API
+</footer>
+</main>
 
 <script>
 
-// ======================================
-// 1. API CONFIGURATION
-// ======================================
-
-// Apna current Google Colab ngrok API URL yahan dalein.
+// ==========================================
+// YOUR EXISTING NGROK API
+// ==========================================
 
 const API_URL =
 "https://confident-saturate-divorcee.ngrok-free.dev";
 
+// If your ngrok URL changes, update it here.
 
-// ======================================
-// 2. HTML ELEMENTS
-// ======================================
+// ==========================================
+// VARIABLES
+// ==========================================
 
 const video = document.getElementById("video");
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
+const overlay = document.getElementById("overlay");
+const ctx = overlay.getContext("2d");
 
-const statusText = document.getElementById("status");
-const detectedText = document.getElementById("detected");
-
-const startBtn = document.getElementById("startBtn");
-const stopBtn = document.getElementById("stopBtn");
-const voiceBtn = document.getElementById("voiceBtn");
-
-const totalCount = document.getElementById("totalCount");
-const uniqueCount = document.getElementById("uniqueCount");
-const sessionCount = document.getElementById("sessionCount");
-const cameraStatus = document.getElementById("cameraStatus");
-
-const objectList = document.getElementById("objectList");
-const historyBox = document.getElementById("history");
-
-const voiceEnabled = document.getElementById("voiceEnabled");
-const filterEnabled = document.getElementById("filterEnabled");
-
-
-// ======================================
-// 3. VARIABLES
-// ======================================
-
-let cameraStream = null;
-let running = false;
+let stream = null;
+let detectionTimer = null;
 let busy = false;
-let timer = null;
+let detections = [];
 
-let totalDetections = 0;
-let sessions = 0;
-
-let objectCounts = {};
-let historyRecords = [];
-
-let voiceAllowed = false;
-let lastSpoken = "";
-let lastSpokenTime = 0;
-
-
-// Classroom objects to display when filter is enabled.
-// Names must match the YOLO model's class labels.
-
-const classroomObjects = [
-    "person",
-    "chair",
-    "book",
-    "laptop",
-    "bench",
-    "desk",
-    "dining table",
-    "backpack",
-    "clock",
-    "cell phone",
-    "keyboard",
-    "mouse",
-    "bottle",
-    "cup",
-    "tv"
+const categoryKeys = [
+ "people","chair","laptop","mobile",
+ "book","box","bag","other"
 ];
 
+let currentCounts = {};
+categoryKeys.forEach(k=>currentCounts[k]=0);
 
-// ======================================
-// 4. START CAMERA
-// ======================================
+const graphHistory = {};
+categoryKeys.forEach(k=>graphHistory[k]=[]);
 
-async function startCamera() {
+const totalHistory = [];
+let lastHistoryTime = 0;
 
-    try {
-        startBtn.disabled = true;
-        statusText.innerText = "Checking YOLO11 API...";
+// ==========================================
+// CATEGORY MAPPING
+// ==========================================
 
-        // Check that the Colab/ngrok backend is reachable before opening the camera.
-        const healthResponse = await fetch(API_URL + "/", {
-            method: "GET",
-            headers: {
-                "ngrok-skip-browser-warning": "true"
-            }
-        });
+function getCategory(label){
 
-        if (!healthResponse.ok) {
-            throw new Error("YOLO11 API is not responding. Check the Colab cell and API URL.");
-        }
+ label = String(label).toLowerCase().trim();
 
-        const healthResult = await healthResponse.json();
+ // People: person, student, teacher
+ if(["person","people","student","students","teacher","teachers"].includes(label))
+  return "people";
 
-        if (!healthResult.success) {
-            throw new Error("YOLO11 API health check failed.");
-        }
+ if(["chair","chairs"].includes(label))
+  return "chair";
 
-        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-            throw new Error("Camera is unavailable. Open this website using localhost or HTTPS.");
-        }
+ if(["laptop","notebook computer"].includes(label))
+  return "laptop";
 
-        statusText.innerText = "Connecting Camera...";
+ if([
+  "cell phone","cellphone","mobile",
+  "mobile phone","phone","smartphone"
+ ].includes(label))
+  return "mobile";
 
-        cameraStream = await navigator.mediaDevices.getUserMedia({
-            video: {
-                facingMode: "environment",
-                width: { ideal: 640 },
-                height: { ideal: 480 }
-            },
-            audio: false
-        });
+ if(["book","books"].includes(label))
+  return "book";
 
-        video.srcObject = cameraStream;
-        await video.play();
+ if(["box","boxes","cardboard box"].includes(label))
+  return "box";
 
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
+ if([
+  "backpack","bag","handbag","suitcase"
+ ].includes(label))
+  return "bag";
 
-        running = true;
-        sessions++;
-        sessionCount.innerText = sessions;
-        cameraStatus.innerText = "ON";
-        stopBtn.disabled = false;
-
-        statusText.innerText = "YOLO11 connected. Live detection starting...";
-        detectObjects();
-
-    } catch (error) {
-        console.error(error);
-
-        // Release the camera if it was opened before an error occurred.
-        if (cameraStream) {
-            cameraStream.getTracks().forEach(track => track.stop());
-            cameraStream = null;
-        }
-
-        video.srcObject = null;
-        running = false;
-        cameraStatus.innerText = "OFF";
-        statusText.innerText = "Error: " + error.message;
-        startBtn.disabled = false;
-        stopBtn.disabled = true;
-    }
+ return "other";
 }
 
+// ==========================================
+// READ CLASS NAME
+// ==========================================
 
-// ======================================
-// 5. OBJECT FILTER
-// ======================================
+function getLabel(item){
 
-function filterDetections(detections) {
-
-    if (!filterEnabled.checked) {
-        return detections;
-    }
-
-    return detections.filter(item => {
-
-        return classroomObjects.includes(
-            String(item.name).toLowerCase()
-        );
-
-    });
-
+ return String(
+  item.class_name ??
+  item.name ??
+  item.label ??
+  item.class ??
+  ""
+ ).toLowerCase().trim();
 }
 
+// ==========================================
+// READ API DETECTIONS
+// ==========================================
 
-// ======================================
-// 6. DRAW DETECTION BOXES
-// ======================================
+function extractDetections(data){
 
-function drawBoxes(detections) {
+ if(Array.isArray(data)) return data;
 
-    ctx.clearRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
+ if(Array.isArray(data.detections))
+  return data.detections;
 
-    detections.forEach(item => {
+ if(Array.isArray(data.results))
+  return data.results;
 
-        const [x1, y1, x2, y2] = item.box;
+ if(Array.isArray(data.objects))
+  return data.objects;
 
-        const label =
-            item.name + " " +
-            item.confidence + "%";
+ if(data.data && Array.isArray(data.data.detections))
+  return data.data.detections;
 
-        ctx.strokeStyle = "#00FF66";
-        ctx.lineWidth = 3;
-
-        ctx.strokeRect(
-            x1,
-            y1,
-            x2 - x1,
-            y2 - y1
-        );
-
-        ctx.font = "bold 17px Arial";
-
-        const textWidth =
-            ctx.measureText(label).width;
-
-        ctx.fillStyle = "#00AA44";
-
-        ctx.fillRect(
-            x1,
-            Math.max(0, y1 - 27),
-            textWidth + 12,
-            27
-        );
-
-        ctx.fillStyle = "#FFFFFF";
-
-        ctx.fillText(
-            label,
-            x1 + 6,
-            Math.max(18, y1 - 8)
-        );
-
-    });
-
+ console.warn("API response format not recognized",data);
+ return [];
 }
 
+// ==========================================
+// API STATUS
+// ==========================================
 
-// ======================================
-// 7. VOICE ANNOUNCEMENT
-// ======================================
+async function checkAPI(){
 
-function speakObjects(detections) {
+ const status=document.getElementById("apiStatus");
 
-    if (!voiceAllowed ||
-        !voiceEnabled.checked ||
-        !("speechSynthesis" in window)) {
-        return;
-    }
+ try{
 
-    if (detections.length === 0) return;
+  const response=await fetch(API_URL+"/",{
+   headers:{"ngrok-skip-browser-warning":"true"}
+  });
 
-    const names = [
-        ...new Set(
-            detections.map(item => item.name)
-        )
-    ];
+  if(!response.ok) throw new Error("API error");
 
-    const message = names.join(", ") + " detected";
+  status.textContent="● API CONNECTED";
+  status.style.color="#00efa0";
 
-    const now = Date.now();
+ }catch(error){
 
-    // Avoid repeating the same message too quickly.
+  status.textContent="● API DISCONNECTED";
+  status.style.color="#ff5575";
 
-    if (message === lastSpoken &&
-        now - lastSpokenTime < 4000) {
-        return;
-    }
+ }
+}
 
-    lastSpoken = message;
-    lastSpokenTime = now;
+// ==========================================
+// CAMERA START
+// ==========================================
 
-    speechSynthesis.cancel();
+async function startCamera(){
 
-    const speech =
-        new SpeechSynthesisUtterance(message);
+ try{
 
-    speech.lang = "en-US";
-    speech.rate = 1;
-    speech.pitch = 1;
+  if(stream) return;
 
-    speechSynthesis.speak(speech);
+  stream=await navigator.mediaDevices.getUserMedia({
+   video:{
+    facingMode:"environment",
+    width:{ideal:1280},
+    height:{ideal:720}
+   },
+   audio:false
+  });
+
+  video.srcObject=stream;
+  await video.play();
+
+  document.getElementById("placeholder").style.display="none";
+
+  document.getElementById("cameraInfo").textContent=
+   "Camera running | AI detection active";
+
+  drawDetectionBoxes();
+  detectNow();
+
+  detectionTimer=setInterval(detectNow,1500);
+
+ }catch(error){
+
+  alert("Camera Error: "+error.message);
+
+ }
+}
+
+// ==========================================
+// CAMERA STOP
+// ==========================================
+
+function stopCamera(){
+
+ if(detectionTimer){
+  clearInterval(detectionTimer);
+  detectionTimer=null;
+ }
+
+ if(stream){
+  stream.getTracks().forEach(t=>t.stop());
+  stream=null;
+ }
+
+ video.srcObject=null;
+ ctx.clearRect(0,0,overlay.width,overlay.height);
+
+ document.getElementById("placeholder").style.display="flex";
+ document.getElementById("cameraInfo").textContent="Camera stopped";
 
 }
 
+// ==========================================
+// SEND FRAME TO YOLO API
+// ==========================================
 
-// ======================================
-// 8. UPDATE COUNTS
-// ======================================
+async function detectNow(){
 
-function updateCounts(detections) {
+ if(!stream || busy || video.readyState<2) return;
 
-    const currentCounts = {};
+ busy=true;
 
-    detections.forEach(item => {
+ try{
 
-        const name = item.name;
+  const temp=document.createElement("canvas");
+  temp.width=video.videoWidth;
+  temp.height=video.videoHeight;
 
-        currentCounts[name] =
-            (currentCounts[name] || 0) + 1;
+  temp.getContext("2d").drawImage(
+   video,0,0,temp.width,temp.height
+  );
 
-    });
+  const image=temp.toDataURL("image/jpeg",0.75);
 
-    objectCounts = currentCounts;
+  const response=await fetch(API_URL+"/detect",{
+   method:"POST",
+   headers:{
+    "Content-Type":"application/json",
+    "ngrok-skip-browser-warning":"true"
+   },
+   body:JSON.stringify({image:image})
+  });
 
-    totalDetections = detections.length;
+  if(!response.ok)
+   throw new Error("HTTP "+response.status);
 
-    totalCount.innerText = totalDetections;
+  const data=await response.json();
 
-    uniqueCount.innerText =
-        Object.keys(objectCounts).length;
+  detections=extractDetections(data);
 
-    detectedText.innerText =
-        "Detected Objects: " + totalDetections;
+  updateDashboard(detections);
 
-    objectList.innerHTML = "";
+  document.getElementById("cameraInfo").textContent=
+   "Live detection | "+detections.length+" objects in current frame";
 
-    if (Object.keys(objectCounts).length === 0) {
+ }catch(error){
 
-        objectList.innerHTML =
-            "<p>No objects detected.</p>";
+  console.error(error);
 
-        return;
+  document.getElementById("cameraInfo").textContent=
+   "Detection error: "+error.message;
 
-    }
+ }finally{
 
-    Object.entries(objectCounts).forEach(
-        ([name, count]) => {
+  busy=false;
 
-            const item =
-                document.createElement("div");
+ }
+}
 
-            item.className = "object-item";
+// ==========================================
+// UPDATE COUNTS
+// ==========================================
 
-            const label =
-                document.createElement("span");
+function updateDashboard(items){
 
-            label.textContent = name;
+ const counts={};
+ categoryKeys.forEach(k=>counts[k]=0);
 
-            const number =
-                document.createElement("strong");
+ items.forEach(item=>{
 
-            number.textContent = count;
+  const label=getLabel(item);
+  if(!label) return;
 
-            item.appendChild(label);
-            item.appendChild(number);
+  const category=getCategory(label);
+  counts[category]++;
 
-            objectList.appendChild(item);
+ });
 
-        }
-    );
+ currentCounts=counts;
+
+ const total=Object.values(counts).reduce((a,b)=>a+b,0);
+
+ setText("peopleCount",counts.people);
+ setText("chairCount",counts.chair);
+ setText("laptopCount",counts.laptop);
+ setText("mobileCount",counts.mobile);
+ setText("bookCount",counts.book);
+ setText("boxCount",counts.box);
+ setText("bagCount",counts.bag);
+ setText("otherCount",counts.other);
+ setText("totalCount",total);
+
+ updateGraphs(counts,total);
+ updateHistory(counts,total);
 
 }
 
+// ==========================================
+// UPDATE TEXT
+// ==========================================
 
-// ======================================
-// 9. HISTORY
-// ======================================
+function setText(id,value){
+ document.getElementById(id).textContent=value;
+}
 
-function addHistory(detections) {
+// ==========================================
+// CHART SETTINGS
+// ==========================================
 
-    if (detections.length === 0) return;
+Chart.defaults.color="#a9c8e5";
+Chart.defaults.font.family="Arial";
 
-    const names = [
-        ...new Set(
-            detections.map(item => item.name)
-        )
-    ];
+// ==========================================
+// CREATE MINI BAR CHARTS
+// ==========================================
 
-    const school =
-        document.getElementById("schoolName").value ||
-        "School not specified";
+const miniCharts={};
 
-    const classValue =
-        document.getElementById("className").value ||
-        "Class not specified";
+function makeMini(id,color){
 
-    const teacher =
-        document.getElementById("teacherName").value ||
-        "Teacher not specified";
-
-    const record = {
-        time: new Date().toLocaleTimeString(),
-        objects: names.join(", "),
-        school: school,
-        className: classValue,
-        teacher: teacher
-    };
-
-    // Avoid adding identical history repeatedly.
-
-    const previous = historyRecords[0];
-
-    if (previous &&
-        previous.objects === record.objects &&
-        previous.className === record.className &&
-        previous.school === record.school) {
-        return;
-    }
-
-    historyRecords.unshift(record);
-
-    historyRecords =
-        historyRecords.slice(0, 30);
-
-    renderHistory();
+ return new Chart(document.getElementById(id),{
+  type:"bar",
+  data:{
+   labels:["1","2","3","4","5","6","7"],
+   datasets:[{
+    data:[0,0,0,0,0,0,0],
+    backgroundColor:color,
+    borderRadius:3
+   }]
+  },
+  options:{
+   responsive:true,
+   maintainAspectRatio:false,
+   plugins:{legend:{display:false}},
+   scales:{
+    x:{display:false},
+    y:{display:false,beginAtZero:true}
+   }
+  }
+ });
 
 }
 
+// ==========================================
+// CREATE RATIO DONUT
+// ==========================================
 
-function renderHistory() {
+const ratioCharts={};
 
-    historyBox.innerHTML = "";
+function makeRatio(id,color1,color2){
 
-    if (historyRecords.length === 0) {
-
-        historyBox.innerHTML =
-            "<p>No detection history available.</p>";
-
-        return;
-
-    }
-
-    historyRecords.forEach(record => {
-
-        const div =
-            document.createElement("div");
-
-        div.className = "history-item";
-
-        const title =
-            document.createElement("strong");
-
-        title.textContent =
-            record.time + " — " + record.objects;
-
-        const details =
-            document.createElement("p");
-
-        details.textContent =
-            record.school + " | " +
-            record.className + " | " +
-            record.teacher;
-
-        div.appendChild(title);
-        div.appendChild(details);
-
-        historyBox.appendChild(div);
-
-    });
+ return new Chart(document.getElementById(id),{
+  type:"doughnut",
+  data:{
+   labels:["First","Second"],
+   datasets:[{
+    data:[0,1],
+    backgroundColor:[color1,color2],
+    borderWidth:0
+   }]
+  },
+  options:{
+   responsive:true,
+   maintainAspectRatio:false,
+   cutout:"75%",
+   plugins:{legend:{display:false}}
+  }
+ });
 
 }
 
-
-// ======================================
-// 10. YOLO11 DETECTION
-// ======================================
-
-async function detectObjects() {
-
-    if (!running || busy) return;
-
-    busy = true;
-
-    try {
-
-        if (video.readyState < 2 ||
-            video.videoWidth === 0) {
-            return;
-        }
-
-        const tempCanvas =
-            document.createElement("canvas");
-
-        tempCanvas.width = video.videoWidth;
-        tempCanvas.height = video.videoHeight;
-
-        const tempCtx =
-            tempCanvas.getContext("2d");
-
-        tempCtx.drawImage(
-            video,
-            0,
-            0,
-            tempCanvas.width,
-            tempCanvas.height
-        );
-
-        const imageData =
-            tempCanvas.toDataURL(
-                "image/jpeg",
-                0.65
-            );
-
-        const response = await fetch(
-            API_URL + "/detect",
-            {
-
-                method: "POST",
-
-                headers: {
-                    "Content-Type": "application/json",
-                    "ngrok-skip-browser-warning": "true"
-                },
-
-                body: JSON.stringify({
-                    image: imageData
-                })
-
-            }
-        );
-
-        if (!response.ok) {
-
-            throw new Error(
-                "API Error: " + response.status + ". Check that the Colab cell is still running."
-            );
-
-        }
-
-        const result = await response.json();
-
-        if (!result.success) {
-
-            throw new Error(
-                result.error || "Detection failed"
-            );
-
-        }
-
-        const detections =
-            filterDetections(result.detections || []);
-
-        drawBoxes(detections);
-
-        updateCounts(detections);
-
-        addHistory(detections);
-
-        speakObjects(detections);
-
-        statusText.innerText =
-            "YOLO11 Connected - Live Detection Running";
-
-    }
-
-    catch(error) {
-
-        console.error(error);
-
-        statusText.innerText =
-            "Connection Error: " + error.message;
-
-    }
-
-    finally {
-
-        busy = false;
-
-        if (running) {
-
-            timer = setTimeout(
-                detectObjects,
-                500
-            );
-
-        }
-
-    }
-
-}
-
-
-// ======================================
-// 11. STOP CAMERA
-// ======================================
-
-function stopCamera() {
-
-    running = false;
-    busy = false;
-
-    if (timer) {
-
-        clearTimeout(timer);
-        timer = null;
-
-    }
-
-    if (cameraStream) {
-
-        cameraStream.getTracks().forEach(
-            track => track.stop()
-        );
-
-        cameraStream = null;
-
-    }
-
-    video.srcObject = null;
-
-    ctx.clearRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
-
-    detectedText.innerText =
-        "Detected Objects: 0";
-
-    statusText.innerText =
-        "Camera Stopped";
-
-    cameraStatus.innerText = "OFF";
-
-    startBtn.disabled = false;
-    stopBtn.disabled = true;
-
-    if ("speechSynthesis" in window) {
-        speechSynthesis.cancel();
-    }
-
-}
-
-
-// ======================================
-// 12. VOICE BUTTON
-// ======================================
-
-voiceBtn.addEventListener("click", () => {
-
-    voiceAllowed = true;
-
-    voiceEnabled.checked = true;
-
-    if ("speechSynthesis" in window) {
-
-        speechSynthesis.cancel();
-
-        const speech =
-            new SpeechSynthesisUtterance(
-                "Voice announcement enabled"
-            );
-
-        speech.lang = "en-US";
-
-        speechSynthesis.speak(speech);
-
-    }
-
-    voiceBtn.innerText = "Voice Enabled";
-
-});
-
-
-// ======================================
-// 13. CLEAR HISTORY
-// ======================================
-
-document.getElementById(
-    "clearHistoryBtn"
-).addEventListener("click", () => {
-
-    historyRecords = [];
-
-    renderHistory();
-
-});
-
-
-// ======================================
-// 14. BUTTON EVENTS
-// ======================================
-
-startBtn.addEventListener(
-    "click",
-    startCamera
+// ==========================================
+// CREATE TOTAL LINE GRAPH
+// ==========================================
+
+const totalGraph=new Chart(
+ document.getElementById("totalGraph"),
+ {
+  type:"line",
+  data:{
+   labels:[],
+   datasets:[{
+    label:"Total Objects",
+    data:[],
+    borderColor:"#00e6db",
+    backgroundColor:"rgba(0,230,219,.12)",
+    fill:true,
+    tension:.35,
+    pointBackgroundColor:"#8affff"
+   }]
+  },
+  options:{
+   responsive:true,
+   maintainAspectRatio:false,
+   plugins:{legend:{display:false}},
+   scales:{
+    x:{ticks:{maxTicksLimit:7,color:"#82a9cc"},
+       grid:{color:"#173451"}},
+    y:{beginAtZero:true,
+       ticks:{precision:0,color:"#82a9cc"},
+       grid:{color:"#173451"}}
+   }
+  }
+ }
 );
 
-stopBtn.addEventListener(
-    "click",
-    stopCamera
-);
+// ==========================================
+// INITIALIZE MINI CHARTS
+// ==========================================
 
+miniCharts.people=makeMini("peopleMini","#168bff");
+miniCharts.chair=makeMini("chairMini","#b44dff");
+miniCharts.laptop=makeMini("laptopMini","#00d7d7");
+miniCharts.mobile=makeMini("mobileMini","#a64dff");
+miniCharts.book=makeMini("bookMini","#21d66b");
+miniCharts.box=makeMini("boxMini","#ffae35");
+miniCharts.bag=makeMini("bagMini","#f044a4");
+miniCharts.other=makeMini("otherMini","#7aa7d5");
 
-// ======================================
-// 15. CLEANUP
-// ======================================
+ratioCharts.people=makeRatio("peopleRatio","#25e96b","#244363");
+ratioCharts.tech=makeRatio("techRatio","#00d7ef","#a64dff");
+ratioCharts.book=makeRatio("bookRatio","#ffbd35","#244363");
+ratioCharts.bag=makeRatio("bagRatio","#f044a4","#244363");
 
-window.addEventListener(
-    "beforeunload",
-    stopCamera
-);
+// ==========================================
+// UPDATE GRAPHS
+// ==========================================
 
+function updateGraphs(counts,total){
 
-console.log(
-    "AI School Object Detection System Ready!"
-);
+ categoryKeys.forEach(key=>{
+
+  graphHistory[key].push(counts[key]);
+
+  if(graphHistory[key].length>7)
+   graphHistory[key].shift();
+
+  miniCharts[key].data.datasets[0].data=
+   graphHistory[key];
+
+  miniCharts[key].update("none");
+
+ });
+
+ updateRatio(
+  ratioCharts.people,
+  counts.people,
+  counts.chair,
+  "peopleRatioText"
+ );
+
+ updateRatio(
+  ratioCharts.tech,
+  counts.laptop,
+  counts.mobile,
+  "techRatioText"
+ );
+
+ updateRatio(
+  ratioCharts.book,
+  counts.book,
+  counts.box,
+  "bookRatioText"
+ );
+
+ updateRatio(
+  ratioCharts.bag,
+  counts.bag,
+  counts.other,
+  "bagRatioText"
+ );
+
+ const time=new Date().toLocaleTimeString();
+
+ totalGraph.data.labels.push(time);
+ totalGraph.data.datasets[0].data.push(total);
+
+ if(totalGraph.data.labels.length>20){
+  totalGraph.data.labels.shift();
+  totalGraph.data.datasets[0].data.shift();
+ }
+
+ totalGraph.update("none");
+
+}
+
+// ==========================================
+// UPDATE DONUT RATIOS
+// ==========================================
+
+function updateRatio(chart,a,b,textId){
+
+ const sum=a+b;
+
+ chart.data.datasets[0].data=
+  sum===0?[0,1]:[a,b];
+
+ chart.update("none");
+
+ const percent=sum===0?0:Math.round(a/sum*100);
+
+ setText(textId,percent+"%");
+
+}
+
+// ==========================================
+// HISTORY
+// ==========================================
+
+function updateHistory(counts,total){
+
+ if(total===0) return;
+
+ if(Date.now()-lastHistoryTime<5000) return;
+
+ lastHistoryTime=Date.now();
+
+ const found=[];
+
+ categoryKeys.forEach(key=>{
+  if(counts[key]>0){
+   found.push(key+": "+counts[key]);
+  }
+ });
+
+ const row=document.createElement("div");
+ row.className="history-row";
+
+ const dot=document.createElement("span");
+ dot.className="history-dot";
+
+ const time=document.createElement("span");
+ time.className="history-time";
+ time.textContent=new Date().toLocaleTimeString();
+
+ const description=document.createElement("span");
+ description.textContent=
+  "Total "+total+" | "+found.join(", ");
+
+ row.append(dot,time,description);
+
+ const list=document.getElementById("historyList");
+ list.prepend(row);
+
+ while(list.children.length>30){
+  list.removeChild(list.lastChild);
+ }
+
+}
+
+// ==========================================
+// READ BOUNDING BOX
+// ==========================================
+
+function getBox(item){
+
+ let box=
+  item.bbox ??
+  item.box ??
+  item.xyxy ??
+  item.coordinates;
+
+ if(!box && item.x1!==undefined){
+  box=[item.x1,item.y1,item.x2,item.y2];
+ }
+
+ if(Array.isArray(box) && box.length>=4){
+  return box.slice(0,4).map(Number);
+ }
+
+ if(box && typeof box==="object"){
+
+  if(box.x1!==undefined){
+   return [
+    Number(box.x1),Number(box.y1),
+    Number(box.x2),Number(box.y2)
+   ];
+  }
+
+  if(box.x!==undefined){
+   return [
+    Number(box.x),Number(box.y),
+    Number(box.x)+Number(box.width),
+    Number(box.y)+Number(box.height)
+   ];
+  }
+
+ }
+
+ return null;
+
+}
+
+// ==========================================
+// DRAW YOLO BOXES ON CAMERA
+// ==========================================
+
+function drawDetectionBoxes(){
+
+ if(!stream) return;
+
+ if(video.readyState>=2){
+
+  const w=video.videoWidth;
+  const h=video.videoHeight;
+
+  if(w && h){
+
+   if(overlay.width!==w || overlay.height!==h){
+    overlay.width=w;
+    overlay.height=h;
+   }
+
+   ctx.clearRect(0,0,w,h);
+
+   detections.forEach(item=>{
+
+    const box=getBox(item);
+    if(!box) return;
+
+    const [x1,y1,x2,y2]=box;
+
+    const x=x1;
+    const y=y1;
+    const bw=x2-x1;
+    const bh=y2-y1;
+
+    if(bw<=0 || bh<=0) return;
+
+    const label=getLabel(item);
+
+    ctx.strokeStyle="#00ffb3";
+    ctx.lineWidth=3;
+    ctx.strokeRect(x,y,bw,bh);
+
+    ctx.font="bold 14px Arial";
+
+    const textWidth=ctx.measureText(label).width;
+
+    ctx.fillStyle="#008d78";
+    ctx.fillRect(x,Math.max(0,y-23),textWidth+12,23);
+
+    ctx.fillStyle="#ffffff";
+    ctx.fillText(label,x+6,Math.max(16,y-7));
+
+   });
+
+  }
+
+ }
+
+ requestAnimationFrame(drawDetectionBoxes);
+
+}
+
+// ==========================================
+// CLOCK AND STARTUP
+// ==========================================
+
+function updateClock(){
+
+ document.getElementById("clock").textContent=
+  new Date().toLocaleString();
+
+}
+
+updateClock();
+setInterval(updateClock,1000);
+
+checkAPI();
+setInterval(checkAPI,30000);
 
 </script>
 
