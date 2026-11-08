@@ -1,4 +1,14 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI School Dashboard</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
 * {
     box-sizing: border-box;
     margin: 0;
@@ -31,7 +41,6 @@ header {
     border-radius: 12px;
     margin: 6px 8px;
     box-shadow: 0 0 15px #007bff55;
-    flex-shrink: 0;
 }
 
 .brand {
@@ -74,8 +83,6 @@ main {
     max-width: 1900px;
     margin: auto;
 }
-
-/* DASHBOARD GRID */
 
 .dashboard {
     flex: 1;
@@ -148,7 +155,7 @@ main {
     grid-row: 2;
 }
 
-/* CAMERA */
+/* CAMERA AREA */
 
 .camera {
     width: 100%;
@@ -161,16 +168,28 @@ main {
     overflow: hidden;
 }
 
-video, .overlay {
+/*
+ IMPORTANT:
+ Video aur overlay dono contain hain.
+ Is se original camera image distort nahi hoti.
+ Dono ka aspect ratio same rehta hai.
+*/
+
+#video {
     position: absolute;
-    top: 0;
-    left: 0;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: contain;
+    background: #000;
 }
 
-.overlay {
+#overlay {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
     pointer-events: none;
 }
 
@@ -184,6 +203,7 @@ video, .overlay {
     color: #7193b6;
     gap: 7px;
     text-align: center;
+    background: #000;
 }
 
 .camera-placeholder span {
@@ -574,10 +594,6 @@ footer {
         font-size: 13px;
     }
 
-    .metric {
-        grid-template-columns: 1fr 1fr;
-    }
-
     .camera-panel {
         min-height: 270px;
     }
@@ -641,3 +657,1363 @@ footer {
         max-height: 28px;
     }
 }
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="brand">
+        <div class="logo">🎓</div>
+        <div>
+            <h1>AI School Dashboard</h1>
+            <div class="subtitle">Smart Classroom Monitoring System</div>
+        </div>
+    </div>
+
+    <div>
+        <div class="live" id="apiStatus">● Connecting API...</div>
+        <div class="subtitle" id="clock"></div>
+    </div>
+</header>
+
+<main>
+
+<div class="dashboard">
+
+<!-- STUDENTS AND CHAIRS -->
+
+<section class="panel left-top">
+    <div class="panel-title">
+        <span class="icon">👥</span> Students & Chairs
+    </div>
+
+    <div class="metric">
+        <div>
+            <div class="metric-label">Students / Persons</div>
+            <div class="metric-value" id="peopleCount">0</div>
+        </div>
+        <canvas id="peopleMini"></canvas>
+    </div>
+
+    <div class="metric">
+        <div>
+            <div class="metric-label">Chairs</div>
+            <div class="metric-value" id="chairCount">0</div>
+        </div>
+        <canvas id="chairMini"></canvas>
+    </div>
+
+    <div class="ratio">
+        <div class="ratio-chart">
+            <canvas id="peopleRatio"></canvas>
+        </div>
+        <div class="ratio-text">
+            <strong id="peopleRatioText">0%</strong>
+            People / Chairs
+        </div>
+    </div>
+</section>
+
+<!-- LIVE CAMERA -->
+
+<section class="panel camera-panel">
+
+    <div class="panel-title">
+        <span class="icon">🔴</span> Live Camera
+    </div>
+
+    <div class="camera">
+
+        <video id="video" autoplay muted playsinline></video>
+
+        <canvas class="overlay" id="overlay"></canvas>
+
+        <div class="camera-placeholder" id="placeholder">
+            <span>◉</span>
+            <b>Live Camera Feed</b>
+            <small>Click Start Camera to begin detection</small>
+        </div>
+
+    </div>
+
+    <div class="camera-actions">
+        <button id="startBtn" onclick="startCamera()">
+            ▶ Start Camera
+        </button>
+
+        <button class="stop" onclick="stopCamera()">
+            ■ Stop
+        </button>
+
+        <button class="secondary" onclick="detectNow()">
+            Detect Now
+        </button>
+    </div>
+
+    <div class="camera-info" id="cameraInfo">
+        Camera stopped | Waiting for detection
+    </div>
+
+</section>
+
+<!-- LAPTOP AND MOBILE -->
+
+<section class="panel right-top">
+
+    <div class="panel-title">
+        <span class="icon">💻</span> Laptop & Mobile
+    </div>
+
+    <div class="metric">
+        <div>
+            <div class="metric-label">Laptops</div>
+            <div class="metric-value" id="laptopCount">0</div>
+        </div>
+        <canvas id="laptopMini"></canvas>
+    </div>
+
+    <div class="metric">
+        <div>
+            <div class="metric-label">Mobile Phones</div>
+            <div class="metric-value" id="mobileCount">0</div>
+        </div>
+        <canvas id="mobileMini"></canvas>
+    </div>
+
+    <div class="ratio">
+        <div class="ratio-chart">
+            <canvas id="techRatio"></canvas>
+        </div>
+        <div class="ratio-text">
+            <strong id="techRatioText">0%</strong>
+            Laptop / Mobile
+        </div>
+    </div>
+
+</section>
+
+<!-- BOOKS AND BOXES -->
+
+<section class="panel left-bottom">
+
+    <div class="panel-title">
+        <span class="icon">📚</span> Books & Boxes
+    </div>
+
+    <div class="metric">
+        <div>
+            <div class="metric-label">Books</div>
+            <div class="metric-value" id="bookCount">0</div>
+        </div>
+        <canvas id="bookMini"></canvas>
+    </div>
+
+    <div class="metric">
+        <div>
+            <div class="metric-label">Boxes</div>
+            <div class="metric-value" id="boxCount">0</div>
+        </div>
+        <canvas id="boxMini"></canvas>
+    </div>
+
+    <div class="ratio">
+        <div class="ratio-chart">
+            <canvas id="bookRatio"></canvas>
+        </div>
+        <div class="ratio-text">
+            <strong id="bookRatioText">0%</strong>
+            Books / Boxes
+        </div>
+    </div>
+
+</section>
+
+<!-- TOTAL OBJECTS -->
+
+<section class="panel total-panel">
+
+    <div class="panel-title">
+        <span class="icon">∑</span> Total Objects
+    </div>
+
+    <div class="total-content">
+
+        <div>
+            <div class="total-number" id="totalCount">0</div>
+            <div class="total-caption">
+                Total Detected Objects
+            </div>
+        </div>
+
+        <div class="total-chart">
+            <canvas id="totalGraph"></canvas>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- BAGS AND OTHERS -->
+
+<section class="panel right-bottom">
+
+    <div class="panel-title">
+        <span class="icon">🎒</span> Bags & Others
+    </div>
+
+    <div class="metric">
+        <div>
+            <div class="metric-label">Bags</div>
+            <div class="metric-value" id="bagCount">0</div>
+        </div>
+        <canvas id="bagMini"></canvas>
+    </div>
+
+    <div class="metric">
+        <div>
+            <div class="metric-label">Others</div>
+            <div class="metric-value" id="otherCount">0</div>
+        </div>
+        <canvas id="otherMini"></canvas>
+    </div>
+
+    <div class="ratio">
+        <div class="ratio-chart">
+            <canvas id="bagRatio"></canvas>
+        </div>
+        <div class="ratio-text">
+            <strong id="bagRatioText">0%</strong>
+            Bags / Others
+        </div>
+    </div>
+
+</section>
+
+</div>
+
+<!-- DETECTION HISTORY -->
+
+<section class="panel history-panel">
+
+    <div class="panel-title">
+        <span class="icon">◷</span> Detection History
+    </div>
+
+    <div class="history-list" id="historyList">
+        <div class="history-row">
+            Waiting for detection...
+        </div>
+    </div>
+
+</section>
+
+<footer>
+    AI SCHOOL OBJECT DETECTION | YOLO11 + FLASK API
+</footer>
+
+</main>
+
+<script>
+
+// ========================================
+// NGROK API URL
+// ========================================
+
+// Apna current Ngrok URL yahan paste karein.
+// Auth Token yahan paste na karein.
+
+const API_URL = "https://confident-saturate-divorcee.ngrok-free.dev";
+
+// ========================================
+// VARIABLES
+// ========================================
+
+const video = document.getElementById("video");
+const overlay = document.getElementById("overlay");
+const ctx = overlay.getContext("2d");
+
+let stream = null;
+let detectionTimer = null;
+let busy = false;
+let detections = [];
+let apiConnected = false;
+let apiChecking = false;
+let animationFrame = null;
+
+const categoryKeys = [
+    "people",
+    "chair",
+    "laptop",
+    "mobile",
+    "book",
+    "box",
+    "bag",
+    "other"
+];
+
+const graphHistory = {};
+
+categoryKeys.forEach(key => {
+    graphHistory[key] = [];
+});
+
+let lastHistoryTime = 0;
+
+// ========================================
+// CATEGORY MAPPING
+// ========================================
+
+function getCategory(label) {
+
+    label = String(label).toLowerCase().trim();
+
+    if([
+        "person", "people", "student",
+        "students", "teacher", "teachers"
+    ].includes(label)) {
+        return "people";
+    }
+
+    if(["chair", "chairs"].includes(label)) {
+        return "chair";
+    }
+
+    if(["laptop", "notebook computer"].includes(label)) {
+        return "laptop";
+    }
+
+    if([
+        "cell phone", "cellphone", "mobile",
+        "mobile phone", "phone", "smartphone"
+    ].includes(label)) {
+        return "mobile";
+    }
+
+    if(["book", "books"].includes(label)) {
+        return "book";
+    }
+
+    if(["box", "boxes", "cardboard box"].includes(label)) {
+        return "box";
+    }
+
+    if([
+        "backpack", "bag", "handbag", "suitcase"
+    ].includes(label)) {
+        return "bag";
+    }
+
+    return "other";
+}
+
+// ========================================
+// GET DETECTION LABEL
+// ========================================
+
+function getLabel(item) {
+
+    return String(
+        item.class_name ??
+        item.name ??
+        item.label ??
+        item.class ??
+        ""
+    ).toLowerCase().trim();
+}
+
+// ========================================
+// READ API RESPONSE
+// ========================================
+
+function extractDetections(data) {
+
+    if(Array.isArray(data)) return data;
+
+    if(Array.isArray(data.detections)) {
+        return data.detections;
+    }
+
+    if(Array.isArray(data.results)) {
+        return data.results;
+    }
+
+    if(Array.isArray(data.objects)) {
+        return data.objects;
+    }
+
+    if(data.data && Array.isArray(data.data.detections)) {
+        return data.data.detections;
+    }
+
+    console.warn("API response format not recognized", data);
+
+    return [];
+}
+
+// ========================================
+// API CONNECTION CHECK
+// ========================================
+
+async function checkAPI() {
+
+    if(apiChecking) return;
+
+    apiChecking = true;
+
+    const status = document.getElementById("apiStatus");
+
+    try {
+
+        const controller = new AbortController();
+
+        const timeout = setTimeout(() => {
+            controller.abort();
+        }, 10000);
+
+        const response = await fetch(API_URL + "/", {
+            method: "GET",
+            headers: {
+                "ngrok-skip-browser-warning": "true"
+            },
+            signal: controller.signal,
+            cache: "no-store"
+        });
+
+        clearTimeout(timeout);
+
+        if(!response.ok) {
+            throw new Error("HTTP " + response.status);
+        }
+
+        const data = await response.json();
+
+        if(data.success === false) {
+            throw new Error("API is not ready");
+        }
+
+        apiConnected = true;
+
+        status.textContent = "● CONNECTED";
+        status.style.color = "#00efa0";
+
+    } catch(error) {
+
+        apiConnected = false;
+
+        status.textContent = "● DISCONNECTED";
+        status.style.color = "#ff5575";
+
+        console.error("API connection error:", error);
+
+    } finally {
+
+        apiChecking = false;
+    }
+}
+
+// ========================================
+// START CAMERA
+// ========================================
+
+async function startCamera() {
+
+    try {
+
+        if(stream) return;
+
+        if(!navigator.mediaDevices ||
+           !navigator.mediaDevices.getUserMedia) {
+
+            throw new Error(
+                "Camera requires HTTPS or localhost."
+            );
+        }
+
+        document.getElementById("cameraInfo").textContent =
+            "Checking AI backend...";
+
+        await checkAPI();
+
+        if(!apiConnected) {
+
+            alert(
+                "API disconnected. Please start your Google Colab backend and check the Ngrok URL."
+            );
+
+            document.getElementById("cameraInfo").textContent =
+                "API disconnected | Camera not started";
+
+            return;
+        }
+
+        stream = await navigator.mediaDevices.getUserMedia({
+
+            video: {
+                facingMode: {
+                    ideal: "environment"
+                },
+                width: {
+                    ideal: 1280
+                },
+                height: {
+                    ideal: 720
+                }
+            },
+
+            audio: false
+        });
+
+        video.srcObject = stream;
+
+        await video.play();
+
+        document.getElementById("placeholder").style.display =
+            "none";
+
+        document.getElementById("cameraInfo").textContent =
+            "Camera running | AI detection active";
+
+        /*
+         Video dimensions milne ke baad overlay set karein.
+        */
+
+        await new Promise(resolve => {
+
+            if(video.videoWidth > 0) {
+                resolve();
+            } else {
+                video.addEventListener(
+                    "loadedmetadata",
+                    resolve,
+                    {once: true}
+                );
+            }
+
+        });
+
+        resizeOverlay();
+
+        drawDetectionBoxes();
+
+        detectNow();
+
+        detectionTimer = setInterval(detectNow, 1500);
+
+    } catch(error) {
+
+        alert("Camera Error: " + error.message);
+
+        console.error(error);
+
+    }
+}
+
+// ========================================
+// RESIZE OVERLAY
+// ========================================
+
+function resizeOverlay() {
+
+    if(!video.videoWidth || !video.videoHeight) {
+        return;
+    }
+
+    /*
+     Canvas ka internal size bilkul video jaisa hoga.
+     Is se YOLO coordinates accurately match karenge.
+    */
+
+    overlay.width = video.videoWidth;
+    overlay.height = video.videoHeight;
+}
+
+// ========================================
+// STOP CAMERA
+// ========================================
+
+function stopCamera() {
+
+    if(detectionTimer) {
+
+        clearInterval(detectionTimer);
+        detectionTimer = null;
+    }
+
+    if(animationFrame) {
+
+        cancelAnimationFrame(animationFrame);
+        animationFrame = null;
+    }
+
+    if(stream) {
+
+        stream.getTracks().forEach(track => {
+            track.stop();
+        });
+
+        stream = null;
+    }
+
+    video.srcObject = null;
+
+    detections = [];
+
+    ctx.clearRect(
+        0,
+        0,
+        overlay.width,
+        overlay.height
+    );
+
+    document.getElementById("placeholder").style.display =
+        "flex";
+
+    document.getElementById("cameraInfo").textContent =
+        "Camera stopped";
+
+    document.getElementById("startBtn").disabled = false;
+}
+
+// ========================================
+// SEND IMAGE TO YOLO API
+// ========================================
+
+async function detectNow() {
+
+    if(!stream || busy || video.readyState < 2) {
+        return;
+    }
+
+    if(!apiConnected) {
+
+        document.getElementById("cameraInfo").textContent =
+            "API disconnected | Waiting for connection...";
+
+        return;
+    }
+
+    busy = true;
+
+    try {
+
+        const temp = document.createElement("canvas");
+
+        temp.width = video.videoWidth;
+        temp.height = video.videoHeight;
+
+        const tempCtx = temp.getContext("2d");
+
+        /*
+         Original camera frame API ko send hota hai.
+         Koi stretch ya sketch effect apply nahi hota.
+        */
+
+        tempCtx.drawImage(
+            video,
+            0,
+            0,
+            temp.width,
+            temp.height
+        );
+
+        const image = temp.toDataURL(
+            "image/jpeg",
+            0.75
+        );
+
+        const response = await fetch(API_URL + "/detect", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json",
+                "ngrok-skip-browser-warning": "true"
+            },
+
+            body: JSON.stringify({
+                image: image
+            })
+        });
+
+        if(!response.ok) {
+
+            throw new Error("HTTP " + response.status);
+        }
+
+        const data = await response.json();
+
+        if(data.error) {
+
+            throw new Error(data.error);
+        }
+
+        detections = extractDetections(data);
+
+        updateDashboard(detections);
+
+        document.getElementById("cameraInfo").textContent =
+            "Live detection | " +
+            detections.length +
+            " objects in current frame";
+
+    } catch(error) {
+
+        console.error("Detection error:", error);
+
+        document.getElementById("cameraInfo").textContent =
+            "Detection error: " + error.message;
+
+        if(
+            error.message.includes("Failed to fetch") ||
+            error.message.includes("NetworkError")
+        ) {
+
+            apiConnected = false;
+
+            document.getElementById("apiStatus").textContent =
+                "● API DISCONNECTED";
+
+            document.getElementById("apiStatus").style.color =
+                "#ff5575";
+        }
+
+    } finally {
+
+        busy = false;
+    }
+}
+
+// ========================================
+// UPDATE COUNTS
+// ========================================
+
+function updateDashboard(items) {
+
+    const counts = {};
+
+    categoryKeys.forEach(key => {
+        counts[key] = 0;
+    });
+
+    items.forEach(item => {
+
+        const label = getLabel(item);
+
+        if(!label) return;
+
+        counts[getCategory(label)]++;
+    });
+
+    const total = Object.values(counts).reduce(
+        (a, b) => a + b,
+        0
+    );
+
+    setText("peopleCount", counts.people);
+    setText("chairCount", counts.chair);
+    setText("laptopCount", counts.laptop);
+    setText("mobileCount", counts.mobile);
+    setText("bookCount", counts.book);
+    setText("boxCount", counts.box);
+    setText("bagCount", counts.bag);
+    setText("otherCount", counts.other);
+    setText("totalCount", total);
+
+    updateGraphs(counts, total);
+    updateHistory(counts, total);
+}
+
+function setText(id, value) {
+
+    document.getElementById(id).textContent = value;
+}
+
+// ========================================
+// CHART SETTINGS
+// ========================================
+
+Chart.defaults.color = "#a9c8e5";
+Chart.defaults.font.family = "Arial";
+
+const miniCharts = {};
+const ratioCharts = {};
+
+// ========================================
+// MINI BAR CHART
+// ========================================
+
+function makeMini(id, color) {
+
+    return new Chart(
+        document.getElementById(id),
+        {
+            type: "bar",
+
+            data: {
+
+                labels: ["1","2","3","4","5","6","7"],
+
+                datasets: [{
+
+                    data: [0,0,0,0,0,0,0],
+
+                    backgroundColor: color,
+
+                    borderRadius: 3
+                }]
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+
+                scales: {
+
+                    x: {
+                        display: false
+                    },
+
+                    y: {
+                        display: false,
+                        beginAtZero: true
+                    }
+                }
+            }
+        }
+    );
+}
+
+// ========================================
+// DONUT CHART
+// ========================================
+
+function makeRatio(id, color1, color2) {
+
+    return new Chart(
+        document.getElementById(id),
+        {
+            type: "doughnut",
+
+            data: {
+
+                labels: ["First","Second"],
+
+                datasets: [{
+
+                    data: [0,1],
+
+                    backgroundColor: [
+                        color1,
+                        color2
+                    ],
+
+                    borderWidth: 0
+                }]
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                cutout: "75%",
+
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        }
+    );
+}
+
+// ========================================
+// TOTAL LINE GRAPH
+// ========================================
+
+const totalGraph = new Chart(
+    document.getElementById("totalGraph"),
+    {
+        type: "line",
+
+        data: {
+
+            labels: [],
+
+            datasets: [{
+
+                label: "Total Objects",
+
+                data: [],
+
+                borderColor: "#00e6db",
+
+                backgroundColor: "rgba(0,230,219,.12)",
+
+                fill: true,
+
+                tension: .35,
+
+                pointBackgroundColor: "#8affff"
+            }]
+        },
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+
+            scales: {
+
+                x: {
+                    ticks: {
+                        maxTicksLimit: 7,
+                        color: "#82a9cc"
+                    },
+
+                    grid: {
+                        color: "#173451"
+                    }
+                },
+
+                y: {
+                    beginAtZero: true,
+
+                    ticks: {
+                        precision: 0,
+                        color: "#82a9cc"
+                    },
+
+                    grid: {
+                        color: "#173451"
+                    }
+                }
+            }
+        }
+    }
+);
+
+// ========================================
+// INITIALIZE ALL CHARTS
+// ========================================
+
+miniCharts.people = makeMini(
+    "peopleMini",
+    "#168bff"
+);
+
+miniCharts.chair = makeMini(
+    "chairMini",
+    "#b44dff"
+);
+
+miniCharts.laptop = makeMini(
+    "laptopMini",
+    "#00d7d7"
+);
+
+miniCharts.mobile = makeMini(
+    "mobileMini",
+    "#a64dff"
+);
+
+miniCharts.book = makeMini(
+    "bookMini",
+    "#21d66b"
+);
+
+miniCharts.box = makeMini(
+    "boxMini",
+    "#ffae35"
+);
+
+miniCharts.bag = makeMini(
+    "bagMini",
+    "#f044a4"
+);
+
+miniCharts.other = makeMini(
+    "otherMini",
+    "#7aa7d5"
+);
+
+ratioCharts.people = makeRatio(
+    "peopleRatio",
+    "#25e96b",
+    "#244363"
+);
+
+ratioCharts.tech = makeRatio(
+    "techRatio",
+    "#00d7ef",
+    "#a64dff"
+);
+
+ratioCharts.book = makeRatio(
+    "bookRatio",
+    "#ffbd35",
+    "#244363"
+);
+
+ratioCharts.bag = makeRatio(
+    "bagRatio",
+    "#f044a4",
+    "#244363"
+);
+
+// ========================================
+// UPDATE GRAPHS
+// ========================================
+
+function updateGraphs(counts, total) {
+
+    categoryKeys.forEach(key => {
+
+        graphHistory[key].push(counts[key]);
+
+        if(graphHistory[key].length > 7) {
+            graphHistory[key].shift();
+        }
+
+        miniCharts[key].data.datasets[0].data =
+            graphHistory[key];
+
+        miniCharts[key].update("none");
+    });
+
+    updateRatio(
+        ratioCharts.people,
+        counts.people,
+        counts.chair,
+        "peopleRatioText"
+    );
+
+    updateRatio(
+        ratioCharts.tech,
+        counts.laptop,
+        counts.mobile,
+        "techRatioText"
+    );
+
+    updateRatio(
+        ratioCharts.book,
+        counts.book,
+        counts.box,
+        "bookRatioText"
+    );
+
+    updateRatio(
+        ratioCharts.bag,
+        counts.bag,
+        counts.other,
+        "bagRatioText"
+    );
+
+    totalGraph.data.labels.push(
+        new Date().toLocaleTimeString()
+    );
+
+    totalGraph.data.datasets[0].data.push(total);
+
+    if(totalGraph.data.labels.length > 20) {
+
+        totalGraph.data.labels.shift();
+
+        totalGraph.data.datasets[0].data.shift();
+    }
+
+    totalGraph.update("none");
+}
+
+// ========================================
+// UPDATE DONUT PERCENTAGE
+// ========================================
+
+function updateRatio(chart, a, b, textId) {
+
+    const sum = a + b;
+
+    chart.data.datasets[0].data =
+        sum === 0 ? [0,1] : [a,b];
+
+    chart.update("none");
+
+    const percent = sum === 0
+        ? 0
+        : Math.round(a / sum * 100);
+
+    setText(textId, percent + "%");
+}
+
+// ========================================
+// DETECTION HISTORY
+// ========================================
+
+function updateHistory(counts, total) {
+
+    if(total === 0) return;
+
+    if(Date.now() - lastHistoryTime < 5000) {
+        return;
+    }
+
+    lastHistoryTime = Date.now();
+
+    const found = [];
+
+    categoryKeys.forEach(key => {
+
+        if(counts[key] > 0) {
+
+            found.push(
+                key + ": " + counts[key]
+            );
+        }
+    });
+
+    const row = document.createElement("div");
+
+    row.className = "history-row";
+
+    const dot = document.createElement("span");
+
+    dot.className = "history-dot";
+
+    const time = document.createElement("span");
+
+    time.className = "history-time";
+
+    time.textContent =
+        new Date().toLocaleTimeString();
+
+    const description = document.createElement("span");
+
+    description.textContent =
+        "Total " + total + " | " + found.join(", ");
+
+    row.append(dot, time, description);
+
+    const list = document.getElementById("historyList");
+
+    list.prepend(row);
+
+    while(list.children.length > 30) {
+
+        list.removeChild(list.lastChild);
+    }
+}
+
+// ========================================
+// READ YOLO BOUNDING BOX
+// ========================================
+
+function getBox(item) {
+
+    let box =
+        item.bbox ??
+        item.box ??
+        item.xyxy ??
+        item.coordinates;
+
+    if(!box && item.x1 !== undefined) {
+
+        box = [
+            item.x1,
+            item.y1,
+            item.x2,
+            item.y2
+        ];
+    }
+
+    if(Array.isArray(box) && box.length >= 4) {
+
+        return box.slice(0,4).map(Number);
+    }
+
+    if(box && typeof box === "object") {
+
+        if(box.x1 !== undefined) {
+
+            return [
+                Number(box.x1),
+                Number(box.y1),
+                Number(box.x2),
+                Number(box.y2)
+            ];
+        }
+
+        if(box.x !== undefined) {
+
+            return [
+                Number(box.x),
+                Number(box.y),
+                Number(box.x) + Number(box.width),
+                Number(box.y) + Number(box.height)
+            ];
+        }
+    }
+
+    return null;
+}
+
+// ========================================
+// DRAW DETECTION BOXES
+// ========================================
+
+function drawDetectionBoxes() {
+
+    if(!stream) return;
+
+    if(video.readyState >= 2) {
+
+        const w = video.videoWidth;
+        const h = video.videoHeight;
+
+        if(w && h) {
+
+            if(
+                overlay.width !== w ||
+                overlay.height !== h
+            ) {
+                resizeOverlay();
+            }
+
+            ctx.clearRect(0, 0, w, h);
+
+            detections.forEach(item => {
+
+                const box = getBox(item);
+
+                if(!box) return;
+
+                const [x1, y1, x2, y2] = box;
+
+                const x = x1;
+                const y = y1;
+
+                const bw = x2 - x1;
+                const bh = y2 - y1;
+
+                if(
+                    !Number.isFinite(x) ||
+                    !Number.isFinite(y) ||
+                    !Number.isFinite(bw) ||
+                    !Number.isFinite(bh) ||
+                    bw <= 0 ||
+                    bh <= 0
+                ) {
+                    return;
+                }
+
+                const label = getLabel(item);
+
+                ctx.strokeStyle = "#00ffb3";
+
+                ctx.lineWidth = Math.max(
+                    2,
+                    w / 400
+                );
+
+                ctx.strokeRect(x, y, bw, bh);
+
+                const fontSize = Math.max(
+                    12,
+                    w / 80
+                );
+
+                ctx.font = "bold " + fontSize + "px Arial";
+
+                const textWidth =
+                    ctx.measureText(label).width;
+
+                const labelHeight = fontSize + 10;
+
+                const labelY = Math.max(
+                    0,
+                    y - labelHeight
+                );
+
+                ctx.fillStyle = "#008d78";
+
+                ctx.fillRect(
+                    x,
+                    labelY,
+                    textWidth + 12,
+                    labelHeight
+                );
+
+                ctx.fillStyle = "#ffffff";
+
+                ctx.fillText(
+                    label,
+                    x + 6,
+                    labelY + fontSize
+                );
+
+            });
+        }
+    }
+
+    animationFrame =
+        requestAnimationFrame(drawDetectionBoxes);
+}
+
+// ========================================
+// CLOCK AND STARTUP
+// ========================================
+
+function updateClock() {
+
+    document.getElementById("clock").textContent =
+        new Date().toLocaleString();
+}
+
+updateClock();
+
+setInterval(updateClock, 1000);
+
+// Website open hone par API check
+
+checkAPI();
+
+// Har 30 seconds baad API dobara check
+
+setInterval(checkAPI, 30000);
+
+// Browser resize hone par charts update
+
+window.addEventListener("resize", () => {
+
+    Object.values(miniCharts).forEach(chart => {
+        chart.resize();
+    });
+
+    Object.values(ratioCharts).forEach(chart => {
+        chart.resize();
+    });
+
+    totalGraph.resize();
+});
+
+</script>
+
+</body>
+</html>
