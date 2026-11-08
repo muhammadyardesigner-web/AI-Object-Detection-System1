@@ -10,17 +10,18 @@
 
 <style>
 :root {
-    --bg: #080f1f;
-    --panel: #111c30;
-    --panel2: #16243b;
-    --border: rgba(148,163,184,.15);
-    --text: #f1f5f9;
-    --muted: #94a3b8;
+    /* Attractive Royal Blue + Teal Theme */
+    --bg: #081426;
+    --panel: #12233c;
+    --panel2: #1a3150;
+    --border: rgba(125, 211, 252, .18);
+    --text: #f8fafc;
+    --muted: #a8bdd3;
     --blue: #38bdf8;
     --teal: #2dd4bf;
-    --purple: #a78bfa;
+    --purple: #c4a7ff;
     --green: #4ade80;
-    --orange: #fb923c;
+    --orange: #fbbf24;
     --red: #fb7185;
 }
 
@@ -32,9 +33,9 @@
 
 body {
     background:
-        radial-gradient(circle at 15% 0%, #14284b 0, transparent 35%),
-        radial-gradient(circle at 90% 10%, #10383d 0, transparent 30%),
-        var(--bg);
+        radial-gradient(circle at 12% 0%, #183c70 0, transparent 35%),
+        radial-gradient(circle at 90% 10%, #075b60 0, transparent 30%),
+        linear-gradient(135deg, #081426, #0c1b30 55%, #10243c);
     color: var(--text);
     font-family: "Segoe UI", Arial, sans-serif;
     min-height: 100vh;
@@ -60,8 +61,8 @@ body {
     padding: 13px 19px;
     border: 1px solid var(--border);
     border-radius: 16px;
-    background: rgba(17,28,48,.88);
-    box-shadow: 0 8px 30px rgba(0,0,0,.18);
+    background: linear-gradient(120deg, rgba(23,49,82,.96), rgba(15,48,65,.96));
+    box-shadow: 0 8px 30px rgba(0,0,0,.22);
 }
 
 .brand {
@@ -77,8 +78,8 @@ body {
     place-items: center;
     border-radius: 13px;
     font-size: 21px;
-    background: linear-gradient(135deg,#2563eb,#0d9488);
-    box-shadow: 0 5px 18px rgba(37,99,235,.3);
+    background: linear-gradient(135deg, #2563eb, #0d9488);
+    box-shadow: 0 5px 18px rgba(37,99,235,.35);
 }
 
 .brand h1 {
@@ -122,7 +123,7 @@ body {
 
 .clock {
     font-size: 13px;
-    color: #cbd5e1;
+    color: #dbeafe;
     font-weight: 600;
 }
 
@@ -130,10 +131,21 @@ body {
 
 .main-grid {
     flex: 1;
-    min-height: 0;
+    min-height: 440px;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.18fr) minmax(0, 1fr);
-    grid-template-rows: minmax(150px, 1fr) minmax(125px, .78fr) minmax(125px, .78fr);
+
+    /* Original 3-column layout preserved.
+       Camera is slightly more balanced. */
+    grid-template-columns:
+        minmax(0, 1fr)
+        minmax(0, 1.08fr)
+        minmax(0, 1fr);
+
+    grid-template-rows:
+        minmax(150px, 1fr)
+        minmax(125px, .78fr)
+        minmax(125px, .78fr);
+
     gap: 13px;
 }
 
@@ -145,8 +157,8 @@ body {
     padding: 14px;
     border: 1px solid var(--border);
     border-radius: 16px;
-    background: linear-gradient(145deg,rgba(22,36,59,.97),rgba(13,24,42,.97));
-    box-shadow: 0 8px 24px rgba(0,0,0,.16);
+    background: linear-gradient(145deg, rgba(26,49,80,.97), rgba(14,31,53,.97));
+    box-shadow: 0 8px 24px rgba(0,0,0,.19);
     overflow: hidden;
 }
 
@@ -199,9 +211,9 @@ body {
     display: flex;
     flex-direction: column;
     padding: 15px;
-    border-color: rgba(56,189,248,.3);
-    background: linear-gradient(150deg,#142640,#0c1b30);
-    box-shadow: 0 0 30px rgba(14,165,233,.07);
+    border-color: rgba(45,212,191,.38);
+    background: linear-gradient(150deg, #173452, #10243d);
+    box-shadow: 0 0 30px rgba(45,212,191,.09);
 }
 
 .camera-heading {
@@ -214,8 +226,8 @@ body {
     gap: 6px;
     padding: 5px 10px;
     border-radius: 20px;
-    color: #fda4af;
-    background: rgba(244,63,94,.12);
+    color: #fecdd3;
+    background: rgba(244,63,94,.16);
     font-size: 10px;
     font-weight: 700;
 }
@@ -242,8 +254,8 @@ body {
     width: 100%;
     overflow: hidden;
     border-radius: 13px;
-    background: #020617;
-    border: 1px solid rgba(56,189,248,.25);
+    background: #020817;
+    border: 1px solid rgba(56,189,248,.35);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -254,8 +266,10 @@ body {
     height: 100%;
     position: absolute;
     inset: 0;
+
+    /* Original camera image: no stretching */
     object-fit: contain;
-    background: #020617;
+    background: #020817;
 }
 
 #overlay {
@@ -269,7 +283,7 @@ body {
 .camera-placeholder {
     position: absolute;
     z-index: 2;
-    color: #64748b;
+    color: #9bb1c9;
     text-align: center;
     font-size: 13px;
     pointer-events: none;
@@ -305,11 +319,12 @@ body {
 }
 
 .btn-start {
-    background: linear-gradient(135deg,#2563eb,#0891b2);
+    background: linear-gradient(135deg, #2563eb, #0891b2);
+    box-shadow: 0 4px 13px rgba(37,99,235,.25);
 }
 
 .btn-stop {
-    background: linear-gradient(135deg,#e11d48,#be123c);
+    background: linear-gradient(135deg, #e11d48, #be123c);
 }
 
 .btn:disabled {
@@ -348,15 +363,15 @@ body {
 
 .count-grid {
     display: grid;
-    grid-template-columns: repeat(2,minmax(0,1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 9px;
 }
 
 .count-item {
     padding: 11px 10px;
     border-radius: 11px;
-    background: rgba(255,255,255,.035);
-    border: 1px solid rgba(148,163,184,.09);
+    background: linear-gradient(135deg, rgba(56,189,248,.08), rgba(45,212,191,.06));
+    border: 1px solid rgba(125,211,252,.13);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -365,7 +380,7 @@ body {
 
 .count-label {
     font-size: 11px;
-    color: #cbd5e1;
+    color: #d6e5f5;
 }
 
 .count-number {
@@ -378,7 +393,7 @@ body {
 .count-item:nth-child(3) .count-number { color: var(--purple); }
 .count-item:nth-child(4) .count-number { color: var(--orange); }
 
-/* TOTAL OBJECTS - COMPACT */
+/* TOTAL OBJECTS */
 
 .total-content {
     display: flex;
@@ -405,7 +420,7 @@ body {
     height: 58px;
 }
 
-/* HISTORY */
+/* HISTORY - BELOW DASHBOARD */
 
 .history-panel {
     padding: 12px 15px;
@@ -423,7 +438,7 @@ body {
     min-width: 145px;
     padding: 9px 11px;
     border-radius: 9px;
-    background: rgba(255,255,255,.035);
+    background: rgba(56,189,248,.07);
     border: 1px solid var(--border);
 }
 
@@ -445,7 +460,7 @@ body {
 .footer {
     display: flex;
     justify-content: space-between;
-    color: #64748b;
+    color: #8ca3bd;
     font-size: 10px;
     padding: 0 3px;
 }
@@ -458,7 +473,10 @@ body {
     }
 
     .main-grid {
-        grid-template-columns: minmax(0,1fr) minmax(0,1.1fr) minmax(0,1fr);
+        grid-template-columns:
+            minmax(0, 1fr)
+            minmax(0, 1.08fr)
+            minmax(0, 1fr);
         gap: 9px;
     }
 
@@ -601,7 +619,7 @@ body {
             </div>
         </section>
 
-        <!-- TOTAL OBJECTS - SMALLER -->
+        <!-- TOTAL OBJECTS -->
         <section class="panel total-panel">
             <div class="panel-heading" style="margin-bottom:7px">
                 <h2>📊 Total Objects</h2>
@@ -638,7 +656,7 @@ body {
             </div>
         </section>
 
-        <!-- LARGE CAMERA MODULE -->
+        <!-- CAMERA MODULE -->
         <section class="panel camera-panel">
             <div class="panel-heading camera-heading">
                 <h2>📷 Live Camera Detection</h2>
@@ -709,7 +727,7 @@ body {
             </div>
         </section>
 
-        <!-- OTHER OBJECT SUMMARY -->
+        <!-- DETECTION SUMMARY -->
         <section class="panel other-panel">
             <div class="panel-heading">
                 <h2>📈 Detection Summary</h2>
@@ -722,7 +740,7 @@ body {
 
     </main>
 
-    <!-- DETECTION HISTORY -->
+    <!-- HISTORY BELOW MAIN DASHBOARD -->
     <section class="panel history-panel">
         <div class="panel-heading">
             <h2>🕒 Detection History</h2>
@@ -788,9 +806,7 @@ const elements = {
     total: document.getElementById("totalCount")
 };
 
-/* ==========================================
-   CLOCK
-========================================== */
+/* CLOCK */
 
 function updateClock() {
     document.getElementById("clock").textContent =
@@ -800,9 +816,7 @@ function updateClock() {
 setInterval(updateClock, 1000);
 updateClock();
 
-/* ==========================================
-   CHARTS
-========================================== */
+/* CHARTS */
 
 let totalChart;
 let categoryChart;
@@ -818,7 +832,7 @@ function initializeCharts() {
                 datasets: [{
                     data: [],
                     borderColor: "#2dd4bf",
-                    backgroundColor: "rgba(45,212,191,.12)",
+                    backgroundColor: "rgba(45,212,191,.15)",
                     fill: true,
                     tension: .4,
                     pointRadius: 0,
@@ -850,10 +864,10 @@ function initializeCharts() {
                     backgroundColor: [
                         "#38bdf8",
                         "#2dd4bf",
-                        "#a78bfa",
-                        "#fb923c",
+                        "#c4a7ff",
+                        "#fbbf24",
                         "#4ade80",
-                        "#f472b6"
+                        "#fb7185"
                     ],
                     borderWidth: 0
                 }]
@@ -867,7 +881,7 @@ function initializeCharts() {
                         display: true,
                         position: "right",
                         labels: {
-                            color: "#cbd5e1",
+                            color: "#dbeafe",
                             boxWidth: 7,
                             padding: 7,
                             font: { size: 8 }
@@ -881,11 +895,10 @@ function initializeCharts() {
 
 initializeCharts();
 
-/* ==========================================
-   API STATUS
-========================================== */
+/* API STATUS */
 
 async function checkAPI() {
+
     const status = document.getElementById("apiStatus");
     const dot = document.getElementById("apiDot");
 
@@ -898,32 +911,37 @@ async function checkAPI() {
 
         status.textContent = "API Connected";
         dot.classList.add("online");
+
         return true;
 
     } catch (error) {
         status.textContent = "API Offline";
         dot.classList.remove("online");
+
         return false;
     }
 }
 
-/* ==========================================
-   CAMERA START
-========================================== */
+/* CAMERA START */
 
 async function startCamera() {
 
     if (isRunning) return;
 
     const message = document.getElementById("cameraMessage");
+    const startBtn = document.getElementById("startBtn");
 
     try {
+
+        startBtn.disabled = true;
         message.textContent = "Checking backend API...";
 
         const apiReady = await checkAPI();
 
         if (!apiReady) {
-            message.textContent = "Backend is offline. Start your Colab backend first.";
+            message.textContent =
+                "Backend is offline. Start your Colab backend first.";
+            startBtn.disabled = false;
             return;
         }
 
@@ -940,8 +958,14 @@ async function startCamera() {
 
         video.srcObject = cameraStream;
 
-        await new Promise((resolve) => {
+        await new Promise((resolve, reject) => {
+
             video.onloadedmetadata = resolve;
+
+            video.onerror = () => {
+                reject(new Error("Camera video could not load"));
+            };
+
         });
 
         await video.play();
@@ -949,7 +973,6 @@ async function startCamera() {
         isRunning = true;
 
         document.getElementById("cameraPlaceholder").style.display = "none";
-        document.getElementById("startBtn").disabled = true;
         document.getElementById("stopBtn").disabled = false;
 
         resizeOverlay();
@@ -960,15 +983,16 @@ async function startCamera() {
         detectionTimer = setInterval(runDetection, 1500);
 
     } catch (error) {
+
         console.error(error);
+
         message.textContent = "Camera error: " + error.message;
+
         stopCamera();
     }
 }
 
-/* ==========================================
-   CAMERA STOP
-========================================== */
+/* CAMERA STOP */
 
 function stopCamera() {
 
@@ -996,14 +1020,11 @@ function stopCamera() {
     document.getElementById("detectionInfo").textContent = "Objects: 0";
 }
 
-/* ==========================================
-   OVERLAY SIZE
-========================================== */
+/* OVERLAY SIZE */
 
 function resizeOverlay() {
 
     const stage = document.getElementById("cameraStage");
-
     const rect = stage.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
 
@@ -1011,13 +1032,15 @@ function resizeOverlay() {
     overlay.height = Math.round(rect.height * dpr);
 
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    if (isRunning) {
+        drawDetectionBoxes([]);
+    }
 }
 
 window.addEventListener("resize", resizeOverlay);
 
-/* ==========================================
-   SEND CAMERA FRAME TO YOLO API
-========================================== */
+/* SEND CAMERA FRAME TO YOLO API */
 
 async function runDetection() {
 
@@ -1034,7 +1057,7 @@ async function runDetection() {
 
         const captureCtx = capture.getContext("2d");
 
-        // Original camera image: no sketch, no filter, no distortion.
+        // Original camera frame, without filter or distortion.
         captureCtx.drawImage(
             video,
             0,
@@ -1073,19 +1096,19 @@ async function runDetection() {
             "Objects: " + detections.length;
 
     } catch (error) {
+
         console.error("Detection error:", error);
+
         document.getElementById("cameraMessage").textContent =
             "Detection error: " + error.message;
+
     } finally {
+
         isDetecting = false;
     }
 }
 
-/* ==========================================
-   DETECTION BOXES
-   Correctly maps YOLO coordinates to video
-   inside the object-fit: contain camera area.
-========================================== */
+/* DETECTION BOXES */
 
 function drawDetectionBoxes(detections) {
 
@@ -1103,7 +1126,7 @@ function drawDetectionBoxes(detections) {
     // Clear old boxes
     ctx.clearRect(0, 0, stageWidth, stageHeight);
 
-    // Same contain calculation as the video element
+    // Match the video's object-fit: contain position.
     const scale = Math.min(
         stageWidth / videoWidth,
         stageHeight / videoHeight
@@ -1127,16 +1150,14 @@ function drawDetectionBoxes(detections) {
         const height = (y2 - y1) * scale;
 
         const name = item.name || "Object";
-        const confidence = item.confidence ?? 0;
+        const confidence = Number(item.confidence ?? 0);
 
-        // Different professional colors
         const color = getObjectColor(name);
 
         ctx.lineWidth = 2.2;
         ctx.strokeStyle = color;
         ctx.strokeRect(x, y, width, height);
 
-        // Label background
         const label =
             name + " " + (confidence * 100).toFixed(1) + "%";
 
@@ -1155,9 +1176,7 @@ function drawDetectionBoxes(detections) {
     });
 }
 
-/* ==========================================
-   OBJECT COLORS
-========================================== */
+/* OBJECT COLORS */
 
 function getObjectColor(name) {
 
@@ -1165,17 +1184,15 @@ function getObjectColor(name) {
 
     if (n.includes("person")) return "#38bdf8";
     if (n.includes("chair")) return "#2dd4bf";
-    if (n.includes("laptop")) return "#a78bfa";
+    if (n.includes("laptop")) return "#c4a7ff";
     if (n.includes("book")) return "#4ade80";
-    if (n.includes("phone") || n.includes("cell")) return "#fb923c";
-    if (n.includes("backpack") || n.includes("bag")) return "#f472b6";
+    if (n.includes("phone") || n.includes("cell")) return "#fbbf24";
+    if (n.includes("backpack") || n.includes("bag")) return "#fb7185";
 
     return "#facc15";
 }
 
-/* ==========================================
-   OBJECT CATEGORY
-========================================== */
+/* OBJECT CATEGORY */
 
 function getCategory(name) {
 
@@ -1188,9 +1205,7 @@ function getCategory(name) {
     return "other";
 }
 
-/* ==========================================
-   UPDATE DASHBOARD
-========================================== */
+/* UPDATE DASHBOARD */
 
 function updateDashboard(detections) {
 
@@ -1206,7 +1221,9 @@ function updateDashboard(detections) {
     };
 
     detections.forEach(item => {
+
         const category = getCategory(item.name || "");
+
         counts[category]++;
     });
 
@@ -1231,6 +1248,7 @@ function updateDashboard(detections) {
 
     totalChart.data.labels = totalHistory.map((_, i) => i + 1);
     totalChart.data.datasets[0].data = [...totalHistory];
+
     totalChart.update("none");
 
     // Update category graph
@@ -1249,9 +1267,7 @@ function updateDashboard(detections) {
     addHistory(total);
 }
 
-/* ==========================================
-   DETECTION HISTORY
-========================================== */
+/* DETECTION HISTORY */
 
 function addHistory(total) {
 
@@ -1291,9 +1307,7 @@ function addHistory(total) {
         historyItems.length + " recent records";
 }
 
-/* ==========================================
-   INITIAL API CHECK
-========================================== */
+/* INITIAL API CHECK */
 
 checkAPI();
 
