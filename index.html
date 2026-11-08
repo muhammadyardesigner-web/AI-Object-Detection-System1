@@ -1,169 +1,661 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI School Dashboard</title>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:#030b18;color:#eaf5ff;font-family:Arial,sans-serif}
-
-header{
- height:76px;padding:12px 24px;display:flex;
- align-items:center;justify-content:space-between;
- background:#06152b;border:1px solid #087ed5;
- border-radius:14px;margin:8px;
- box-shadow:0 0 15px #007bff55;
-}
-.brand{display:flex;align-items:center;gap:15px}
-.logo{font-size:35px;color:#00bfff}
-h1{font-size:23px;color:#dff5ff}
-.subtitle{font-size:11px;color:#85b9df;margin-top:4px}
-.live{color:#00f0a0;font-weight:bold}
-
-main{padding:8px;max-width:1800px;margin:auto}
-.dashboard{
- display:grid;
- grid-template-columns:1.05fr 1.9fr 1.05fr;
- grid-template-rows:auto auto;
- gap:12px;
-}
-.panel{
- background:linear-gradient(145deg,#071a32,#061225);
- border:1px solid #0876bd;border-radius:13px;
- padding:14px;box-shadow:0 0 12px #007bff20;
- min-width:0;
-}
-.panel-title{
- font-size:16px;font-weight:bold;
- border-bottom:1px solid #17466b;
- padding-bottom:10px;margin-bottom:12px;
- display:flex;align-items:center;gap:9px;
-}
-.icon{font-size:22px;color:#00bfff}
-
-.left-top{grid-column:1;grid-row:1}
-.camera-panel{grid-column:2;grid-row:1}
-.right-top{grid-column:3;grid-row:1}
-.left-bottom{grid-column:1;grid-row:2}
-.total-panel{grid-column:2;grid-row:2}
-.right-bottom{grid-column:3;grid-row:2}
-
-.camera{
- width:100%;
- aspect-ratio:16/9;
- position:relative;
- background:#000;
- border:1px solid #22517a;
- border-radius:8px;
- overflow:hidden;
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
-video,.overlay{
- position:absolute;
- top:0;
- left:0;
- width:100%;
- height:100%;
- object-fit:fill;
+html, body {
+    width: 100%;
+    min-height: 100%;
+    font-family: Arial, sans-serif;
+    background: #030b18;
+    color: #eaf5ff;
 }
 
-.overlay{pointer-events:none}
-
-.camera-placeholder{
- position:absolute;inset:0;
- display:flex;flex-direction:column;
- align-items:center;justify-content:center;
- color:#7193b6;gap:8px;text-align:center;
-}
-.camera-placeholder span{font-size:38px;color:#00bfff}
-
-.camera-actions{
- display:flex;gap:8px;flex-wrap:wrap;margin-top:11px
-}
-button{
- padding:9px 14px;border:0;border-radius:6px;
- background:#087fca;color:white;cursor:pointer;
- font-weight:bold;
-}
-button.stop{background:#c93c50}
-button.secondary{background:#263c58}
-button:hover{filter:brightness(1.2)}
-button:disabled{opacity:.5;cursor:not-allowed}
-.camera-info{font-size:11px;color:#91b4d2;margin-top:10px}
-
-.metric{
- display:grid;grid-template-columns:1fr 1.15fr;
- align-items:center;gap:7px;padding:10px 3px;
- border-bottom:1px solid #17304b;
-}
-.metric:last-child{border-bottom:0}
-.metric-label{font-size:12px;color:#b8d3eb}
-.metric-value{
- font-size:27px;color:#37b9ff;font-weight:bold;margin-top:5px
-}
-.metric canvas{width:100%!important;height:65px!important}
-
-.ratio{
- display:flex;align-items:center;justify-content:center;
- gap:12px;padding-top:12px;
-}
-.ratio-chart{width:75px;height:75px}
-.ratio-text{font-size:12px;color:#c1d9ee;max-width:100px}
-.ratio-text strong{
- font-size:20px;color:#36d6ff;display:block
+body {
+    min-height: 100vh;
+    min-height: 100dvh;
 }
 
-.total-content{
- display:grid;grid-template-columns:.8fr 1.4fr;
- align-items:center;gap:10px;
-}
-.total-number{
- font-size:65px;font-weight:bold;
- color:#00e99a;text-align:center;
-}
-.total-caption{text-align:center;font-size:12px;color:#b8d3eb}
-.total-chart{height:160px;position:relative}
-.total-chart canvas{width:100%!important;height:100%!important}
+/* HEADER */
 
-.history-panel{margin-top:12px}
-.history-list{max-height:180px;overflow-y:auto}
-.history-row{
- display:flex;gap:12px;align-items:center;
- padding:9px 4px;border-bottom:1px solid #17304b;
- font-size:12px;color:#c6d9ed;
-}
-.history-dot{
- width:7px;height:7px;border-radius:50%;
- background:#00bfff;flex-shrink:0
-}
-.history-time{color:#52b9ff;min-width:75px}
-footer{text-align:center;color:#54799b;font-size:10px;padding:15px}
-
-@media(max-width:950px){
- .dashboard{grid-template-columns:1fr 1fr;grid-template-rows:auto}
- .left-top{grid-column:1;grid-row:1}
- .camera-panel{grid-column:1/3;grid-row:2}
- .right-top{grid-column:2;grid-row:1}
- .left-bottom{grid-column:1;grid-row:3}
- .total-panel{grid-column:1/3;grid-row:4}
- .right-bottom{grid-column:2;grid-row:3}
+header {
+    height: 66px;
+    padding: 8px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #06152b;
+    border: 1px solid #087ed5;
+    border-radius: 12px;
+    margin: 6px 8px;
+    box-shadow: 0 0 15px #007bff55;
 }
 
-@media(max-width:600px){
- header{height:auto;padding:12px}
- h1{font-size:17px}
- .dashboard{display:flex;flex-direction:column}
- .camera-panel{order:1}
- .left-top{order:2}
- .right-top{order:3}
- .left-bottom{order:4}
- .right-bottom{order:5}
- .total-panel{order:6}
- .camera{aspect-ratio:4/3}
- .total-number{font-size:48px}
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo {
+    font-size: 30px;
+    color: #00bfff;
+}
+
+h1 {
+    font-size: 21px;
+    color: #dff5ff;
+}
+
+.subtitle {
+    font-size: 10px;
+    color: #85b9df;
+    margin-top: 3px;
+}
+
+.live {
+    color: #00f0a0;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+/* MAIN SCREEN */
+
+main {
+    width: 100%;
+    height: calc(100dvh - 80px);
+    padding: 4px 8px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 1900px;
+    margin: auto;
+}
+
+.dashboard {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 1fr 1.65fr 1fr;
+    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 9px;
+}
+
+.panel {
+    background: linear-gradient(145deg, #071a32, #061225);
+    border: 1px solid #0876bd;
+    border-radius: 11px;
+    padding: 10px;
+    box-shadow: 0 0 12px #007bff20;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.panel-title {
+    font-size: 14px;
+    font-weight: bold;
+    border-bottom: 1px solid #17466b;
+    padding-bottom: 7px;
+    margin-bottom: 7px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.icon {
+    font-size: 19px;
+    color: #00bfff;
+}
+
+/* PANEL POSITIONS */
+
+.left-top {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+.camera-panel {
+    grid-column: 2;
+    grid-row: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.right-top {
+    grid-column: 3;
+    grid-row: 1;
+}
+
+.left-bottom {
+    grid-column: 1;
+    grid-row: 2;
+}
+
+.total-panel {
+    grid-column: 2;
+    grid-row: 2;
+}
+
+.right-bottom {
+    grid-column: 3;
+    grid-row: 2;
+}
+
+/* CAMERA AREA */
+
+.camera {
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+    position: relative;
+    background: #000;
+    border: 1px solid #22517a;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/*
+ IMPORTANT:
+ Video aur overlay dono contain hain.
+ Is se original camera image distort nahi hoti.
+ Dono ka aspect ratio same rehta hai.
+*/
+
+#video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: #000;
+}
+
+#overlay {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    pointer-events: none;
+}
+
+.camera-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #7193b6;
+    gap: 7px;
+    text-align: center;
+    background: #000;
+}
+
+.camera-placeholder span {
+    font-size: 35px;
+    color: #00bfff;
+}
+
+.camera-actions {
+    display: flex;
+    gap: 7px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+    flex-shrink: 0;
+}
+
+button {
+    padding: 8px 12px;
+    border: 0;
+    border-radius: 6px;
+    background: #087fca;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 11px;
+}
+
+button.stop {
+    background: #c93c50;
+}
+
+button.secondary {
+    background: #263c58;
+}
+
+button:hover {
+    filter: brightness(1.2);
+}
+
+button:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+.camera-info {
+    font-size: 10px;
+    color: #91b4d2;
+    margin-top: 6px;
+    flex-shrink: 0;
+}
+
+/* METRICS */
+
+.metric {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 5px;
+    padding: 7px 2px;
+    border-bottom: 1px solid #17304b;
+}
+
+.metric:last-child {
+    border-bottom: 0;
+}
+
+.metric-label {
+    font-size: 11px;
+    color: #b8d3eb;
+}
+
+.metric-value {
+    font-size: clamp(19px, 2vw, 26px);
+    color: #37b9ff;
+    font-weight: bold;
+    margin-top: 3px;
+}
+
+.metric canvas {
+    width: 100% !important;
+    height: 42px !important;
+}
+
+/* RATIO CHARTS */
+
+.ratio {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    padding-top: 6px;
+}
+
+.ratio-chart {
+    width: 55px;
+    height: 55px;
+    flex-shrink: 0;
+}
+
+.ratio-text {
+    font-size: 10px;
+    color: #c1d9ee;
+    max-width: 100px;
+}
+
+.ratio-text strong {
+    font-size: 17px;
+    color: #36d6ff;
+    display: block;
+}
+
+/* TOTAL OBJECTS */
+
+.total-content {
+    height: calc(100% - 30px);
+    display: grid;
+    grid-template-columns: .8fr 1.4fr;
+    align-items: center;
+    gap: 8px;
+}
+
+.total-number {
+    font-size: clamp(38px, 5vw, 60px);
+    font-weight: bold;
+    color: #00e99a;
+    text-align: center;
+}
+
+.total-caption {
+    text-align: center;
+    font-size: 10px;
+    color: #b8d3eb;
+}
+
+.total-chart {
+    height: 100%;
+    min-height: 0;
+    position: relative;
+}
+
+.total-chart canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* HISTORY */
+
+.history-panel {
+    height: 82px;
+    flex-shrink: 0;
+    padding: 7px 10px;
+}
+
+.history-panel .panel-title {
+    font-size: 12px;
+    padding-bottom: 4px;
+    margin-bottom: 3px;
+}
+
+.history-list {
+    max-height: 40px;
+    overflow-y: auto;
+}
+
+.history-row {
+    display: flex;
+    gap: 9px;
+    align-items: center;
+    padding: 4px;
+    border-bottom: 1px solid #17304b;
+    font-size: 10px;
+    color: #c6d9ed;
+}
+
+.history-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #00bfff;
+    flex-shrink: 0;
+}
+
+.history-time {
+    color: #52b9ff;
+    min-width: 70px;
+}
+
+footer {
+    display: none;
+}
+
+/* SMALL LAPTOPS */
+
+@media (min-width: 601px) and (max-width: 1100px) {
+    .dashboard {
+        grid-template-columns: 1fr 1.4fr;
+        grid-template-rows: repeat(3, minmax(0, 1fr));
+    }
+
+    .left-top {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .camera-panel {
+        grid-column: 2;
+        grid-row: 1 / 3;
+    }
+
+    .right-top {
+        grid-column: 1;
+        grid-row: 2;
+    }
+
+    .left-bottom {
+        grid-column: 1;
+        grid-row: 3;
+    }
+
+    .total-panel {
+        grid-column: 2;
+        grid-row: 3;
+    }
+
+    .right-bottom {
+        display: none;
+    }
+
+    main {
+        height: calc(100dvh - 80px);
+    }
+}
+
+/* MOBILE RESPONSIVE */
+
+@media (max-width: 600px) {
+    html, body {
+        height: auto;
+        min-height: 100%;
+    }
+
+    body {
+        overflow-y: auto;
+    }
+
+    header {
+        height: auto;
+        min-height: 65px;
+        padding: 10px;
+        margin: 5px;
+    }
+
+    .brand {
+        gap: 8px;
+    }
+
+    .logo {
+        font-size: 25px;
+    }
+
+    h1 {
+        font-size: 15px;
+    }
+
+    .subtitle {
+        font-size: 9px;
+    }
+
+    .live {
+        font-size: 10px;
+    }
+
+    main {
+        height: auto;
+        min-height: 0;
+        padding: 5px;
+        gap: 8px;
+    }
+
+    .dashboard {
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+    }
+
+    .panel {
+        min-height: 185px;
+        padding: 12px;
+    }
+
+    .camera-panel {
+        order: 1;
+        min-height: 300px;
+    }
+
+    .left-top {
+        order: 2;
+    }
+
+    .right-top {
+        order: 3;
+    }
+
+    .left-bottom {
+        order: 4;
+    }
+
+    .right-bottom {
+        order: 5;
+        display: block;
+    }
+
+    .total-panel {
+        order: 6;
+        min-height: 180px;
+    }
+
+    .camera {
+        flex: none;
+        width: 100%;
+        height: auto;
+        aspect-ratio: 4 / 3;
+    }
+
+    .camera-actions button {
+        flex: 1;
+        min-width: 90px;
+    }
+
+    .metric-value {
+        font-size: 25px;
+    }
+
+    .metric canvas {
+        height: 55px !important;
+    }
+
+    .ratio-chart {
+        width: 65px;
+        height: 65px;
+    }
+
+    .ratio-text {
+        font-size: 11px;
+    }
+
+    .ratio-text strong {
+        font-size: 19px;
+    }
+
+    .total-content {
+        min-height: 120px;
+    }
+
+    .total-number {
+        font-size: 48px;
+    }
+
+    .history-panel {
+        height: auto;
+        min-height: 100px;
+    }
+
+    .history-list {
+        max-height: 120px;
+    }
+
+    .history-row {
+        flex-wrap: wrap;
+    }
+
+    footer {
+        display: block;
+        text-align: center;
+        color: #54799b;
+        font-size: 10px;
+        padding: 10px;
+    }
+}
+
+/* VERY SMALL MOBILE */
+
+@media (max-width: 360px) {
+    header {
+        align-items: flex-start;
+    }
+
+    h1 {
+        font-size: 13px;
+    }
+
+    .camera-panel {
+        min-height: 270px;
+    }
+
+    .camera-actions button {
+        padding: 8px 7px;
+        font-size: 10px;
+    }
+}
+
+/* SHORT LAPTOP SCREEN */
+
+@media (min-width: 601px) and (max-height: 700px) {
+    header {
+        height: 55px;
+        margin: 4px 8px;
+    }
+
+    main {
+        height: calc(100dvh - 65px);
+        padding-top: 2px;
+        gap: 5px;
+    }
+
+    .dashboard {
+        gap: 6px;
+    }
+
+    .panel {
+        padding: 7px;
+    }
+
+    .panel-title {
+        padding-bottom: 4px;
+        margin-bottom: 4px;
+        font-size: 12px;
+    }
+
+    .metric {
+        padding: 4px 2px;
+    }
+
+    .metric canvas {
+        height: 30px !important;
+    }
+
+    .ratio {
+        padding-top: 3px;
+    }
+
+    .ratio-chart {
+        width: 43px;
+        height: 43px;
+    }
+
+    .history-panel {
+        height: 65px;
+    }
+
+    .history-list {
+        max-height: 28px;
+    }
 }
 </style>
 </head>
@@ -171,146 +663,266 @@ footer{text-align:center;color:#54799b;font-size:10px;padding:15px}
 <body>
 
 <header>
- <div class="brand">
-  <div class="logo">🎓</div>
-  <div>
-   <h1>AI School Dashboard</h1>
-   <div class="subtitle">Smart Classroom Monitoring System</div>
-  </div>
- </div>
- <div>
-  <div class="live" id="apiStatus">● Connecting API...</div>
-  <div class="subtitle" id="clock"></div>
- </div>
+    <div class="brand">
+        <div class="logo">🎓</div>
+        <div>
+            <h1>AI School Dashboard</h1>
+            <div class="subtitle">Smart Classroom Monitoring System</div>
+        </div>
+    </div>
+
+    <div>
+        <div class="live" id="apiStatus">● Connecting API...</div>
+        <div class="subtitle" id="clock"></div>
+    </div>
 </header>
 
 <main>
+
 <div class="dashboard">
 
+<!-- STUDENTS AND CHAIRS -->
+
 <section class="panel left-top">
- <div class="panel-title"><span class="icon">👥</span> Students & Chairs</div>
- <div class="metric">
-  <div><div class="metric-label">Students / Persons</div>
-  <div class="metric-value" id="peopleCount">0</div></div>
-  <canvas id="peopleMini"></canvas>
- </div>
- <div class="metric">
-  <div><div class="metric-label">Chairs</div>
-  <div class="metric-value" id="chairCount">0</div></div>
-  <canvas id="chairMini"></canvas>
- </div>
- <div class="ratio">
-  <div class="ratio-chart"><canvas id="peopleRatio"></canvas></div>
-  <div class="ratio-text"><strong id="peopleRatioText">0%</strong>People / Chairs</div>
- </div>
+    <div class="panel-title">
+        <span class="icon">👥</span> Students & Chairs
+    </div>
+
+    <div class="metric">
+        <div>
+            <div class="metric-label">Students / Persons</div>
+            <div class="metric-value" id="peopleCount">0</div>
+        </div>
+        <canvas id="peopleMini"></canvas>
+    </div>
+
+    <div class="metric">
+        <div>
+            <div class="metric-label">Chairs</div>
+            <div class="metric-value" id="chairCount">0</div>
+        </div>
+        <canvas id="chairMini"></canvas>
+    </div>
+
+    <div class="ratio">
+        <div class="ratio-chart">
+            <canvas id="peopleRatio"></canvas>
+        </div>
+        <div class="ratio-text">
+            <strong id="peopleRatioText">0%</strong>
+            People / Chairs
+        </div>
+    </div>
 </section>
+
+<!-- LIVE CAMERA -->
 
 <section class="panel camera-panel">
- <div class="panel-title">
-  <span class="icon">🔴</span> Live Camera
-  <span style="margin-left:auto;font-size:11px;color:#54c8ff"></span>
- </div>
- <div class="camera">
-  <video id="video" autoplay muted playsinline></video>
-  <canvas class="overlay" id="overlay"></canvas>
-  <div class="camera-placeholder" id="placeholder">
-   <span>◉</span>
-   <b>Live Camera Feed</b>
-   <small>Click Start Camera to begin detection</small>
-  </div>
- </div>
- <div class="camera-actions">
-  <button id="startBtn" onclick="startCamera()">▶ Start Camera</button>
-  <button class="stop" onclick="stopCamera()">■ Stop</button>
-  <button class="secondary" onclick="detectNow()">Detect Now</button>
- </div>
- <div class="camera-info" id="cameraInfo">Camera stopped | Waiting for detection</div>
+
+    <div class="panel-title">
+        <span class="icon">🔴</span> Live Camera
+    </div>
+
+    <div class="camera">
+
+        <video id="video" autoplay muted playsinline></video>
+
+        <canvas class="overlay" id="overlay"></canvas>
+
+        <div class="camera-placeholder" id="placeholder">
+            <span>◉</span>
+            <b>Live Camera Feed</b>
+            <small>Click Start Camera to begin detection</small>
+        </div>
+
+    </div>
+
+    <div class="camera-actions">
+        <button id="startBtn" onclick="startCamera()">
+            ▶ Start Camera
+        </button>
+
+        <button class="stop" onclick="stopCamera()">
+            ■ Stop
+        </button>
+
+        <button class="secondary" onclick="detectNow()">
+            Detect Now
+        </button>
+    </div>
+
+    <div class="camera-info" id="cameraInfo">
+        Camera stopped | Waiting for detection
+    </div>
+
 </section>
+
+<!-- LAPTOP AND MOBILE -->
 
 <section class="panel right-top">
- <div class="panel-title"><span class="icon">💻</span> Laptop & Mobile</div>
- <div class="metric">
-  <div><div class="metric-label">Laptops</div>
-  <div class="metric-value" id="laptopCount">0</div></div>
-  <canvas id="laptopMini"></canvas>
- </div>
- <div class="metric">
-  <div><div class="metric-label">Mobile Phones</div>
-  <div class="metric-value" id="mobileCount">0</div></div>
-  <canvas id="mobileMini"></canvas>
- </div>
- <div class="ratio">
-  <div class="ratio-chart"><canvas id="techRatio"></canvas></div>
-  <div class="ratio-text"><strong id="techRatioText">0%</strong>Laptop / Mobile</div>
- </div>
+
+    <div class="panel-title">
+        <span class="icon">💻</span> Laptop & Mobile
+    </div>
+
+    <div class="metric">
+        <div>
+            <div class="metric-label">Laptops</div>
+            <div class="metric-value" id="laptopCount">0</div>
+        </div>
+        <canvas id="laptopMini"></canvas>
+    </div>
+
+    <div class="metric">
+        <div>
+            <div class="metric-label">Mobile Phones</div>
+            <div class="metric-value" id="mobileCount">0</div>
+        </div>
+        <canvas id="mobileMini"></canvas>
+    </div>
+
+    <div class="ratio">
+        <div class="ratio-chart">
+            <canvas id="techRatio"></canvas>
+        </div>
+        <div class="ratio-text">
+            <strong id="techRatioText">0%</strong>
+            Laptop / Mobile
+        </div>
+    </div>
+
 </section>
+
+<!-- BOOKS AND BOXES -->
 
 <section class="panel left-bottom">
- <div class="panel-title"><span class="icon">📚</span> Books & Boxes</div>
- <div class="metric">
-  <div><div class="metric-label">Books</div>
-  <div class="metric-value" id="bookCount">0</div></div>
-  <canvas id="bookMini"></canvas>
- </div>
- <div class="metric">
-  <div><div class="metric-label">Boxes</div>
-  <div class="metric-value" id="boxCount">0</div></div>
-  <canvas id="boxMini"></canvas>
- </div>
- <div class="ratio">
-  <div class="ratio-chart"><canvas id="bookRatio"></canvas></div>
-  <div class="ratio-text"><strong id="bookRatioText">0%</strong>Books / Boxes</div>
- </div>
+
+    <div class="panel-title">
+        <span class="icon">📚</span> Books & Boxes
+    </div>
+
+    <div class="metric">
+        <div>
+            <div class="metric-label">Books</div>
+            <div class="metric-value" id="bookCount">0</div>
+        </div>
+        <canvas id="bookMini"></canvas>
+    </div>
+
+    <div class="metric">
+        <div>
+            <div class="metric-label">Boxes</div>
+            <div class="metric-value" id="boxCount">0</div>
+        </div>
+        <canvas id="boxMini"></canvas>
+    </div>
+
+    <div class="ratio">
+        <div class="ratio-chart">
+            <canvas id="bookRatio"></canvas>
+        </div>
+        <div class="ratio-text">
+            <strong id="bookRatioText">0%</strong>
+            Books / Boxes
+        </div>
+    </div>
+
 </section>
+
+<!-- TOTAL OBJECTS -->
 
 <section class="panel total-panel">
- <div class="panel-title"><span class="icon">∑</span> Total Objects</div>
- <div class="total-content">
-  <div>
-   <div class="total-number" id="totalCount">0</div>
-   <div class="total-caption">Total Detected Objects</div>
-  </div>
-  <div class="total-chart"><canvas id="totalGraph"></canvas></div>
- </div>
+
+    <div class="panel-title">
+        <span class="icon">∑</span> Total Objects
+    </div>
+
+    <div class="total-content">
+
+        <div>
+            <div class="total-number" id="totalCount">0</div>
+            <div class="total-caption">
+                Total Detected Objects
+            </div>
+        </div>
+
+        <div class="total-chart">
+            <canvas id="totalGraph"></canvas>
+        </div>
+
+    </div>
+
 </section>
 
+<!-- BAGS AND OTHERS -->
+
 <section class="panel right-bottom">
- <div class="panel-title"><span class="icon">🎒</span> Bags & Others</div>
- <div class="metric">
-  <div><div class="metric-label">Bags</div>
-  <div class="metric-value" id="bagCount">0</div></div>
-  <canvas id="bagMini"></canvas>
- </div>
- <div class="metric">
-  <div><div class="metric-label">Others</div>
-  <div class="metric-value" id="otherCount">0</div></div>
-  <canvas id="otherMini"></canvas>
- </div>
- <div class="ratio">
-  <div class="ratio-chart"><canvas id="bagRatio"></canvas></div>
-  <div class="ratio-text"><strong id="bagRatioText">0%</strong>Bags / Others</div>
- </div>
+
+    <div class="panel-title">
+        <span class="icon">🎒</span> Bags & Others
+    </div>
+
+    <div class="metric">
+        <div>
+            <div class="metric-label">Bags</div>
+            <div class="metric-value" id="bagCount">0</div>
+        </div>
+        <canvas id="bagMini"></canvas>
+    </div>
+
+    <div class="metric">
+        <div>
+            <div class="metric-label">Others</div>
+            <div class="metric-value" id="otherCount">0</div>
+        </div>
+        <canvas id="otherMini"></canvas>
+    </div>
+
+    <div class="ratio">
+        <div class="ratio-chart">
+            <canvas id="bagRatio"></canvas>
+        </div>
+        <div class="ratio-text">
+            <strong id="bagRatioText">0%</strong>
+            Bags / Others
+        </div>
+    </div>
+
 </section>
 
 </div>
 
+<!-- DETECTION HISTORY -->
+
 <section class="panel history-panel">
- <div class="panel-title"><span class="icon">◷</span> Detection History</div>
- <div class="history-list" id="historyList">
-  <div class="history-row">Waiting for detection...</div>
- </div>
+
+    <div class="panel-title">
+        <span class="icon">◷</span> Detection History
+    </div>
+
+    <div class="history-list" id="historyList">
+        <div class="history-row">
+            Waiting for detection...
+        </div>
+    </div>
+
 </section>
 
-<footer>AI SCHOOL OBJECT DETECTION | YOLO11 + FLASK API</footer>
+<footer>
+    AI SCHOOL OBJECT DETECTION | YOLO11 + FLASK API
+</footer>
+
 </main>
 
 <script>
+
 // ========================================
 // NGROK API URL
 // ========================================
 
-// Apna current Ngrok public URL yahan likhein.
-// Auth Token kabhi yahan paste na karein.
+// Apna current Ngrok URL yahan paste karein.
+// Auth Token yahan paste na karein.
+
 const API_URL = "https://confident-saturate-divorcee.ngrok-free.dev";
 
 // ========================================
@@ -327,14 +939,24 @@ let busy = false;
 let detections = [];
 let apiConnected = false;
 let apiChecking = false;
+let animationFrame = null;
 
 const categoryKeys = [
- "people","chair","laptop","mobile",
- "book","box","bag","other"
+    "people",
+    "chair",
+    "laptop",
+    "mobile",
+    "book",
+    "box",
+    "bag",
+    "other"
 ];
 
 const graphHistory = {};
-categoryKeys.forEach(k => graphHistory[k] = []);
+
+categoryKeys.forEach(key => {
+    graphHistory[key] = [];
+});
 
 let lastHistoryTime = 0;
 
@@ -343,30 +965,46 @@ let lastHistoryTime = 0;
 // ========================================
 
 function getCategory(label) {
- label = String(label).toLowerCase().trim();
 
- if(["person","people","student","students","teacher","teachers"].includes(label))
-  return "people";
+    label = String(label).toLowerCase().trim();
 
- if(["chair","chairs"].includes(label))
-  return "chair";
+    if([
+        "person", "people", "student",
+        "students", "teacher", "teachers"
+    ].includes(label)) {
+        return "people";
+    }
 
- if(["laptop","notebook computer"].includes(label))
-  return "laptop";
+    if(["chair", "chairs"].includes(label)) {
+        return "chair";
+    }
 
- if(["cell phone","cellphone","mobile","mobile phone","phone","smartphone"].includes(label))
-  return "mobile";
+    if(["laptop", "notebook computer"].includes(label)) {
+        return "laptop";
+    }
 
- if(["book","books"].includes(label))
-  return "book";
+    if([
+        "cell phone", "cellphone", "mobile",
+        "mobile phone", "phone", "smartphone"
+    ].includes(label)) {
+        return "mobile";
+    }
 
- if(["box","boxes","cardboard box"].includes(label))
-  return "box";
+    if(["book", "books"].includes(label)) {
+        return "book";
+    }
 
- if(["backpack","bag","handbag","suitcase"].includes(label))
-  return "bag";
+    if(["box", "boxes", "cardboard box"].includes(label)) {
+        return "box";
+    }
 
- return "other";
+    if([
+        "backpack", "bag", "handbag", "suitcase"
+    ].includes(label)) {
+        return "bag";
+    }
+
+    return "other";
 }
 
 // ========================================
@@ -374,13 +1012,14 @@ function getCategory(label) {
 // ========================================
 
 function getLabel(item) {
- return String(
-  item.class_name ??
-  item.name ??
-  item.label ??
-  item.class ??
-  ""
- ).toLowerCase().trim();
+
+    return String(
+        item.class_name ??
+        item.name ??
+        item.label ??
+        item.class ??
+        ""
+    ).toLowerCase().trim();
 }
 
 // ========================================
@@ -388,16 +1027,28 @@ function getLabel(item) {
 // ========================================
 
 function extractDetections(data) {
- if(Array.isArray(data)) return data;
- if(Array.isArray(data.detections)) return data.detections;
- if(Array.isArray(data.results)) return data.results;
- if(Array.isArray(data.objects)) return data.objects;
 
- if(data.data && Array.isArray(data.data.detections))
-  return data.data.detections;
+    if(Array.isArray(data)) return data;
 
- console.warn("API response format not recognized", data);
- return [];
+    if(Array.isArray(data.detections)) {
+        return data.detections;
+    }
+
+    if(Array.isArray(data.results)) {
+        return data.results;
+    }
+
+    if(Array.isArray(data.objects)) {
+        return data.objects;
+    }
+
+    if(data.data && Array.isArray(data.data.detections)) {
+        return data.data.detections;
+    }
+
+    console.warn("API response format not recognized", data);
+
+    return [];
 }
 
 // ========================================
@@ -405,49 +1056,60 @@ function extractDetections(data) {
 // ========================================
 
 async function checkAPI() {
- if(apiChecking) return;
 
- apiChecking = true;
- const status = document.getElementById("apiStatus");
+    if(apiChecking) return;
 
- try {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 10000);
+    apiChecking = true;
 
-  const response = await fetch(API_URL + "/", {
-   method: "GET",
-   headers: {
-    "ngrok-skip-browser-warning": "true"
-   },
-   signal: controller.signal,
-   cache: "no-store"
-  });
+    const status = document.getElementById("apiStatus");
 
-  clearTimeout(timeout);
+    try {
 
-  if(!response.ok) {
-   throw new Error("HTTP " + response.status);
-  }
+        const controller = new AbortController();
 
-  const data = await response.json();
+        const timeout = setTimeout(() => {
+            controller.abort();
+        }, 10000);
 
-  if(data.success === false) {
-   throw new Error("API is not ready");
-  }
+        const response = await fetch(API_URL + "/", {
+            method: "GET",
+            headers: {
+                "ngrok-skip-browser-warning": "true"
+            },
+            signal: controller.signal,
+            cache: "no-store"
+        });
 
-  apiConnected = true;
-  status.textContent = "●CONNECTED";
-  status.style.color = "#00efa0";
+        clearTimeout(timeout);
 
- } catch(error) {
-  apiConnected = false;
-  status.textContent = "●DISCONNECTED";
-  status.style.color = "#ff5575";
-  console.error("API connection error:", error);
+        if(!response.ok) {
+            throw new Error("HTTP " + response.status);
+        }
 
- } finally {
-  apiChecking = false;
- }
+        const data = await response.json();
+
+        if(data.success === false) {
+            throw new Error("API is not ready");
+        }
+
+        apiConnected = true;
+
+        status.textContent = "● CONNECTED";
+        status.style.color = "#00efa0";
+
+    } catch(error) {
+
+        apiConnected = false;
+
+        status.textContent = "● DISCONNECTED";
+        status.style.color = "#ff5575";
+
+        console.error("API connection error:", error);
+
+    } finally {
+
+        apiChecking = false;
+    }
 }
 
 // ========================================
@@ -455,45 +1117,115 @@ async function checkAPI() {
 // ========================================
 
 async function startCamera() {
- try {
-  if(stream) return;
 
-  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-   throw new Error("Camera requires HTTPS or localhost.");
-  }
+    try {
 
-  await checkAPI();
+        if(stream) return;
 
-  if(!apiConnected) {
-   alert("API disconnected. Please start your Google Colab backend and check the Ngrok URL.");
-   return;
-  }
+        if(!navigator.mediaDevices ||
+           !navigator.mediaDevices.getUserMedia) {
 
-  stream = await navigator.mediaDevices.getUserMedia({
-   video: {
-    facingMode: "environment",
-    width: {ideal: 1280},
-    height: {ideal: 720}
-   },
-   audio: false
-  });
+            throw new Error(
+                "Camera requires HTTPS or localhost."
+            );
+        }
 
-  video.srcObject = stream;
-  await video.play();
+        document.getElementById("cameraInfo").textContent =
+            "Checking AI backend...";
 
-  document.getElementById("placeholder").style.display = "none";
-  document.getElementById("cameraInfo").textContent =
-   "Camera running | AI detection active";
+        await checkAPI();
 
-  drawDetectionBoxes();
-  detectNow();
+        if(!apiConnected) {
 
-  detectionTimer = setInterval(detectNow, 1500);
+            alert(
+                "API disconnected. Please start your Google Colab backend and check the Ngrok URL."
+            );
 
- } catch(error) {
-  alert("Camera Error: " + error.message);
-  console.error(error);
- }
+            document.getElementById("cameraInfo").textContent =
+                "API disconnected | Camera not started";
+
+            return;
+        }
+
+        stream = await navigator.mediaDevices.getUserMedia({
+
+            video: {
+                facingMode: {
+                    ideal: "environment"
+                },
+                width: {
+                    ideal: 1280
+                },
+                height: {
+                    ideal: 720
+                }
+            },
+
+            audio: false
+        });
+
+        video.srcObject = stream;
+
+        await video.play();
+
+        document.getElementById("placeholder").style.display =
+            "none";
+
+        document.getElementById("cameraInfo").textContent =
+            "Camera running | AI detection active";
+
+        /*
+         Video dimensions milne ke baad overlay set karein.
+        */
+
+        await new Promise(resolve => {
+
+            if(video.videoWidth > 0) {
+                resolve();
+            } else {
+                video.addEventListener(
+                    "loadedmetadata",
+                    resolve,
+                    {once: true}
+                );
+            }
+
+        });
+
+        resizeOverlay();
+
+        drawDetectionBoxes();
+
+        detectNow();
+
+        detectionTimer = setInterval(detectNow, 1500);
+
+    } catch(error) {
+
+        alert("Camera Error: " + error.message);
+
+        console.error(error);
+
+    }
+}
+
+// ========================================
+// RESIZE OVERLAY
+// ========================================
+
+function resizeOverlay() {
+
+    if(!video.videoWidth || !video.videoHeight) {
+        return;
+    }
+
+    /*
+     Canvas ka internal size bilkul video jaisa hoga.
+     Is se YOLO coordinates accurately match karenge.
+    */
+
+    overlay.width = video.videoWidth;
+    overlay.height = video.videoHeight;
 }
 
 // ========================================
@@ -501,22 +1233,46 @@ async function startCamera() {
 // ========================================
 
 function stopCamera() {
- if(detectionTimer) {
-  clearInterval(detectionTimer);
-  detectionTimer = null;
- }
 
- if(stream) {
-  stream.getTracks().forEach(t => t.stop());
-  stream = null;
- }
+    if(detectionTimer) {
 
- video.srcObject = null;
- detections = [];
- ctx.clearRect(0, 0, overlay.width, overlay.height);
+        clearInterval(detectionTimer);
+        detectionTimer = null;
+    }
 
- document.getElementById("placeholder").style.display = "flex";
- document.getElementById("cameraInfo").textContent = "Camera stopped";
+    if(animationFrame) {
+
+        cancelAnimationFrame(animationFrame);
+        animationFrame = null;
+    }
+
+    if(stream) {
+
+        stream.getTracks().forEach(track => {
+            track.stop();
+        });
+
+        stream = null;
+    }
+
+    video.srcObject = null;
+
+    detections = [];
+
+    ctx.clearRect(
+        0,
+        0,
+        overlay.width,
+        overlay.height
+    );
+
+    document.getElementById("placeholder").style.display =
+        "flex";
+
+    document.getElementById("cameraInfo").textContent =
+        "Camera stopped";
+
+    document.getElementById("startBtn").disabled = false;
 }
 
 // ========================================
@@ -524,70 +1280,108 @@ function stopCamera() {
 // ========================================
 
 async function detectNow() {
- if(!stream || busy || video.readyState < 2) return;
 
- if(!apiConnected) {
-  document.getElementById("cameraInfo").textContent =
-   "API disconnected | Waiting for connection...";
-  return;
- }
+    if(!stream || busy || video.readyState < 2) {
+        return;
+    }
 
- busy = true;
+    if(!apiConnected) {
 
- try {
-  const temp = document.createElement("canvas");
-  temp.width = video.videoWidth;
-  temp.height = video.videoHeight;
+        document.getElementById("cameraInfo").textContent =
+            "API disconnected | Waiting for connection...";
 
-  temp.getContext("2d").drawImage(
-   video, 0, 0, temp.width, temp.height
-  );
+        return;
+    }
 
-  const image = temp.toDataURL("image/jpeg", 0.75);
+    busy = true;
 
-  const response = await fetch(API_URL + "/detect", {
-   method: "POST",
-   headers: {
-    "Content-Type": "application/json",
-    "ngrok-skip-browser-warning": "true"
-   },
-   body: JSON.stringify({image: image})
-  });
+    try {
 
-  if(!response.ok) {
-   throw new Error("HTTP " + response.status);
-  }
+        const temp = document.createElement("canvas");
 
-  const data = await response.json();
+        temp.width = video.videoWidth;
+        temp.height = video.videoHeight;
 
-  if(data.error) {
-   throw new Error(data.error);
-  }
+        const tempCtx = temp.getContext("2d");
 
-  detections = extractDetections(data);
-  updateDashboard(detections);
+        /*
+         Original camera frame API ko send hota hai.
+         Koi stretch ya sketch effect apply nahi hota.
+        */
 
-  document.getElementById("cameraInfo").textContent =
-   "Live detection | " + detections.length +
-   " objects in current frame";
+        tempCtx.drawImage(
+            video,
+            0,
+            0,
+            temp.width,
+            temp.height
+        );
 
- } catch(error) {
-  console.error("Detection error:", error);
+        const image = temp.toDataURL(
+            "image/jpeg",
+            0.75
+        );
 
-  document.getElementById("cameraInfo").textContent =
-   "Detection error: " + error.message;
+        const response = await fetch(API_URL + "/detect", {
 
-  if(error.message.includes("Failed to fetch") ||
-     error.message.includes("NetworkError")) {
-   apiConnected = false;
-   document.getElementById("apiStatus").textContent =
-    "● API DISCONNECTED";
-   document.getElementById("apiStatus").style.color = "#ff5575";
-  }
+            method: "POST",
 
- } finally {
-  busy = false;
- }
+            headers: {
+                "Content-Type": "application/json",
+                "ngrok-skip-browser-warning": "true"
+            },
+
+            body: JSON.stringify({
+                image: image
+            })
+        });
+
+        if(!response.ok) {
+
+            throw new Error("HTTP " + response.status);
+        }
+
+        const data = await response.json();
+
+        if(data.error) {
+
+            throw new Error(data.error);
+        }
+
+        detections = extractDetections(data);
+
+        updateDashboard(detections);
+
+        document.getElementById("cameraInfo").textContent =
+            "Live detection | " +
+            detections.length +
+            " objects in current frame";
+
+    } catch(error) {
+
+        console.error("Detection error:", error);
+
+        document.getElementById("cameraInfo").textContent =
+            "Detection error: " + error.message;
+
+        if(
+            error.message.includes("Failed to fetch") ||
+            error.message.includes("NetworkError")
+        ) {
+
+            apiConnected = false;
+
+            document.getElementById("apiStatus").textContent =
+                "● API DISCONNECTED";
+
+            document.getElementById("apiStatus").style.color =
+                "#ff5575";
+        }
+
+    } finally {
+
+        busy = false;
+    }
 }
 
 // ========================================
@@ -595,33 +1389,44 @@ async function detectNow() {
 // ========================================
 
 function updateDashboard(items) {
- const counts = {};
- categoryKeys.forEach(k => counts[k] = 0);
 
- items.forEach(item => {
-  const label = getLabel(item);
-  if(!label) return;
-  counts[getCategory(label)]++;
- });
+    const counts = {};
 
- const total = Object.values(counts).reduce((a,b) => a+b, 0);
+    categoryKeys.forEach(key => {
+        counts[key] = 0;
+    });
 
- setText("peopleCount", counts.people);
- setText("chairCount", counts.chair);
- setText("laptopCount", counts.laptop);
- setText("mobileCount", counts.mobile);
- setText("bookCount", counts.book);
- setText("boxCount", counts.box);
- setText("bagCount", counts.bag);
- setText("otherCount", counts.other);
- setText("totalCount", total);
+    items.forEach(item => {
 
- updateGraphs(counts, total);
- updateHistory(counts, total);
+        const label = getLabel(item);
+
+        if(!label) return;
+
+        counts[getCategory(label)]++;
+    });
+
+    const total = Object.values(counts).reduce(
+        (a, b) => a + b,
+        0
+    );
+
+    setText("peopleCount", counts.people);
+    setText("chairCount", counts.chair);
+    setText("laptopCount", counts.laptop);
+    setText("mobileCount", counts.mobile);
+    setText("bookCount", counts.book);
+    setText("boxCount", counts.box);
+    setText("bagCount", counts.bag);
+    setText("otherCount", counts.other);
+    setText("totalCount", total);
+
+    updateGraphs(counts, total);
+    updateHistory(counts, total);
 }
 
 function setText(id, value) {
- document.getElementById(id).textContent = value;
+
+    document.getElementById(id).textContent = value;
 }
 
 // ========================================
@@ -639,26 +1444,52 @@ const ratioCharts = {};
 // ========================================
 
 function makeMini(id, color) {
- return new Chart(document.getElementById(id), {
-  type: "bar",
-  data: {
-   labels: ["1","2","3","4","5","6","7"],
-   datasets: [{
-    data: [0,0,0,0,0,0,0],
-    backgroundColor: color,
-    borderRadius: 3
-   }]
-  },
-  options: {
-   responsive: true,
-   maintainAspectRatio: false,
-   plugins: {legend: {display: false}},
-   scales: {
-    x: {display: false},
-    y: {display: false, beginAtZero: true}
-   }
-  }
- });
+
+    return new Chart(
+        document.getElementById(id),
+        {
+            type: "bar",
+
+            data: {
+
+                labels: ["1","2","3","4","5","6","7"],
+
+                datasets: [{
+
+                    data: [0,0,0,0,0,0,0],
+
+                    backgroundColor: color,
+
+                    borderRadius: 3
+                }]
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+
+                scales: {
+
+                    x: {
+                        display: false
+                    },
+
+                    y: {
+                        display: false,
+                        beginAtZero: true
+                    }
+                }
+            }
+        }
+    );
 }
 
 // ========================================
@@ -666,23 +1497,45 @@ function makeMini(id, color) {
 // ========================================
 
 function makeRatio(id, color1, color2) {
- return new Chart(document.getElementById(id), {
-  type: "doughnut",
-  data: {
-   labels: ["First","Second"],
-   datasets: [{
-    data: [0,1],
-    backgroundColor: [color1,color2],
-    borderWidth: 0
-   }]
-  },
-  options: {
-   responsive: true,
-   maintainAspectRatio: false,
-   cutout: "75%",
-   plugins: {legend: {display: false}}
-  }
- });
+
+    return new Chart(
+        document.getElementById(id),
+        {
+            type: "doughnut",
+
+            data: {
+
+                labels: ["First","Second"],
+
+                datasets: [{
+
+                    data: [0,1],
+
+                    backgroundColor: [
+                        color1,
+                        color2
+                    ],
+
+                    borderWidth: 0
+                }]
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                cutout: "75%",
+
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        }
+    );
 }
 
 // ========================================
@@ -690,87 +1543,204 @@ function makeRatio(id, color1, color2) {
 // ========================================
 
 const totalGraph = new Chart(
- document.getElementById("totalGraph"),
- {
-  type: "line",
-  data: {
-   labels: [],
-   datasets: [{
-    label: "Total Objects",
-    data: [],
-    borderColor: "#00e6db",
-    backgroundColor: "rgba(0,230,219,.12)",
-    fill: true,
-    tension: .35,
-    pointBackgroundColor: "#8affff"
-   }]
-  },
-  options: {
-   responsive: true,
-   maintainAspectRatio: false,
-   plugins: {legend: {display: false}},
-   scales: {
-    x: {
-     ticks: {maxTicksLimit: 7, color: "#82a9cc"},
-     grid: {color: "#173451"}
-    },
-    y: {
-     beginAtZero: true,
-     ticks: {precision: 0, color: "#82a9cc"},
-     grid: {color: "#173451"}
+    document.getElementById("totalGraph"),
+    {
+        type: "line",
+
+        data: {
+
+            labels: [],
+
+            datasets: [{
+
+                label: "Total Objects",
+
+                data: [],
+
+                borderColor: "#00e6db",
+
+                backgroundColor: "rgba(0,230,219,.12)",
+
+                fill: true,
+
+                tension: .35,
+
+                pointBackgroundColor: "#8affff"
+            }]
+        },
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+
+            scales: {
+
+                x: {
+                    ticks: {
+                        maxTicksLimit: 7,
+                        color: "#82a9cc"
+                    },
+
+                    grid: {
+                        color: "#173451"
+                    }
+                },
+
+                y: {
+                    beginAtZero: true,
+
+                    ticks: {
+                        precision: 0,
+                        color: "#82a9cc"
+                    },
+
+                    grid: {
+                        color: "#173451"
+                    }
+                }
+            }
+        }
     }
-   }
-  }
- }
 );
 
 // ========================================
 // INITIALIZE ALL CHARTS
 // ========================================
 
-miniCharts.people = makeMini("peopleMini", "#168bff");
-miniCharts.chair = makeMini("chairMini", "#b44dff");
-miniCharts.laptop = makeMini("laptopMini", "#00d7d7");
-miniCharts.mobile = makeMini("mobileMini", "#a64dff");
-miniCharts.book = makeMini("bookMini", "#21d66b");
-miniCharts.box = makeMini("boxMini", "#ffae35");
-miniCharts.bag = makeMini("bagMini", "#f044a4");
-miniCharts.other = makeMini("otherMini", "#7aa7d5");
+miniCharts.people = makeMini(
+    "peopleMini",
+    "#168bff"
+);
 
-ratioCharts.people = makeRatio("peopleRatio", "#25e96b", "#244363");
-ratioCharts.tech = makeRatio("techRatio", "#00d7ef", "#a64dff");
-ratioCharts.book = makeRatio("bookRatio", "#ffbd35", "#244363");
-ratioCharts.bag = makeRatio("bagRatio", "#f044a4", "#244363");
+miniCharts.chair = makeMini(
+    "chairMini",
+    "#b44dff"
+);
+
+miniCharts.laptop = makeMini(
+    "laptopMini",
+    "#00d7d7"
+);
+
+miniCharts.mobile = makeMini(
+    "mobileMini",
+    "#a64dff"
+);
+
+miniCharts.book = makeMini(
+    "bookMini",
+    "#21d66b"
+);
+
+miniCharts.box = makeMini(
+    "boxMini",
+    "#ffae35"
+);
+
+miniCharts.bag = makeMini(
+    "bagMini",
+    "#f044a4"
+);
+
+miniCharts.other = makeMini(
+    "otherMini",
+    "#7aa7d5"
+);
+
+ratioCharts.people = makeRatio(
+    "peopleRatio",
+    "#25e96b",
+    "#244363"
+);
+
+ratioCharts.tech = makeRatio(
+    "techRatio",
+    "#00d7ef",
+    "#a64dff"
+);
+
+ratioCharts.book = makeRatio(
+    "bookRatio",
+    "#ffbd35",
+    "#244363"
+);
+
+ratioCharts.bag = makeRatio(
+    "bagRatio",
+    "#f044a4",
+    "#244363"
+);
 
 // ========================================
 // UPDATE GRAPHS
 // ========================================
 
 function updateGraphs(counts, total) {
- categoryKeys.forEach(key => {
-  graphHistory[key].push(counts[key]);
 
-  if(graphHistory[key].length > 7)
-   graphHistory[key].shift();
+    categoryKeys.forEach(key => {
 
-  miniCharts[key].data.datasets[0].data = graphHistory[key];
-  miniCharts[key].update("none");
- });
+        graphHistory[key].push(counts[key]);
 
- updateRatio(ratioCharts.people, counts.people, counts.chair, "peopleRatioText");
- updateRatio(ratioCharts.tech, counts.laptop, counts.mobile, "techRatioText");
- updateRatio(ratioCharts.book, counts.book, counts.box, "bookRatioText");
- updateRatio(ratioCharts.bag, counts.bag, counts.other, "bagRatioText");
+        if(graphHistory[key].length > 7) {
+            graphHistory[key].shift();
+        }
 
- totalGraph.data.labels.push(new Date().toLocaleTimeString());
- totalGraph.data.datasets[0].data.push(total);
+        miniCharts[key].data.datasets[0].data =
+            graphHistory[key];
 
- if(totalGraph.data.labels.length > 20) {
-  totalGraph.data.labels.shift();
-  totalGraph.data.datasets[0].data.shift();
- }
+        miniCharts[key].update("none");
+    });
 
- totalGraph.update("none");
+    updateRatio(
+        ratioCharts.people,
+        counts.people,
+        counts.chair,
+        "peopleRatioText"
+    );
+
+    updateRatio(
+        ratioCharts.tech,
+        counts.laptop,
+        counts.mobile,
+        "techRatioText"
+    );
+
+    updateRatio(
+        ratioCharts.book,
+        counts.book,
+        counts.box,
+        "bookRatioText"
+    );
+
+    updateRatio(
+        ratioCharts.bag,
+        counts.bag,
+        counts.other,
+        "bagRatioText"
+    );
+
+    totalGraph.data.labels.push(
+        new Date().toLocaleTimeString()
+    );
+
+    totalGraph.data.datasets[0].data.push(total);
+
+    if(totalGraph.data.labels.length > 20) {
+
+        totalGraph.data.labels.shift();
+
+        totalGraph.data.datasets[0].data.shift();
+    }
+
+    totalGraph.update("none");
 }
 
 // ========================================
@@ -778,13 +1748,19 @@ function updateGraphs(counts, total) {
 // ========================================
 
 function updateRatio(chart, a, b, textId) {
- const sum = a + b;
 
- chart.data.datasets[0].data = sum === 0 ? [0,1] : [a,b];
- chart.update("none");
+    const sum = a + b;
 
- const percent = sum === 0 ? 0 : Math.round(a / sum * 100);
- setText(textId, percent + "%");
+    chart.data.datasets[0].data =
+        sum === 0 ? [0,1] : [a,b];
+
+    chart.update("none");
+
+    const percent = sum === 0
+        ? 0
+        : Math.round(a / sum * 100);
+
+    setText(textId, percent + "%");
 }
 
 // ========================================
@@ -792,38 +1768,57 @@ function updateRatio(chart, a, b, textId) {
 // ========================================
 
 function updateHistory(counts, total) {
- if(total === 0) return;
- if(Date.now() - lastHistoryTime < 5000) return;
 
- lastHistoryTime = Date.now();
+    if(total === 0) return;
 
- const found = [];
+    if(Date.now() - lastHistoryTime < 5000) {
+        return;
+    }
 
- categoryKeys.forEach(key => {
-  if(counts[key] > 0) found.push(key + ": " + counts[key]);
- });
+    lastHistoryTime = Date.now();
 
- const row = document.createElement("div");
- row.className = "history-row";
+    const found = [];
 
- const dot = document.createElement("span");
- dot.className = "history-dot";
+    categoryKeys.forEach(key => {
 
- const time = document.createElement("span");
- time.className = "history-time";
- time.textContent = new Date().toLocaleTimeString();
+        if(counts[key] > 0) {
 
- const description = document.createElement("span");
- description.textContent = "Total " + total + " | " + found.join(", ");
+            found.push(
+                key + ": " + counts[key]
+            );
+        }
+    });
 
- row.append(dot, time, description);
+    const row = document.createElement("div");
 
- const list = document.getElementById("historyList");
- list.prepend(row);
+    row.className = "history-row";
 
- while(list.children.length > 30) {
-  list.removeChild(list.lastChild);
- }
+    const dot = document.createElement("span");
+
+    dot.className = "history-dot";
+
+    const time = document.createElement("span");
+
+    time.className = "history-time";
+
+    time.textContent =
+        new Date().toLocaleTimeString();
+
+    const description = document.createElement("span");
+
+    description.textContent =
+        "Total " + total + " | " + found.join(", ");
+
+    row.append(dot, time, description);
+
+    const list = document.getElementById("historyList");
+
+    list.prepend(row);
+
+    while(list.children.length > 30) {
+
+        list.removeChild(list.lastChild);
+    }
 }
 
 // ========================================
@@ -831,34 +1826,52 @@ function updateHistory(counts, total) {
 // ========================================
 
 function getBox(item) {
- let box = item.bbox ?? item.box ?? item.xyxy ?? item.coordinates;
 
- if(!box && item.x1 !== undefined) {
-  box = [item.x1,item.y1,item.x2,item.y2];
- }
+    let box =
+        item.bbox ??
+        item.box ??
+        item.xyxy ??
+        item.coordinates;
 
- if(Array.isArray(box) && box.length >= 4) {
-  return box.slice(0,4).map(Number);
- }
+    if(!box && item.x1 !== undefined) {
 
- if(box && typeof box === "object") {
-  if(box.x1 !== undefined) {
-   return [
-    Number(box.x1), Number(box.y1),
-    Number(box.x2), Number(box.y2)
-   ];
-  }
+        box = [
+            item.x1,
+            item.y1,
+            item.x2,
+            item.y2
+        ];
+    }
 
-  if(box.x !== undefined) {
-   return [
-    Number(box.x), Number(box.y),
-    Number(box.x) + Number(box.width),
-    Number(box.y) + Number(box.height)
-   ];
-  }
- }
+    if(Array.isArray(box) && box.length >= 4) {
 
- return null;
+        return box.slice(0,4).map(Number);
+    }
+
+    if(box && typeof box === "object") {
+
+        if(box.x1 !== undefined) {
+
+            return [
+                Number(box.x1),
+                Number(box.y1),
+                Number(box.x2),
+                Number(box.y2)
+            ];
+        }
+
+        if(box.x !== undefined) {
+
+            return [
+                Number(box.x),
+                Number(box.y),
+                Number(box.x) + Number(box.width),
+                Number(box.y) + Number(box.height)
+            ];
+        }
+    }
+
+    return null;
 }
 
 // ========================================
@@ -866,54 +1879,101 @@ function getBox(item) {
 // ========================================
 
 function drawDetectionBoxes() {
- if(!stream) return;
 
- if(video.readyState >= 2) {
-  const w = video.videoWidth;
-  const h = video.videoHeight;
+    if(!stream) return;
 
-  if(w && h) {
-   if(overlay.width !== w || overlay.height !== h) {
-    overlay.width = w;
-    overlay.height = h;
-   }
+    if(video.readyState >= 2) {
 
-   ctx.clearRect(0,0,w,h);
+        const w = video.videoWidth;
+        const h = video.videoHeight;
 
-   detections.forEach(item => {
-    const box = getBox(item);
-    if(!box) return;
+        if(w && h) {
 
-    const [x1,y1,x2,y2] = box;
-    const x = x1;
-    const y = y1;
-    const bw = x2 - x1;
-    const bh = y2 - y1;
+            if(
+                overlay.width !== w ||
+                overlay.height !== h
+            ) {
+                resizeOverlay();
+            }
 
-    if(!Number.isFinite(x) || !Number.isFinite(y) ||
-       !Number.isFinite(bw) || !Number.isFinite(bh) ||
-       bw <= 0 || bh <= 0) return;
+            ctx.clearRect(0, 0, w, h);
 
-    const label = getLabel(item);
+            detections.forEach(item => {
 
-    ctx.strokeStyle = "#00ffb3";
-    ctx.lineWidth = 3;
-    ctx.strokeRect(x,y,bw,bh);
+                const box = getBox(item);
 
-    ctx.font = "bold 14px Arial";
+                if(!box) return;
 
-    const textWidth = ctx.measureText(label).width;
+                const [x1, y1, x2, y2] = box;
 
-    ctx.fillStyle = "#008d78";
-    ctx.fillRect(x,Math.max(0,y-23),textWidth+12,23);
+                const x = x1;
+                const y = y1;
 
-    ctx.fillStyle = "#ffffff";
-    ctx.fillText(label,x+6,Math.max(16,y-7));
-   });
-  }
- }
+                const bw = x2 - x1;
+                const bh = y2 - y1;
 
- requestAnimationFrame(drawDetectionBoxes);
+                if(
+                    !Number.isFinite(x) ||
+                    !Number.isFinite(y) ||
+                    !Number.isFinite(bw) ||
+                    !Number.isFinite(bh) ||
+                    bw <= 0 ||
+                    bh <= 0
+                ) {
+                    return;
+                }
+
+                const label = getLabel(item);
+
+                ctx.strokeStyle = "#00ffb3";
+
+                ctx.lineWidth = Math.max(
+                    2,
+                    w / 400
+                );
+
+                ctx.strokeRect(x, y, bw, bh);
+
+                const fontSize = Math.max(
+                    12,
+                    w / 80
+                );
+
+                ctx.font = "bold " + fontSize + "px Arial";
+
+                const textWidth =
+                    ctx.measureText(label).width;
+
+                const labelHeight = fontSize + 10;
+
+                const labelY = Math.max(
+                    0,
+                    y - labelHeight
+                );
+
+                ctx.fillStyle = "#008d78";
+
+                ctx.fillRect(
+                    x,
+                    labelY,
+                    textWidth + 12,
+                    labelHeight
+                );
+
+                ctx.fillStyle = "#ffffff";
+
+                ctx.fillText(
+                    label,
+                    x + 6,
+                    labelY + fontSize
+                );
+
+            });
+        }
+    }
+
+    animationFrame =
+        requestAnimationFrame(drawDetectionBoxes);
 }
 
 // ========================================
@@ -921,19 +1981,39 @@ function drawDetectionBoxes() {
 // ========================================
 
 function updateClock() {
- document.getElementById("clock").textContent =
-  new Date().toLocaleString();
+
+    document.getElementById("clock").textContent =
+        new Date().toLocaleString();
 }
 
 updateClock();
+
 setInterval(updateClock, 1000);
 
-// Website khulte hi API check
+// Website open hone par API check
+
 checkAPI();
 
-// Har 30 seconds baad API connection dobara check
+// Har 30 seconds baad API dobara check
+
 setInterval(checkAPI, 30000);
 
+// Browser resize hone par charts update
+
+window.addEventListener("resize", () => {
+
+    Object.values(miniCharts).forEach(chart => {
+        chart.resize();
+    });
+
+    Object.values(ratioCharts).forEach(chart => {
+        chart.resize();
+    });
+
+    totalGraph.resize();
+});
+
 </script>
+
 </body>
 </html>
