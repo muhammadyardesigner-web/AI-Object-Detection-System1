@@ -1,11 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>All School Dashboard - Smart Classroom Monitoring</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<style>
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -14,27 +7,29 @@
 
 html, body {
     width: 100%;
-    height: 100vh;
+    min-height: 100%;
     font-family: Arial, sans-serif;
-    background: #00020a; /* تصویر جیسا گہرا کالا بیک گراؤنڈ */
+    background: #030b18;
     color: #eaf5ff;
-    overflow: hidden; /* مین اسکرین کو اسکرول سے بچانے کے لیے */
 }
 
 body {
-    display: flex;
-    flex-direction: column;
+    min-height: 100vh;
+    min-height: 100dvh;
 }
 
-/* HEADER - Top Bar */
+/* HEADER */
+
 header {
-    height: 60px;
-    padding: 10px 20px;
+    height: 66px;
+    padding: 8px 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: linear-gradient(90deg, #010614, #00122e); /* گہرا نیلا گریڈینٹ */
-    border-bottom: 1px solid #087ed5;
+    background: #06152b;
+    border: 1px solid #087ed5;
+    border-radius: 12px;
+    margin: 6px 8px;
     box-shadow: 0 0 15px #007bff55;
     flex-shrink: 0;
 }
@@ -42,7 +37,7 @@ header {
 .brand {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 12px;
 }
 
 .logo {
@@ -51,7 +46,7 @@ header {
 }
 
 h1 {
-    font-size: 20px;
+    font-size: 21px;
     color: #dff5ff;
 }
 
@@ -61,65 +56,42 @@ h1 {
     margin-top: 3px;
 }
 
-.header-info {
-    text-align: right;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
 .live {
     color: #00f0a0;
     font-weight: bold;
     font-size: 12px;
 }
 
-.live-dot {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    background: #00f0a0;
-    border-radius: 50%;
-    margin-right: 5px;
-}
+/* MAIN SCREEN */
 
-#clock {
-    font-size: 12px;
-    color: #fff;
-    font-weight: bold;
-}
-
-#clock-date {
-    font-size: 10px;
-    color: #91b4d2;
-}
-
-/* MAIN DASHBOARD AREA (Top Part) */
 main {
-    flex: 1; /* باقی تمام جگہ لے لے گا */
     width: 100%;
-    padding: 10px;
+    height: calc(100dvh - 80px);
+    padding: 4px 8px 8px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
+    max-width: 1900px;
+    margin: auto;
 }
 
-.dashboard-container {
+/* DASHBOARD GRID */
+
+.dashboard {
     flex: 1;
     min-height: 0;
     display: grid;
-    grid-template-columns: 1fr 1.65fr 1fr; /* تصویر جیسی ترتیب */
+    grid-template-columns: 1fr 1.65fr 1fr;
     grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
-    gap: 10px;
+    gap: 9px;
 }
 
-/* PANEL (خانوں) کا عمومی ڈیزائن */
 .panel {
-    background: linear-gradient(145deg, #071a32, #061225); /* گہرا گریڈینٹ */
+    background: linear-gradient(145deg, #071a32, #061225);
     border: 1px solid #0876bd;
     border-radius: 11px;
-    padding: 12px;
-    box-shadow: 0 0 12px #007bff30; /* تصویر جیسا گلو */
+    padding: 10px;
+    box-shadow: 0 0 12px #007bff20;
     min-width: 0;
     min-height: 0;
     overflow: hidden;
@@ -129,38 +101,56 @@ main {
     font-size: 14px;
     font-weight: bold;
     border-bottom: 1px solid #17466b;
-    padding-bottom: 8px;
-    margin-bottom: 10px;
+    padding-bottom: 7px;
+    margin-bottom: 7px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     flex-shrink: 0;
 }
 
 .icon {
-    font-size: 18px;
+    font-size: 19px;
     color: #00bfff;
 }
 
-/* کیمرہ پینل کا گلو الگ ہے (سرخ) */
+/* PANEL POSITIONS */
+
+.left-top {
+    grid-column: 1;
+    grid-row: 1;
+}
+
 .camera-panel {
     grid-column: 2;
     grid-row: 1;
     display: flex;
     flex-direction: column;
-    border: 1px solid #b32a3f;
-    box-shadow: 0 0 12px #c93c5040;
 }
 
-/* ٹوٹل آبجیکٹ پینل کا گلو (نیلا/جامنی) */
+.right-top {
+    grid-column: 3;
+    grid-row: 1;
+}
+
+.left-bottom {
+    grid-column: 1;
+    grid-row: 2;
+}
+
 .total-panel {
     grid-column: 2;
     grid-row: 2;
-    border: 1px solid #3c8dc9;
 }
 
-/* کیمرہ ایریا */
-.camera-area {
+.right-bottom {
+    grid-column: 3;
+    grid-row: 2;
+}
+
+/* CAMERA */
+
+.camera {
     width: 100%;
     flex: 1;
     min-height: 0;
@@ -171,17 +161,16 @@ main {
     overflow: hidden;
 }
 
-#video, #overlay {
+video, .overlay {
     position: absolute;
-    inset: 0;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     object-fit: contain;
-    background: #000;
 }
 
-#overlay {
-    object-fit: contain;
+.overlay {
     pointer-events: none;
 }
 
@@ -195,7 +184,6 @@ main {
     color: #7193b6;
     gap: 7px;
     text-align: center;
-    background: #000;
 }
 
 .camera-placeholder span {
@@ -207,37 +195,36 @@ main {
     display: flex;
     gap: 7px;
     flex-wrap: wrap;
-    margin-top: 10px;
+    margin-top: 8px;
     flex-shrink: 0;
 }
 
 button {
-    padding: 8px 15px;
+    padding: 8px 12px;
     border: 0;
     border-radius: 6px;
+    background: #087fca;
+    color: white;
     cursor: pointer;
     font-weight: bold;
     font-size: 11px;
-    transition: filter 0.2s;
-}
-
-#startBtn {
-    background: #087fca;
-    color: white;
 }
 
 button.stop {
     background: #c93c50;
-    color: white;
 }
 
 button.secondary {
     background: #263c58;
-    color: white;
 }
 
 button:hover {
     filter: brightness(1.2);
+}
+
+button:disabled {
+    opacity: .5;
+    cursor: not-allowed;
 }
 
 .camera-info {
@@ -247,66 +234,46 @@ button:hover {
     flex-shrink: 0;
 }
 
-/* میٹرکس (نمبر اور گراف) */
-.metrics-row {
+/* METRICS */
+
+.metric {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 10px;
-    flex-shrink: 0;
+    align-items: center;
+    gap: 5px;
+    padding: 7px 2px;
+    border-bottom: 1px solid #17304b;
 }
 
-.metric-box {
-    display: flex;
-    flex-direction: column;
+.metric:last-child {
+    border-bottom: 0;
 }
 
 .metric-label {
-    font-size: 10px;
+    font-size: 11px;
     color: #b8d3eb;
-    margin-bottom: 2px;
-}
-
-.metric-value-row {
-    display: flex;
-    align-items: flex-end;
-    gap: 10px;
 }
 
 .metric-value {
-    font-size: clamp(20px, 2.5vw, 26px);
-    color: #37b9ff; /* Students کا رنگ */
+    font-size: clamp(19px, 2vw, 26px);
+    color: #37b9ff;
     font-weight: bold;
-    font-family: Arial, sans-serif;
+    margin-top: 3px;
 }
 
-.metric-mini-chart {
-    flex: 1;
-    height: 40px;
-}
-
-.metric-mini-chart canvas {
+.metric canvas {
     width: 100% !important;
-    height: 100% !important;
+    height: 42px !important;
 }
 
-/* رنگ تصویر کے مطابق */
-.chairs-value { color: #8e6aff; } /* جامنی */
-.laptops-value { color: #3cffc9; } /* سبز */
-.phones-value { color: #ff6ac9; } /* گلابی */
-.books-value { color: #37b9ff; } /* نیلا */
-.boxes-value { color: #ffb13c; } /* اورینج */
-.bags-value { color: #ff6ac9; } /* گلابی */
-.others-value { color: #3cffc9; } /* سبز */
+/* RATIO CHARTS */
 
-/* ڈونٹ چارٹ (Doughnut) اور ریشو */
-.ratio-area {
+.ratio {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    flex: 1;
-    min-height: 0;
+    gap: 9px;
+    padding-top: 6px;
 }
 
 .ratio-chart {
@@ -315,51 +282,45 @@ button:hover {
     flex-shrink: 0;
 }
 
-.ratio-text-box {
+.ratio-text {
+    font-size: 10px;
+    color: #c1d9ee;
     max-width: 100px;
 }
 
-.ratio-percent {
-    font-size: 18px;
+.ratio-text strong {
+    font-size: 17px;
     color: #36d6ff;
-    font-weight: bold;
     display: block;
 }
 
-.ratio-label {
-    font-size: 9px;
-    color: #c1d9ee;
-    line-height: 1.2;
-}
+/* TOTAL OBJECTS */
 
-/* ٹوٹل آبجیکٹ ایریا */
 .total-content {
-    height: calc(100% - 35px);
+    height: calc(100% - 30px);
     display: grid;
     grid-template-columns: .8fr 1.4fr;
     align-items: center;
-    gap: 10px;
-}
-
-.total-number-box {
-    text-align: center;
+    gap: 8px;
 }
 
 .total-number {
-    font-size: clamp(40px, 6vw, 65px);
+    font-size: clamp(38px, 5vw, 60px);
     font-weight: bold;
     color: #00e99a;
+    text-align: center;
 }
 
 .total-caption {
+    text-align: center;
     font-size: 10px;
     color: #b8d3eb;
-    margin-top: -5px;
 }
 
 .total-chart {
     height: 100%;
     min-height: 0;
+    position: relative;
 }
 
 .total-chart canvas {
@@ -367,49 +328,30 @@ button:hover {
     height: 100% !important;
 }
 
-/* DETECTION HISTORY (Bottom Part - Scrollable) */
-#historySection {
-    background: #010614;
-    border-top: 1px solid #17466b;
-    padding: 10px 20px 20px 20px;
-    flex-shrink: 0; /* یہ پینل اپنی جگہ لے گا اور ڈیش بورڈ کو اوپر دھکیلے گا */
+/* HISTORY */
+
+.history-panel {
+    height: 82px;
+    flex-shrink: 0;
+    padding: 7px 10px;
 }
 
-#historySection .panel-title {
-    margin-bottom: 5px;
-    border: 0;
-}
-
-.history-panel-content {
-    display: grid;
-    grid-template-columns: 1fr .6fr; /* ٹیکسٹ اور گراف */
-    gap: 15px;
-    height: 100px; /* تصویر جیسا چھوٹا حصہ */
+.history-panel .panel-title {
+    font-size: 12px;
+    padding-bottom: 4px;
+    margin-bottom: 3px;
 }
 
 .history-list {
-    max-height: 100%;
+    max-height: 40px;
     overflow-y: auto;
-    padding-right: 5px;
-}
-
-/* اسکرول بار ڈیزائن */
-.history-list::-webkit-scrollbar {
-    width: 4px;
-}
-.history-list::-webkit-scrollbar-track {
-    background: #061225;
-}
-.history-list::-webkit-scrollbar-thumb {
-    background: #1e528b;
-    border-radius: 4px;
 }
 
 .history-row {
     display: flex;
-    gap: 12px;
+    gap: 9px;
     align-items: center;
-    padding: 5px;
+    padding: 4px;
     border-bottom: 1px solid #17304b;
     font-size: 10px;
     color: #c6d9ed;
@@ -425,229 +367,277 @@ button:hover {
 
 .history-time {
     color: #52b9ff;
-    min-width: 75px;
+    min-width: 70px;
 }
 
-.history-item-chart {
-    height: 100%;
-}
-.history-item-chart canvas {
-    width: 100% !important;
-    height: 100% !important;
+footer {
+    display: none;
 }
 
-</style>
-</head>
-<body>
+/* SMALL LAPTOPS */
 
-<header>
-    <div class="brand">
-        <div class="logo">🎓</div>
-        <div>
-            <h1>All School Dashboard</h1>
-            <div class="subtitle">Smart Classroom Monitoring</div>
-        </div>
-    </div>
-    <div class="header-info">
-        <div class="live" id="apiStatus"><span class="live-dot"></span>Connecting API...</div>
-        <div>
-            <div id="clock">10:24:17 AM</div>
-            <div id="clock-date">Apr 25, 2025</div>
-        </div>
-    </div>
-</header>
+@media (min-width: 601px) and (max-width: 1100px) {
+    .dashboard {
+        grid-template-columns: 1fr 1.4fr;
+        grid-template-rows: repeat(3, minmax(0, 1fr));
+    }
 
-<main>
-    <div class="dashboard-container">
+    .left-top {
+        grid-column: 1;
+        grid-row: 1;
+    }
 
-        <!-- پینل 1: Students & Chairs (نیلا اور جامنی رنگ) -->
-        <section class="panel left-top">
-            <div class="panel-title">
-                <span class="icon">👥</span> Students & Chairs
-            </div>
-            <div class="metrics-row">
-                <div class="metric-box">
-                    <div class="metric-label">Students</div>
-                    <div class="metric-value-row">
-                        <div class="metric-value" id="peopleCount">0</div>
-                        <div class="metric-mini-chart"><canvas id="peopleMini"></canvas></div>
-                    </div>
-                </div>
-                <div class="metric-box">
-                    <div class="metric-label">Chairs</div>
-                    <div class="metric-value-row">
-                        <div class="metric-value chairs-value" id="chairCount">0</div>
-                        <div class="metric-mini-chart"><canvas id="chairMini"></canvas></div>
-                    </div>
-                </div>
-            </div>
-            <div class="ratio-area">
-                <div class="ratio-chart"><canvas id="peopleRatioChart"></canvas></div>
-                <div class="ratio-text-box">
-                    <strong class="ratio-percent" id="peopleRatioText">0%</strong>
-                    <span class="ratio-label">Student-Chair Ratio</span>
-                </div>
-            </div>
-        </section>
+    .camera-panel {
+        grid-column: 2;
+        grid-row: 1 / 3;
+    }
 
-        <!-- پینل 2: Live Camera (سرخ رنگ) -->
-        <section class="panel camera-panel">
-            <div class="panel-title" style="border-bottom: 1px solid #b32a3f;">
-                <span class="icon" style="color: #ff5575;">🔴</span> Live Camera
-            </div>
-            <div class="camera-area">
-                <video id="video" autoplay muted playsinline></video>
-                <canvas id="overlay"></canvas>
-                <div class="camera-placeholder" id="placeholder">
-                    <span>◉</span>
-                    <b>Live Camera Feed</b>
-                    <small>Click Start to begin detection</small>
-                </div>
-            </div>
-            <div class="camera-actions">
-                <button id="startBtn" onclick="startCamera()">▶ Start Camera</button>
-                <button class="stop" onclick="stopCamera()">■ Stop</button>
-                <button class="secondary" onclick="detectNow()">Detect Now</button>
-            </div>
-            <div class="camera-info" id="cameraInfo">Camera stopped | Waiting</div>
-        </section>
+    .right-top {
+        grid-column: 1;
+        grid-row: 2;
+    }
 
-        <!-- پینل 3: Laptop & Mobile (سبز اور گلابی رنگ) -->
-        <section class="panel right-top">
-            <div class="panel-title">
-                <span class="icon">💻</span> Laptop & Mobile
-            </div>
-            <div class="metrics-row">
-                <div class="metric-box">
-                    <div class="metric-label">Laptops</div>
-                    <div class="metric-value-row">
-                        <div class="metric-value laptops-value" id="laptopCount">0</div>
-                        <div class="metric-mini-chart"><canvas id="laptopMini"></canvas></div>
-                    </div>
-                </div>
-                <div class="metric-box">
-                    <div class="metric-label">Mobile Phones</div>
-                    <div class="metric-value-row">
-                        <div class="metric-value phones-value" id="mobileCount">0</div>
-                        <div class="metric-mini-chart"><canvas id="mobileMini"></canvas></div>
-                    </div>
-                </div>
-            </div>
-            <div class="ratio-area">
-                <div class="ratio-chart"><canvas id="techRatioChart"></canvas></div>
-                <div class="ratio-text-box">
-                    <strong class="ratio-percent" id="techRatioText">0%</strong>
-                    <span class="ratio-label">Laptop-Mobile Usage</span>
-                </div>
-            </div>
-        </section>
+    .left-bottom {
+        grid-column: 1;
+        grid-row: 3;
+    }
 
-        <!-- پینل 4: Books & Boxes (نیلا اور اورینج رنگ) -->
-        <section class="panel left-bottom">
-            <div class="panel-title">
-                <span class="icon">📚</span> Books & Boxes
-            </div>
-            <div class="metrics-row">
-                <div class="metric-box">
-                    <div class="metric-label">Books</div>
-                    <div class="metric-value-row">
-                        <div class="metric-value books-value" id="bookCount">0</div>
-                        <div class="metric-mini-chart"><canvas id="bookMini"></canvas></div>
-                    </div>
-                </div>
-                <div class="metric-box">
-                    <div class="metric-label">Boxes</div>
-                    <div class="metric-value-row">
-                        <div class="metric-value boxes-value" id="boxCount">0</div>
-                        <div class="metric-mini-chart"><canvas id="boxMini"></canvas></div>
-                    </div>
-                </div>
-            </div>
-            <div class="ratio-area">
-                <div class="ratio-chart"><canvas id="bookRatioChart"></canvas></div>
-                <div class="ratio-text-box">
-                    <strong class="ratio-percent" id="bookRatioText">0%</strong>
-                    <span class="ratio-label">Book-Box Ratio</span>
-                </div>
-            </div>
-        </section>
+    .total-panel {
+        grid-column: 2;
+        grid-row: 3;
+    }
 
-        <!-- پینل 5: Total Objects (سبز رنگ، بڑا گراف) -->
-        <section class="panel total-panel">
-            <div class="panel-title" style="border-bottom: 1px solid #3c8dc9;">
-                <span class="icon" style="color: #00e99a;">∑</span> Total Detected Objects
-            </div>
-            <div class="total-content">
-                <div class="total-number-box">
-                    <div class="total-number" id="totalCount">0</div>
-                    <div class="total-caption">Total Detected Objects</div>
-                </div>
-                <div class="total-chart">
-                    <canvas id="totalTrendGraph"></canvas>
-                </div>
-            </div>
-        </section>
+    .right-bottom {
+        display: none;
+    }
 
-        <!-- پینل 6: Bags & Others (گلابی اور سبز رنگ) -->
-        <section class="panel right-bottom">
-            <div class="panel-title">
-                <span class="icon">🎒</span> Bags & Others
-            </div>
-            <div class="metrics-row">
-                <div class="metric-box">
-                    <div class="metric-label">Bags</div>
-                    <div class="metric-value-row">
-                        <div class="metric-value bags-value" id="bagCount">0</div>
-                        <div class="metric-mini-chart"><canvas id="bagMini"></canvas></div>
-                    </div>
-                </div>
-                <div class="metric-box">
-                    <div class="metric-label">Others</div>
-                    <div class="metric-value-row">
-                        <div class="metric-value others-value" id="otherCount">0</div>
-                        <div class="metric-mini-chart"><canvas id="otherMini"></canvas></div>
-                    </div>
-                </div>
-            </div>
-            <div class="ratio-area">
-                <div class="ratio-chart"><canvas id="bagRatioChart"></canvas></div>
-                <div class="ratio-text-box">
-                    <strong class="ratio-percent" id="bagRatioText">0%</strong>
-                    <span class="ratio-label">Bag-Others Ratio</span>
-                </div>
-            </div>
-        </section>
+    main {
+        height: calc(100dvh - 80px);
+    }
+}
 
-    </div>
-</main>
+/* MOBILE RESPONSIVE */
 
-<!-- SECTION 7: Detection History (پینل کے نیچے، اسکرول) -->
-<section id="historySection">
-    <div class="panel-title">
-        <span class="icon">◷</span> Detection History
-    </div>
-    <div class="history-panel-content">
-        <div class="history-list" id="historyList">
-            <div class="history-row">
-                <div class="history-dot"></div>
-                Waiting for detection...
-            </div>
-        </div>
-        <div class="history-item-chart">
-            <canvas id="historyMiniChart"></canvas>
-        </div>
-    </div>
-</section>
+@media (max-width: 600px) {
+    html, body {
+        height: auto;
+        min-height: 100%;
+    }
 
-<script>
-    // ==========================================
-    // JS Logic (یہ حصہ آپ کے پچھلے کوڈ جیسا ہی ہے، بس چارٹس کے نام تبدیل ہوئے ہیں)
-    // ==========================================
-    const API_URL = "YOUR_API_URL_HERE"; // اپنا Ngrok URL یہاں لکھیں
+    body {
+        overflow-y: auto;
+    }
 
-    // variable initialization and mapping logic goes here...
-    // charts initialization and updating logic goes here...
-    // camera start/stop and detection logic goes here...
-</script>
-</body>
-</html>
+    header {
+        height: auto;
+        min-height: 65px;
+        padding: 10px;
+        margin: 5px;
+    }
+
+    .brand {
+        gap: 8px;
+    }
+
+    .logo {
+        font-size: 25px;
+    }
+
+    h1 {
+        font-size: 15px;
+    }
+
+    .subtitle {
+        font-size: 9px;
+    }
+
+    .live {
+        font-size: 10px;
+    }
+
+    main {
+        height: auto;
+        min-height: 0;
+        padding: 5px;
+        gap: 8px;
+    }
+
+    .dashboard {
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+    }
+
+    .panel {
+        min-height: 185px;
+        padding: 12px;
+    }
+
+    .camera-panel {
+        order: 1;
+        min-height: 300px;
+    }
+
+    .left-top {
+        order: 2;
+    }
+
+    .right-top {
+        order: 3;
+    }
+
+    .left-bottom {
+        order: 4;
+    }
+
+    .right-bottom {
+        order: 5;
+        display: block;
+    }
+
+    .total-panel {
+        order: 6;
+        min-height: 180px;
+    }
+
+    .camera {
+        flex: none;
+        width: 100%;
+        height: auto;
+        aspect-ratio: 4 / 3;
+    }
+
+    .camera-actions button {
+        flex: 1;
+        min-width: 90px;
+    }
+
+    .metric-value {
+        font-size: 25px;
+    }
+
+    .metric canvas {
+        height: 55px !important;
+    }
+
+    .ratio-chart {
+        width: 65px;
+        height: 65px;
+    }
+
+    .ratio-text {
+        font-size: 11px;
+    }
+
+    .ratio-text strong {
+        font-size: 19px;
+    }
+
+    .total-content {
+        min-height: 120px;
+    }
+
+    .total-number {
+        font-size: 48px;
+    }
+
+    .history-panel {
+        height: auto;
+        min-height: 100px;
+    }
+
+    .history-list {
+        max-height: 120px;
+    }
+
+    .history-row {
+        flex-wrap: wrap;
+    }
+
+    footer {
+        display: block;
+        text-align: center;
+        color: #54799b;
+        font-size: 10px;
+        padding: 10px;
+    }
+}
+
+/* VERY SMALL MOBILE */
+
+@media (max-width: 360px) {
+    header {
+        align-items: flex-start;
+    }
+
+    h1 {
+        font-size: 13px;
+    }
+
+    .metric {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .camera-panel {
+        min-height: 270px;
+    }
+
+    .camera-actions button {
+        padding: 8px 7px;
+        font-size: 10px;
+    }
+}
+
+/* SHORT LAPTOP SCREEN */
+
+@media (min-width: 601px) and (max-height: 700px) {
+    header {
+        height: 55px;
+        margin: 4px 8px;
+    }
+
+    main {
+        height: calc(100dvh - 65px);
+        padding-top: 2px;
+        gap: 5px;
+    }
+
+    .dashboard {
+        gap: 6px;
+    }
+
+    .panel {
+        padding: 7px;
+    }
+
+    .panel-title {
+        padding-bottom: 4px;
+        margin-bottom: 4px;
+        font-size: 12px;
+    }
+
+    .metric {
+        padding: 4px 2px;
+    }
+
+    .metric canvas {
+        height: 30px !important;
+    }
+
+    .ratio {
+        padding-top: 3px;
+    }
+
+    .ratio-chart {
+        width: 43px;
+        height: 43px;
+    }
+
+    .history-panel {
+        height: 65px;
+    }
+
+    .history-list {
+        max-height: 28px;
+    }
+}
