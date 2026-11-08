@@ -9,38 +9,59 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+:root {
+    --bg: #080f1f;
+    --panel: #111c30;
+    --panel2: #16243b;
+    --border: rgba(148,163,184,.15);
+    --text: #f1f5f9;
+    --muted: #94a3b8;
+    --blue: #38bdf8;
+    --teal: #2dd4bf;
+    --purple: #a78bfa;
+    --green: #4ade80;
+    --orange: #fb923c;
+    --red: #fb7185;
 }
 
-html, body {
-    width: 100%;
-    min-height: 100%;
-    font-family: Arial, sans-serif;
-    background: #030b18;
-    color: #eaf5ff;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 body {
+    background:
+        radial-gradient(circle at 15% 0%, #14284b 0, transparent 35%),
+        radial-gradient(circle at 90% 10%, #10383d 0, transparent 30%),
+        var(--bg);
+    color: var(--text);
+    font-family: "Segoe UI", Arial, sans-serif;
     min-height: 100vh;
-    min-height: 100dvh;
+    overflow-x: hidden;
+}
+
+.dashboard {
+    width: 100%;
+    min-height: 100vh;
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
 }
 
 /* HEADER */
 
-header {
-    height: 66px;
-    padding: 8px 20px;
+.header {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    background: #06152b;
-    border: 1px solid #087ed5;
-    border-radius: 12px;
-    margin: 6px 8px;
-    box-shadow: 0 0 15px #007bff55;
+    align-items: center;
+    gap: 15px;
+    padding: 13px 19px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: rgba(17,28,48,.88);
+    box-shadow: 0 8px 30px rgba(0,0,0,.18);
 }
 
 .brand {
@@ -50,138 +71,191 @@ header {
 }
 
 .logo {
-    font-size: 30px;
-    color: #00bfff;
-}
-
-h1 {
+    width: 43px;
+    height: 43px;
+    display: grid;
+    place-items: center;
+    border-radius: 13px;
     font-size: 21px;
-    color: #dff5ff;
+    background: linear-gradient(135deg,#2563eb,#0d9488);
+    box-shadow: 0 5px 18px rgba(37,99,235,.3);
 }
 
-.subtitle {
-    font-size: 10px;
-    color: #85b9df;
+.brand h1 {
+    font-size: 21px;
+    font-weight: 750;
+    letter-spacing: .2px;
+}
+
+.brand p {
+    color: var(--muted);
+    font-size: 11px;
     margin-top: 3px;
 }
 
-.live {
-    color: #00f0a0;
-    font-weight: bold;
-    font-size: 12px;
-}
-
-/* MAIN SCREEN */
-
-main {
-    width: 100%;
-    height: calc(100dvh - 80px);
-    padding: 4px 8px 8px;
+.header-right {
     display: flex;
-    flex-direction: column;
-    gap: 8px;
-    max-width: 1900px;
-    margin: auto;
+    align-items: center;
+    gap: 18px;
 }
 
-.dashboard {
+.api-status {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.status-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--orange);
+    box-shadow: 0 0 10px currentColor;
+}
+
+.status-dot.online {
+    background: var(--green);
+    color: var(--green);
+}
+
+.clock {
+    font-size: 13px;
+    color: #cbd5e1;
+    font-weight: 600;
+}
+
+/* MAIN LAYOUT */
+
+.main-grid {
     flex: 1;
     min-height: 0;
     display: grid;
-    grid-template-columns: 1fr 1.65fr 1fr;
-    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
-    gap: 9px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.18fr) minmax(0, 1fr);
+    grid-template-rows: minmax(150px, 1fr) minmax(125px, .78fr) minmax(125px, .78fr);
+    gap: 13px;
 }
 
+/* PANELS */
+
 .panel {
-    background: linear-gradient(145deg, #071a32, #061225);
-    border: 1px solid #0876bd;
-    border-radius: 11px;
-    padding: 10px;
-    box-shadow: 0 0 12px #007bff20;
     min-width: 0;
     min-height: 0;
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: linear-gradient(145deg,rgba(22,36,59,.97),rgba(13,24,42,.97));
+    box-shadow: 0 8px 24px rgba(0,0,0,.16);
     overflow: hidden;
 }
 
-.panel-title {
-    font-size: 14px;
-    font-weight: bold;
-    border-bottom: 1px solid #17466b;
-    padding-bottom: 7px;
-    margin-bottom: 7px;
+.panel-heading {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 8px;
-    flex-shrink: 0;
+    margin-bottom: 12px;
 }
 
-.icon {
-    font-size: 19px;
-    color: #00bfff;
+.panel-heading h2 {
+    font-size: 14px;
+    font-weight: 700;
 }
 
-/* PANEL POSITIONS */
+.panel-heading span {
+    font-size: 10px;
+    color: var(--muted);
+}
 
-.left-top {
+.panel-icon {
+    color: var(--blue);
+    margin-right: 6px;
+}
+
+/* LEFT SIDE */
+
+.students-panel {
     grid-column: 1;
     grid-row: 1;
-}
-
-.camera-panel {
-    grid-column: 2;
-    grid-row: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-.right-top {
-    grid-column: 3;
-    grid-row: 1;
-}
-
-.left-bottom {
-    grid-column: 1;
-    grid-row: 2;
 }
 
 .total-panel {
+    grid-column: 1;
+    grid-row: 2;
+    padding: 11px 14px;
+}
+
+.bags-panel {
+    grid-column: 1;
+    grid-row: 3;
+}
+
+/* CAMERA CENTER */
+
+.camera-panel {
     grid-column: 2;
-    grid-row: 2;
+    grid-row: 1 / 4;
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    border-color: rgba(56,189,248,.3);
+    background: linear-gradient(150deg,#142640,#0c1b30);
+    box-shadow: 0 0 30px rgba(14,165,233,.07);
 }
 
-.right-bottom {
-    grid-column: 3;
-    grid-row: 2;
+.camera-heading {
+    margin-bottom: 12px;
 }
 
-/* CAMERA AREA */
+.live-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border-radius: 20px;
+    color: #fda4af;
+    background: rgba(244,63,94,.12);
+    font-size: 10px;
+    font-weight: 700;
+}
 
-.camera {
-    width: 100%;
-    flex: 1;
-    min-height: 0;
+.live-badge::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #fb7185;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    50% { opacity: .25; }
+}
+
+/* CAMERA STAGE */
+
+.camera-stage {
     position: relative;
-    background: #000;
-    border: 1px solid #22517a;
-    border-radius: 8px;
+    flex: 1;
+    min-height: 200px;
+    width: 100%;
     overflow: hidden;
+    border-radius: 13px;
+    background: #020617;
+    border: 1px solid rgba(56,189,248,.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
-
-/*
- IMPORTANT:
- Video aur overlay dono contain hain.
- Is se original camera image distort nahi hoti.
- Dono ka aspect ratio same rehta hai.
-*/
 
 #video {
-    position: absolute;
-    inset: 0;
     width: 100%;
     height: 100%;
+    position: absolute;
+    inset: 0;
     object-fit: contain;
-    background: #000;
+    background: #020617;
 }
 
 #overlay {
@@ -189,472 +263,294 @@ main {
     inset: 0;
     width: 100%;
     height: 100%;
-    object-fit: contain;
     pointer-events: none;
 }
 
 .camera-placeholder {
     position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: #7193b6;
-    gap: 7px;
+    z-index: 2;
+    color: #64748b;
     text-align: center;
-    background: #000;
+    font-size: 13px;
+    pointer-events: none;
 }
 
-.camera-placeholder span {
-    font-size: 35px;
-    color: #00bfff;
+.camera-placeholder .camera-symbol {
+    font-size: 40px;
+    margin-bottom: 10px;
 }
 
-.camera-actions {
+.camera-controls {
     display: flex;
-    gap: 7px;
+    justify-content: center;
     flex-wrap: wrap;
-    margin-top: 8px;
-    flex-shrink: 0;
+    gap: 10px;
+    margin-top: 13px;
 }
 
-button {
-    padding: 8px 12px;
-    border: 0;
-    border-radius: 6px;
-    background: #087fca;
+.btn {
+    border: none;
+    border-radius: 9px;
+    padding: 10px 17px;
     color: white;
+    font-size: 12px;
+    font-weight: 700;
     cursor: pointer;
-    font-weight: bold;
-    font-size: 11px;
+    transition: .2s;
 }
 
-button.stop {
-    background: #c93c50;
+.btn:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.12);
 }
 
-button.secondary {
-    background: #263c58;
+.btn-start {
+    background: linear-gradient(135deg,#2563eb,#0891b2);
 }
 
-button:hover {
-    filter: brightness(1.2);
+.btn-stop {
+    background: linear-gradient(135deg,#e11d48,#be123c);
 }
 
-button:disabled {
-    opacity: .5;
+.btn:disabled {
+    opacity: .45;
     cursor: not-allowed;
+    transform: none;
 }
 
 .camera-info {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 10px;
+    color: var(--muted);
     font-size: 10px;
-    color: #91b4d2;
-    margin-top: 6px;
-    flex-shrink: 0;
 }
 
-/* METRICS */
+/* RIGHT SIDE */
 
-.metric {
+.devices-panel {
+    grid-column: 3;
+    grid-row: 1;
+}
+
+.books-panel {
+    grid-column: 3;
+    grid-row: 2;
+}
+
+.other-panel {
+    grid-column: 3;
+    grid-row: 3;
+}
+
+/* OBJECT COUNTS */
+
+.count-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    align-items: center;
-    gap: 5px;
-    padding: 7px 2px;
-    border-bottom: 1px solid #17304b;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 9px;
 }
 
-.metric:last-child {
-    border-bottom: 0;
-}
-
-.metric-label {
-    font-size: 11px;
-    color: #b8d3eb;
-}
-
-.metric-value {
-    font-size: clamp(19px, 2vw, 26px);
-    color: #37b9ff;
-    font-weight: bold;
-    margin-top: 3px;
-}
-
-.metric canvas {
-    width: 100% !important;
-    height: 42px !important;
-}
-
-/* RATIO CHARTS */
-
-.ratio {
+.count-item {
+    padding: 11px 10px;
+    border-radius: 11px;
+    background: rgba(255,255,255,.035);
+    border: 1px solid rgba(148,163,184,.09);
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 9px;
-    padding-top: 6px;
+    justify-content: space-between;
+    gap: 5px;
 }
 
-.ratio-chart {
-    width: 55px;
-    height: 55px;
-    flex-shrink: 0;
+.count-label {
+    font-size: 11px;
+    color: #cbd5e1;
 }
 
-.ratio-text {
-    font-size: 10px;
-    color: #c1d9ee;
-    max-width: 100px;
+.count-number {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--blue);
 }
 
-.ratio-text strong {
-    font-size: 17px;
-    color: #36d6ff;
-    display: block;
-}
+.count-item:nth-child(2) .count-number { color: var(--teal); }
+.count-item:nth-child(3) .count-number { color: var(--purple); }
+.count-item:nth-child(4) .count-number { color: var(--orange); }
 
-/* TOTAL OBJECTS */
+/* TOTAL OBJECTS - COMPACT */
 
 .total-content {
-    height: calc(100% - 30px);
-    display: grid;
-    grid-template-columns: .8fr 1.4fr;
+    display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: space-between;
+    gap: 12px;
 }
 
 .total-number {
-    font-size: clamp(38px, 5vw, 60px);
-    font-weight: bold;
-    color: #00e99a;
-    text-align: center;
+    font-size: 31px;
+    line-height: 1;
+    font-weight: 850;
+    color: var(--teal);
 }
 
 .total-caption {
-    text-align: center;
     font-size: 10px;
-    color: #b8d3eb;
+    color: var(--muted);
+    margin-top: 5px;
 }
 
 .total-chart {
-    height: 100%;
-    min-height: 0;
-    position: relative;
-}
-
-.total-chart canvas {
-    width: 100% !important;
-    height: 100% !important;
+    width: 54%;
+    height: 58px;
 }
 
 /* HISTORY */
 
 .history-panel {
-    height: 82px;
-    flex-shrink: 0;
-    padding: 7px 10px;
-}
-
-.history-panel .panel-title {
-    font-size: 12px;
-    padding-bottom: 4px;
-    margin-bottom: 3px;
+    padding: 12px 15px;
+    min-height: 110px;
 }
 
 .history-list {
-    max-height: 40px;
-    overflow-y: auto;
-}
-
-.history-row {
     display: flex;
     gap: 9px;
-    align-items: center;
-    padding: 4px;
-    border-bottom: 1px solid #17304b;
+    overflow-x: auto;
+    padding-bottom: 5px;
+}
+
+.history-item {
+    min-width: 145px;
+    padding: 9px 11px;
+    border-radius: 9px;
+    background: rgba(255,255,255,.035);
+    border: 1px solid var(--border);
+}
+
+.history-item strong {
+    display: block;
+    font-size: 11px;
+    color: #e2e8f0;
+}
+
+.history-item small {
+    display: block;
     font-size: 10px;
-    color: #c6d9ed;
+    color: var(--muted);
+    margin-top: 4px;
 }
 
-.history-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #00bfff;
-    flex-shrink: 0;
+/* FOOTER */
+
+.footer {
+    display: flex;
+    justify-content: space-between;
+    color: #64748b;
+    font-size: 10px;
+    padding: 0 3px;
 }
 
-.history-time {
-    color: #52b9ff;
-    min-width: 70px;
-}
+/* LAPTOP / SMALL SCREEN */
 
-footer {
-    display: none;
-}
-
-/* SMALL LAPTOPS */
-
-@media (min-width: 601px) and (max-width: 1100px) {
+@media (max-width: 1050px) {
     .dashboard {
-        grid-template-columns: 1fr 1.4fr;
-        grid-template-rows: repeat(3, minmax(0, 1fr));
+        padding: 12px;
     }
 
-    .left-top {
-        grid-column: 1;
-        grid-row: 1;
-    }
-
-    .camera-panel {
-        grid-column: 2;
-        grid-row: 1 / 3;
-    }
-
-    .right-top {
-        grid-column: 1;
-        grid-row: 2;
-    }
-
-    .left-bottom {
-        grid-column: 1;
-        grid-row: 3;
-    }
-
-    .total-panel {
-        grid-column: 2;
-        grid-row: 3;
-    }
-
-    .right-bottom {
-        display: none;
-    }
-
-    main {
-        height: calc(100dvh - 80px);
-    }
-}
-
-/* MOBILE RESPONSIVE */
-
-@media (max-width: 600px) {
-    html, body {
-        height: auto;
-        min-height: 100%;
-    }
-
-    body {
-        overflow-y: auto;
-    }
-
-    header {
-        height: auto;
-        min-height: 65px;
-        padding: 10px;
-        margin: 5px;
-    }
-
-    .brand {
-        gap: 8px;
-    }
-
-    .logo {
-        font-size: 25px;
-    }
-
-    h1 {
-        font-size: 15px;
-    }
-
-    .subtitle {
-        font-size: 9px;
-    }
-
-    .live {
-        font-size: 10px;
-    }
-
-    main {
-        height: auto;
-        min-height: 0;
-        padding: 5px;
-        gap: 8px;
-    }
-
-    .dashboard {
-        display: flex;
-        flex-direction: column;
+    .main-grid {
+        grid-template-columns: minmax(0,1fr) minmax(0,1.1fr) minmax(0,1fr);
         gap: 9px;
     }
 
     .panel {
-        min-height: 185px;
-        padding: 12px;
-    }
-
-    .camera-panel {
-        order: 1;
-        min-height: 300px;
-    }
-
-    .left-top {
-        order: 2;
-    }
-
-    .right-top {
-        order: 3;
-    }
-
-    .left-bottom {
-        order: 4;
-    }
-
-    .right-bottom {
-        order: 5;
-        display: block;
-    }
-
-    .total-panel {
-        order: 6;
-        min-height: 180px;
-    }
-
-    .camera {
-        flex: none;
-        width: 100%;
-        height: auto;
-        aspect-ratio: 4 / 3;
-    }
-
-    .camera-actions button {
-        flex: 1;
-        min-width: 90px;
-    }
-
-    .metric-value {
-        font-size: 25px;
-    }
-
-    .metric canvas {
-        height: 55px !important;
-    }
-
-    .ratio-chart {
-        width: 65px;
-        height: 65px;
-    }
-
-    .ratio-text {
-        font-size: 11px;
-    }
-
-    .ratio-text strong {
-        font-size: 19px;
-    }
-
-    .total-content {
-        min-height: 120px;
-    }
-
-    .total-number {
-        font-size: 48px;
-    }
-
-    .history-panel {
-        height: auto;
-        min-height: 100px;
-    }
-
-    .history-list {
-        max-height: 120px;
-    }
-
-    .history-row {
-        flex-wrap: wrap;
-    }
-
-    footer {
-        display: block;
-        text-align: center;
-        color: #54799b;
-        font-size: 10px;
         padding: 10px;
     }
-}
 
-/* VERY SMALL MOBILE */
-
-@media (max-width: 360px) {
-    header {
-        align-items: flex-start;
-    }
-
-    h1 {
-        font-size: 13px;
-    }
-
-    .camera-panel {
-        min-height: 270px;
-    }
-
-    .camera-actions button {
-        padding: 8px 7px;
-        font-size: 10px;
-    }
-}
-
-/* SHORT LAPTOP SCREEN */
-
-@media (min-width: 601px) and (max-height: 700px) {
-    header {
-        height: 55px;
-        margin: 4px 8px;
-    }
-
-    main {
-        height: calc(100dvh - 65px);
-        padding-top: 2px;
-        gap: 5px;
-    }
-
-    .dashboard {
-        gap: 6px;
-    }
-
-    .panel {
-        padding: 7px;
-    }
-
-    .panel-title {
-        padding-bottom: 4px;
-        margin-bottom: 4px;
+    .panel-heading h2 {
         font-size: 12px;
     }
 
-    .metric {
-        padding: 4px 2px;
+    .count-number {
+        font-size: 17px;
+    }
+}
+
+/* TABLET */
+
+@media (max-width: 760px) {
+    .dashboard {
+        min-height: 100vh;
+        padding: 10px;
     }
 
-    .metric canvas {
-        height: 30px !important;
+    .header {
+        flex-wrap: wrap;
+        padding: 12px;
     }
 
-    .ratio {
-        padding-top: 3px;
+    .brand h1 {
+        font-size: 17px;
     }
 
-    .ratio-chart {
-        width: 43px;
-        height: 43px;
+    .header-right {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .main-grid {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .camera-panel {
+        order: -1;
+        min-height: 470px;
+    }
+
+    .camera-stage {
+        min-height: 330px;
+    }
+
+    .students-panel,
+    .total-panel,
+    .bags-panel,
+    .devices-panel,
+    .books-panel,
+    .other-panel {
+        min-height: 145px;
     }
 
     .history-panel {
-        height: 65px;
+        min-height: 120px;
+    }
+}
+
+/* SMALL MOBILE */
+
+@media (max-width: 430px) {
+    .camera-panel {
+        min-height: 390px;
     }
 
-    .history-list {
-        max-height: 28px;
+    .camera-stage {
+        min-height: 260px;
+    }
+
+    .brand h1 {
+        font-size: 15px;
+    }
+
+    .clock {
+        font-size: 11px;
+    }
+
+    .btn {
+        padding: 9px 13px;
+    }
+
+    .footer {
+        flex-direction: column;
+        gap: 5px;
     }
 }
 </style>
@@ -662,1356 +558,747 @@ footer {
 
 <body>
 
-<header>
-    <div class="brand">
-        <div class="logo">🎓</div>
-        <div>
-            <h1>AI School Dashboard</h1>
-            <div class="subtitle">Smart Classroom Monitoring System</div>
-        </div>
-    </div>
-
-    <div>
-        <div class="live" id="apiStatus">● Connecting API...</div>
-        <div class="subtitle" id="clock"></div>
-    </div>
-</header>
-
-<main>
-
 <div class="dashboard">
 
-<!-- STUDENTS AND CHAIRS -->
-
-<section class="panel left-top">
-    <div class="panel-title">
-        <span class="icon">👥</span> Students & Chairs
-    </div>
-
-    <div class="metric">
-        <div>
-            <div class="metric-label">Students / Persons</div>
-            <div class="metric-value" id="peopleCount">0</div>
-        </div>
-        <canvas id="peopleMini"></canvas>
-    </div>
-
-    <div class="metric">
-        <div>
-            <div class="metric-label">Chairs</div>
-            <div class="metric-value" id="chairCount">0</div>
-        </div>
-        <canvas id="chairMini"></canvas>
-    </div>
-
-    <div class="ratio">
-        <div class="ratio-chart">
-            <canvas id="peopleRatio"></canvas>
-        </div>
-        <div class="ratio-text">
-            <strong id="peopleRatioText">0%</strong>
-            People / Chairs
-        </div>
-    </div>
-</section>
-
-<!-- LIVE CAMERA -->
-
-<section class="panel camera-panel">
-
-    <div class="panel-title">
-        <span class="icon">🔴</span> Live Camera
-    </div>
-
-    <div class="camera">
-
-        <video id="video" autoplay muted playsinline></video>
-
-        <canvas class="overlay" id="overlay"></canvas>
-
-        <div class="camera-placeholder" id="placeholder">
-            <span>◉</span>
-            <b>Live Camera Feed</b>
-            <small>Click Start Camera to begin detection</small>
-        </div>
-
-    </div>
-
-    <div class="camera-actions">
-        <button id="startBtn" onclick="startCamera()">
-            ▶ Start Camera
-        </button>
-
-        <button class="stop" onclick="stopCamera()">
-            ■ Stop
-        </button>
-
-        <button class="secondary" onclick="detectNow()">
-            Detect Now
-        </button>
-    </div>
-
-    <div class="camera-info" id="cameraInfo">
-        Camera stopped | Waiting for detection
-    </div>
-
-</section>
-
-<!-- LAPTOP AND MOBILE -->
-
-<section class="panel right-top">
-
-    <div class="panel-title">
-        <span class="icon">💻</span> Laptop & Mobile
-    </div>
-
-    <div class="metric">
-        <div>
-            <div class="metric-label">Laptops</div>
-            <div class="metric-value" id="laptopCount">0</div>
-        </div>
-        <canvas id="laptopMini"></canvas>
-    </div>
-
-    <div class="metric">
-        <div>
-            <div class="metric-label">Mobile Phones</div>
-            <div class="metric-value" id="mobileCount">0</div>
-        </div>
-        <canvas id="mobileMini"></canvas>
-    </div>
-
-    <div class="ratio">
-        <div class="ratio-chart">
-            <canvas id="techRatio"></canvas>
-        </div>
-        <div class="ratio-text">
-            <strong id="techRatioText">0%</strong>
-            Laptop / Mobile
-        </div>
-    </div>
-
-</section>
-
-<!-- BOOKS AND BOXES -->
-
-<section class="panel left-bottom">
-
-    <div class="panel-title">
-        <span class="icon">📚</span> Books & Boxes
-    </div>
-
-    <div class="metric">
-        <div>
-            <div class="metric-label">Books</div>
-            <div class="metric-value" id="bookCount">0</div>
-        </div>
-        <canvas id="bookMini"></canvas>
-    </div>
-
-    <div class="metric">
-        <div>
-            <div class="metric-label">Boxes</div>
-            <div class="metric-value" id="boxCount">0</div>
-        </div>
-        <canvas id="boxMini"></canvas>
-    </div>
-
-    <div class="ratio">
-        <div class="ratio-chart">
-            <canvas id="bookRatio"></canvas>
-        </div>
-        <div class="ratio-text">
-            <strong id="bookRatioText">0%</strong>
-            Books / Boxes
-        </div>
-    </div>
-
-</section>
-
-<!-- TOTAL OBJECTS -->
-
-<section class="panel total-panel">
-
-    <div class="panel-title">
-        <span class="icon">∑</span> Total Objects
-    </div>
-
-    <div class="total-content">
-
-        <div>
-            <div class="total-number" id="totalCount">0</div>
-            <div class="total-caption">
-                Total Detected Objects
+    <!-- HEADER -->
+    <header class="header">
+        <div class="brand">
+            <div class="logo">✦</div>
+            <div>
+                <h1>AI School Dashboard</h1>
+                <p>Smart Classroom Monitoring System</p>
             </div>
         </div>
 
-        <div class="total-chart">
-            <canvas id="totalGraph"></canvas>
+        <div class="header-right">
+            <div class="api-status">
+                <span class="status-dot" id="apiDot"></span>
+                <span id="apiStatus">Checking API...</span>
+            </div>
+            <div class="clock" id="clock">--:--:--</div>
+        </div>
+    </header>
+
+    <!-- MAIN GRID -->
+    <main class="main-grid">
+
+        <!-- STUDENTS AND CHAIRS -->
+        <section class="panel students-panel">
+            <div class="panel-heading">
+                <h2><span class="panel-icon">👥</span>Students & Chairs</h2>
+                <span>Live count</span>
+            </div>
+
+            <div class="count-grid">
+                <div class="count-item">
+                    <span class="count-label">Students</span>
+                    <strong class="count-number" id="peopleCount">0</strong>
+                </div>
+                <div class="count-item">
+                    <span class="count-label">Chairs</span>
+                    <strong class="count-number" id="chairCount">0</strong>
+                </div>
+            </div>
+        </section>
+
+        <!-- TOTAL OBJECTS - SMALLER -->
+        <section class="panel total-panel">
+            <div class="panel-heading" style="margin-bottom:7px">
+                <h2>📊 Total Objects</h2>
+                <span>Live</span>
+            </div>
+
+            <div class="total-content">
+                <div>
+                    <div class="total-number" id="totalCount">0</div>
+                    <div class="total-caption">Detected objects</div>
+                </div>
+                <div class="total-chart">
+                    <canvas id="totalChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- BAGS AND OTHERS -->
+        <section class="panel bags-panel">
+            <div class="panel-heading">
+                <h2>🎒 Bags & Others</h2>
+                <span>Live count</span>
+            </div>
+
+            <div class="count-grid">
+                <div class="count-item">
+                    <span class="count-label">Bags</span>
+                    <strong class="count-number" id="bagCount">0</strong>
+                </div>
+                <div class="count-item">
+                    <span class="count-label">Others</span>
+                    <strong class="count-number" id="otherCount">0</strong>
+                </div>
+            </div>
+        </section>
+
+        <!-- LARGE CAMERA MODULE -->
+        <section class="panel camera-panel">
+            <div class="panel-heading camera-heading">
+                <h2>📷 Live Camera Detection</h2>
+                <span class="live-badge">LIVE</span>
+            </div>
+
+            <div class="camera-stage" id="cameraStage">
+                <video id="video" autoplay playsinline muted></video>
+                <canvas id="overlay"></canvas>
+
+                <div class="camera-placeholder" id="cameraPlaceholder">
+                    <div class="camera-symbol">📹</div>
+                    <div>Camera is not running</div>
+                    <small>Click Start Camera to begin detection</small>
+                </div>
+            </div>
+
+            <div class="camera-controls">
+                <button class="btn btn-start" id="startBtn" onclick="startCamera()">
+                    ▶ Start Camera
+                </button>
+                <button class="btn btn-stop" id="stopBtn" onclick="stopCamera()" disabled>
+                    ■ Stop Camera
+                </button>
+            </div>
+
+            <div class="camera-info">
+                <span id="cameraMessage">Waiting for camera...</span>
+                <span id="detectionInfo">Objects: 0</span>
+            </div>
+        </section>
+
+        <!-- LAPTOP AND MOBILE -->
+        <section class="panel devices-panel">
+            <div class="panel-heading">
+                <h2>💻 Laptop & Mobile</h2>
+                <span>Live count</span>
+            </div>
+
+            <div class="count-grid">
+                <div class="count-item">
+                    <span class="count-label">Laptops</span>
+                    <strong class="count-number" id="laptopCount">0</strong>
+                </div>
+                <div class="count-item">
+                    <span class="count-label">Mobiles</span>
+                    <strong class="count-number" id="mobileCount">0</strong>
+                </div>
+            </div>
+        </section>
+
+        <!-- BOOKS AND BOXES -->
+        <section class="panel books-panel">
+            <div class="panel-heading">
+                <h2>📚 Books & Boxes</h2>
+                <span>Live count</span>
+            </div>
+
+            <div class="count-grid">
+                <div class="count-item">
+                    <span class="count-label">Books</span>
+                    <strong class="count-number" id="bookCount">0</strong>
+                </div>
+                <div class="count-item">
+                    <span class="count-label">Boxes</span>
+                    <strong class="count-number" id="boxCount">0</strong>
+                </div>
+            </div>
+        </section>
+
+        <!-- OTHER OBJECT SUMMARY -->
+        <section class="panel other-panel">
+            <div class="panel-heading">
+                <h2>📈 Detection Summary</h2>
+                <span>Categories</span>
+            </div>
+            <div style="height:85px; position:relative">
+                <canvas id="categoryChart"></canvas>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- DETECTION HISTORY -->
+    <section class="panel history-panel">
+        <div class="panel-heading">
+            <h2>🕒 Detection History</h2>
+            <span id="historyStatus">Recent activity</span>
         </div>
 
-    </div>
-
-</section>
-
-<!-- BAGS AND OTHERS -->
-
-<section class="panel right-bottom">
-
-    <div class="panel-title">
-        <span class="icon">🎒</span> Bags & Others
-    </div>
-
-    <div class="metric">
-        <div>
-            <div class="metric-label">Bags</div>
-            <div class="metric-value" id="bagCount">0</div>
+        <div class="history-list" id="historyList">
+            <div class="history-item">
+                <strong>System Ready</strong>
+                <small>Waiting for detection...</small>
+            </div>
         </div>
-        <canvas id="bagMini"></canvas>
-    </div>
+    </section>
 
-    <div class="metric">
-        <div>
-            <div class="metric-label">Others</div>
-            <div class="metric-value" id="otherCount">0</div>
-        </div>
-        <canvas id="otherMini"></canvas>
-    </div>
-
-    <div class="ratio">
-        <div class="ratio-chart">
-            <canvas id="bagRatio"></canvas>
-        </div>
-        <div class="ratio-text">
-            <strong id="bagRatioText">0%</strong>
-            Bags / Others
-        </div>
-    </div>
-
-</section>
+    <footer class="footer">
+        <span>AI School Dashboard · YOLO Real-Time Detection</span>
+        <span>Smart Classroom Monitoring System</span>
+    </footer>
 
 </div>
 
-<!-- DETECTION HISTORY -->
-
-<section class="panel history-panel">
-
-    <div class="panel-title">
-        <span class="icon">◷</span> Detection History
-    </div>
-
-    <div class="history-list" id="historyList">
-        <div class="history-row">
-            Waiting for detection...
-        </div>
-    </div>
-
-</section>
-
-<footer>
-    AI SCHOOL OBJECT DETECTION | YOLO11 + FLASK API
-</footer>
-
-</main>
-
 <script>
+/* ==========================================
+   API CONFIGURATION
+========================================== */
 
-// ========================================
-// NGROK API URL
-// ========================================
-
-// Apna current Ngrok URL yahan paste karein.
-// Auth Token yahan paste na karein.
+// Apna latest ngrok URL yahan paste karein.
+// Agar ngrok URL change ho jaye to yahan update karein.
 
 const API_URL = "https://confident-saturate-divorcee.ngrok-free.dev";
-
-// ========================================
-// VARIABLES
-// ========================================
 
 const video = document.getElementById("video");
 const overlay = document.getElementById("overlay");
 const ctx = overlay.getContext("2d");
 
-let stream = null;
+let cameraStream = null;
 let detectionTimer = null;
-let busy = false;
-let detections = [];
-let apiConnected = false;
-let apiChecking = false;
-let animationFrame = null;
+let isRunning = false;
+let isDetecting = false;
 
-const categoryKeys = [
-    "people",
-    "chair",
-    "laptop",
-    "mobile",
-    "book",
-    "box",
-    "bag",
-    "other"
-];
+let totalHistory = [];
+let historyItems = [];
 
-const graphHistory = {};
+const categories = {
+    people: ["person"],
+    chair: ["chair"],
+    laptop: ["laptop"],
+    mobile: ["cell phone", "mobile phone", "phone"],
+    book: ["book"],
+    box: ["box"],
+    bag: ["backpack", "handbag", "suitcase"]
+};
 
-categoryKeys.forEach(key => {
-    graphHistory[key] = [];
-});
+const elements = {
+    people: document.getElementById("peopleCount"),
+    chair: document.getElementById("chairCount"),
+    laptop: document.getElementById("laptopCount"),
+    mobile: document.getElementById("mobileCount"),
+    book: document.getElementById("bookCount"),
+    box: document.getElementById("boxCount"),
+    bag: document.getElementById("bagCount"),
+    other: document.getElementById("otherCount"),
+    total: document.getElementById("totalCount")
+};
 
-let lastHistoryTime = 0;
+/* ==========================================
+   CLOCK
+========================================== */
 
-// ========================================
-// CATEGORY MAPPING
-// ========================================
+function updateClock() {
+    document.getElementById("clock").textContent =
+        new Date().toLocaleString();
+}
 
-function getCategory(label) {
+setInterval(updateClock, 1000);
+updateClock();
 
-    label = String(label).toLowerCase().trim();
+/* ==========================================
+   CHARTS
+========================================== */
 
-    if([
-        "person", "people", "student",
-        "students", "teacher", "teachers"
-    ].includes(label)) {
-        return "people";
+let totalChart;
+let categoryChart;
+
+function initializeCharts() {
+
+    totalChart = new Chart(
+        document.getElementById("totalChart"),
+        {
+            type: "line",
+            data: {
+                labels: [],
+                datasets: [{
+                    data: [],
+                    borderColor: "#2dd4bf",
+                    backgroundColor: "rgba(45,212,191,.12)",
+                    fill: true,
+                    tension: .4,
+                    pointRadius: 0,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: { display: false },
+                    y: { display: false, beginAtZero: true }
+                }
+            }
+        }
+    );
+
+    categoryChart = new Chart(
+        document.getElementById("categoryChart"),
+        {
+            type: "doughnut",
+            data: {
+                labels: ["People", "Chair", "Laptop", "Mobile", "Book", "Other"],
+                datasets: [{
+                    data: [0,0,0,0,0,0],
+                    backgroundColor: [
+                        "#38bdf8",
+                        "#2dd4bf",
+                        "#a78bfa",
+                        "#fb923c",
+                        "#4ade80",
+                        "#f472b6"
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: "68%",
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: "right",
+                        labels: {
+                            color: "#cbd5e1",
+                            boxWidth: 7,
+                            padding: 7,
+                            font: { size: 8 }
+                        }
+                    }
+                }
+            }
+        }
+    );
+}
+
+initializeCharts();
+
+/* ==========================================
+   API STATUS
+========================================== */
+
+async function checkAPI() {
+    const status = document.getElementById("apiStatus");
+    const dot = document.getElementById("apiDot");
+
+    try {
+        const response = await fetch(API_URL + "/", {
+            method: "GET"
+        });
+
+        if (!response.ok) throw new Error("API error");
+
+        status.textContent = "API Connected";
+        dot.classList.add("online");
+        return true;
+
+    } catch (error) {
+        status.textContent = "API Offline";
+        dot.classList.remove("online");
+        return false;
+    }
+}
+
+/* ==========================================
+   CAMERA START
+========================================== */
+
+async function startCamera() {
+
+    if (isRunning) return;
+
+    const message = document.getElementById("cameraMessage");
+
+    try {
+        message.textContent = "Checking backend API...";
+
+        const apiReady = await checkAPI();
+
+        if (!apiReady) {
+            message.textContent = "Backend is offline. Start your Colab backend first.";
+            return;
+        }
+
+        message.textContent = "Requesting camera permission...";
+
+        cameraStream = await navigator.mediaDevices.getUserMedia({
+            video: {
+                width: { ideal: 1280 },
+                height: { ideal: 720 },
+                facingMode: "environment"
+            },
+            audio: false
+        });
+
+        video.srcObject = cameraStream;
+
+        await new Promise((resolve) => {
+            video.onloadedmetadata = resolve;
+        });
+
+        await video.play();
+
+        isRunning = true;
+
+        document.getElementById("cameraPlaceholder").style.display = "none";
+        document.getElementById("startBtn").disabled = true;
+        document.getElementById("stopBtn").disabled = false;
+
+        resizeOverlay();
+
+        message.textContent = "Camera running · AI detection active";
+
+        // Detection har 1.5 seconds baad
+        detectionTimer = setInterval(runDetection, 1500);
+
+    } catch (error) {
+        console.error(error);
+        message.textContent = "Camera error: " + error.message;
+        stopCamera();
+    }
+}
+
+/* ==========================================
+   CAMERA STOP
+========================================== */
+
+function stopCamera() {
+
+    isRunning = false;
+    isDetecting = false;
+
+    if (detectionTimer) {
+        clearInterval(detectionTimer);
+        detectionTimer = null;
     }
 
-    if(["chair", "chairs"].includes(label)) {
-        return "chair";
+    if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+        cameraStream = null;
     }
 
-    if(["laptop", "notebook computer"].includes(label)) {
-        return "laptop";
-    }
+    video.srcObject = null;
 
-    if([
-        "cell phone", "cellphone", "mobile",
-        "mobile phone", "phone", "smartphone"
-    ].includes(label)) {
-        return "mobile";
-    }
+    ctx.clearRect(0, 0, overlay.width, overlay.height);
 
-    if(["book", "books"].includes(label)) {
-        return "book";
-    }
+    document.getElementById("cameraPlaceholder").style.display = "block";
+    document.getElementById("startBtn").disabled = false;
+    document.getElementById("stopBtn").disabled = true;
+    document.getElementById("cameraMessage").textContent = "Camera stopped";
+    document.getElementById("detectionInfo").textContent = "Objects: 0";
+}
 
-    if(["box", "boxes", "cardboard box"].includes(label)) {
-        return "box";
-    }
+/* ==========================================
+   OVERLAY SIZE
+========================================== */
 
-    if([
-        "backpack", "bag", "handbag", "suitcase"
-    ].includes(label)) {
-        return "bag";
+function resizeOverlay() {
+
+    const stage = document.getElementById("cameraStage");
+
+    const rect = stage.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+
+    overlay.width = Math.round(rect.width * dpr);
+    overlay.height = Math.round(rect.height * dpr);
+
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+
+window.addEventListener("resize", resizeOverlay);
+
+/* ==========================================
+   SEND CAMERA FRAME TO YOLO API
+========================================== */
+
+async function runDetection() {
+
+    if (!isRunning || isDetecting || video.readyState < 2) return;
+
+    isDetecting = true;
+
+    try {
+
+        const capture = document.createElement("canvas");
+
+        capture.width = video.videoWidth;
+        capture.height = video.videoHeight;
+
+        const captureCtx = capture.getContext("2d");
+
+        // Original camera image: no sketch, no filter, no distortion.
+        captureCtx.drawImage(
+            video,
+            0,
+            0,
+            capture.width,
+            capture.height
+        );
+
+        const imageData = capture.toDataURL("image/jpeg", 0.80);
+
+        const response = await fetch(API_URL + "/detect", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                image: imageData
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error("Detection API returned " + response.status);
+        }
+
+        const result = await response.json();
+
+        // Supports either {detections: []} or direct [] response.
+        const detections = Array.isArray(result)
+            ? result
+            : (result.detections || []);
+
+        updateDashboard(detections);
+        drawDetectionBoxes(detections);
+
+        document.getElementById("detectionInfo").textContent =
+            "Objects: " + detections.length;
+
+    } catch (error) {
+        console.error("Detection error:", error);
+        document.getElementById("cameraMessage").textContent =
+            "Detection error: " + error.message;
+    } finally {
+        isDetecting = false;
+    }
+}
+
+/* ==========================================
+   DETECTION BOXES
+   Correctly maps YOLO coordinates to video
+   inside the object-fit: contain camera area.
+========================================== */
+
+function drawDetectionBoxes(detections) {
+
+    const stage = document.getElementById("cameraStage");
+    const rect = stage.getBoundingClientRect();
+
+    const stageWidth = rect.width;
+    const stageHeight = rect.height;
+
+    const videoWidth = video.videoWidth;
+    const videoHeight = video.videoHeight;
+
+    if (!videoWidth || !videoHeight) return;
+
+    // Clear old boxes
+    ctx.clearRect(0, 0, stageWidth, stageHeight);
+
+    // Same contain calculation as the video element
+    const scale = Math.min(
+        stageWidth / videoWidth,
+        stageHeight / videoHeight
+    );
+
+    const renderedWidth = videoWidth * scale;
+    const renderedHeight = videoHeight * scale;
+
+    const offsetX = (stageWidth - renderedWidth) / 2;
+    const offsetY = (stageHeight - renderedHeight) / 2;
+
+    detections.forEach(item => {
+
+        if (!item.box || item.box.length < 4) return;
+
+        const [x1, y1, x2, y2] = item.box;
+
+        const x = offsetX + x1 * scale;
+        const y = offsetY + y1 * scale;
+        const width = (x2 - x1) * scale;
+        const height = (y2 - y1) * scale;
+
+        const name = item.name || "Object";
+        const confidence = item.confidence ?? 0;
+
+        // Different professional colors
+        const color = getObjectColor(name);
+
+        ctx.lineWidth = 2.2;
+        ctx.strokeStyle = color;
+        ctx.strokeRect(x, y, width, height);
+
+        // Label background
+        const label =
+            name + " " + (confidence * 100).toFixed(1) + "%";
+
+        ctx.font = "bold 12px Arial";
+
+        const labelWidth = ctx.measureText(label).width + 14;
+        const labelHeight = 23;
+
+        const labelY = Math.max(0, y - labelHeight);
+
+        ctx.fillStyle = color;
+        ctx.fillRect(x, labelY, labelWidth, labelHeight);
+
+        ctx.fillStyle = "#ffffff";
+        ctx.fillText(label, x + 7, labelY + 16);
+    });
+}
+
+/* ==========================================
+   OBJECT COLORS
+========================================== */
+
+function getObjectColor(name) {
+
+    const n = name.toLowerCase();
+
+    if (n.includes("person")) return "#38bdf8";
+    if (n.includes("chair")) return "#2dd4bf";
+    if (n.includes("laptop")) return "#a78bfa";
+    if (n.includes("book")) return "#4ade80";
+    if (n.includes("phone") || n.includes("cell")) return "#fb923c";
+    if (n.includes("backpack") || n.includes("bag")) return "#f472b6";
+
+    return "#facc15";
+}
+
+/* ==========================================
+   OBJECT CATEGORY
+========================================== */
+
+function getCategory(name) {
+
+    const n = name.toLowerCase();
+
+    for (const [category, names] of Object.entries(categories)) {
+        if (names.includes(n)) return category;
     }
 
     return "other";
 }
 
-// ========================================
-// GET DETECTION LABEL
-// ========================================
-
-function getLabel(item) {
-
-    return String(
-        item.class_name ??
-        item.name ??
-        item.label ??
-        item.class ??
-        ""
-    ).toLowerCase().trim();
-}
-
-// ========================================
-// READ API RESPONSE
-// ========================================
-
-function extractDetections(data) {
-
-    if(Array.isArray(data)) return data;
-
-    if(Array.isArray(data.detections)) {
-        return data.detections;
-    }
-
-    if(Array.isArray(data.results)) {
-        return data.results;
-    }
-
-    if(Array.isArray(data.objects)) {
-        return data.objects;
-    }
-
-    if(data.data && Array.isArray(data.data.detections)) {
-        return data.data.detections;
-    }
-
-    console.warn("API response format not recognized", data);
-
-    return [];
-}
-
-// ========================================
-// API CONNECTION CHECK
-// ========================================
-
-async function checkAPI() {
-
-    if(apiChecking) return;
-
-    apiChecking = true;
-
-    const status = document.getElementById("apiStatus");
-
-    try {
-
-        const controller = new AbortController();
-
-        const timeout = setTimeout(() => {
-            controller.abort();
-        }, 10000);
-
-        const response = await fetch(API_URL + "/", {
-            method: "GET",
-            headers: {
-                "ngrok-skip-browser-warning": "true"
-            },
-            signal: controller.signal,
-            cache: "no-store"
-        });
-
-        clearTimeout(timeout);
-
-        if(!response.ok) {
-            throw new Error("HTTP " + response.status);
-        }
-
-        const data = await response.json();
-
-        if(data.success === false) {
-            throw new Error("API is not ready");
-        }
-
-        apiConnected = true;
-
-        status.textContent = "● CONNECTED";
-        status.style.color = "#00efa0";
-
-    } catch(error) {
-
-        apiConnected = false;
-
-        status.textContent = "● DISCONNECTED";
-        status.style.color = "#ff5575";
-
-        console.error("API connection error:", error);
-
-    } finally {
-
-        apiChecking = false;
-    }
-}
-
-// ========================================
-// START CAMERA
-// ========================================
-
-async function startCamera() {
-
-    try {
-
-        if(stream) return;
-
-        if(!navigator.mediaDevices ||
-           !navigator.mediaDevices.getUserMedia) {
-
-            throw new Error(
-                "Camera requires HTTPS or localhost."
-            );
-        }
-
-        document.getElementById("cameraInfo").textContent =
-            "Checking AI backend...";
-
-        await checkAPI();
-
-        if(!apiConnected) {
-
-            alert(
-                "API disconnected. Please start your Google Colab backend and check the Ngrok URL."
-            );
-
-            document.getElementById("cameraInfo").textContent =
-                "API disconnected | Camera not started";
-
-            return;
-        }
-
-        stream = await navigator.mediaDevices.getUserMedia({
-
-            video: {
-                facingMode: {
-                    ideal: "environment"
-                },
-                width: {
-                    ideal: 1280
-                },
-                height: {
-                    ideal: 720
-                }
-            },
-
-            audio: false
-        });
-
-        video.srcObject = stream;
-
-        await video.play();
-
-        document.getElementById("placeholder").style.display =
-            "none";
-
-        document.getElementById("cameraInfo").textContent =
-            "Camera running | AI detection active";
-
-        /*
-         Video dimensions milne ke baad overlay set karein.
-        */
-
-        await new Promise(resolve => {
-
-            if(video.videoWidth > 0) {
-                resolve();
-            } else {
-                video.addEventListener(
-                    "loadedmetadata",
-                    resolve,
-                    {once: true}
-                );
-            }
-
-        });
-
-        resizeOverlay();
-
-        drawDetectionBoxes();
-
-        detectNow();
-
-        detectionTimer = setInterval(detectNow, 1500);
-
-    } catch(error) {
-
-        alert("Camera Error: " + error.message);
-
-        console.error(error);
-
-    }
-}
-
-// ========================================
-// RESIZE OVERLAY
-// ========================================
-
-function resizeOverlay() {
-
-    if(!video.videoWidth || !video.videoHeight) {
-        return;
-    }
-
-    /*
-     Canvas ka internal size bilkul video jaisa hoga.
-     Is se YOLO coordinates accurately match karenge.
-    */
-
-    overlay.width = video.videoWidth;
-    overlay.height = video.videoHeight;
-}
-
-// ========================================
-// STOP CAMERA
-// ========================================
-
-function stopCamera() {
-
-    if(detectionTimer) {
-
-        clearInterval(detectionTimer);
-        detectionTimer = null;
-    }
-
-    if(animationFrame) {
-
-        cancelAnimationFrame(animationFrame);
-        animationFrame = null;
-    }
-
-    if(stream) {
-
-        stream.getTracks().forEach(track => {
-            track.stop();
-        });
-
-        stream = null;
-    }
-
-    video.srcObject = null;
-
-    detections = [];
-
-    ctx.clearRect(
-        0,
-        0,
-        overlay.width,
-        overlay.height
-    );
-
-    document.getElementById("placeholder").style.display =
-        "flex";
-
-    document.getElementById("cameraInfo").textContent =
-        "Camera stopped";
-
-    document.getElementById("startBtn").disabled = false;
-}
-
-// ========================================
-// SEND IMAGE TO YOLO API
-// ========================================
-
-async function detectNow() {
-
-    if(!stream || busy || video.readyState < 2) {
-        return;
-    }
-
-    if(!apiConnected) {
-
-        document.getElementById("cameraInfo").textContent =
-            "API disconnected | Waiting for connection...";
-
-        return;
-    }
-
-    busy = true;
-
-    try {
-
-        const temp = document.createElement("canvas");
-
-        temp.width = video.videoWidth;
-        temp.height = video.videoHeight;
-
-        const tempCtx = temp.getContext("2d");
-
-        /*
-         Original camera frame API ko send hota hai.
-         Koi stretch ya sketch effect apply nahi hota.
-        */
-
-        tempCtx.drawImage(
-            video,
-            0,
-            0,
-            temp.width,
-            temp.height
-        );
-
-        const image = temp.toDataURL(
-            "image/jpeg",
-            0.75
-        );
-
-        const response = await fetch(API_URL + "/detect", {
-
-            method: "POST",
-
-            headers: {
-                "Content-Type": "application/json",
-                "ngrok-skip-browser-warning": "true"
-            },
-
-            body: JSON.stringify({
-                image: image
-            })
-        });
-
-        if(!response.ok) {
-
-            throw new Error("HTTP " + response.status);
-        }
-
-        const data = await response.json();
-
-        if(data.error) {
-
-            throw new Error(data.error);
-        }
-
-        detections = extractDetections(data);
-
-        updateDashboard(detections);
-
-        document.getElementById("cameraInfo").textContent =
-            "Live detection | " +
-            detections.length +
-            " objects in current frame";
-
-    } catch(error) {
-
-        console.error("Detection error:", error);
-
-        document.getElementById("cameraInfo").textContent =
-            "Detection error: " + error.message;
-
-        if(
-            error.message.includes("Failed to fetch") ||
-            error.message.includes("NetworkError")
-        ) {
-
-            apiConnected = false;
-
-            document.getElementById("apiStatus").textContent =
-                "● API DISCONNECTED";
-
-            document.getElementById("apiStatus").style.color =
-                "#ff5575";
-        }
-
-    } finally {
-
-        busy = false;
-    }
-}
-
-// ========================================
-// UPDATE COUNTS
-// ========================================
-
-function updateDashboard(items) {
-
-    const counts = {};
-
-    categoryKeys.forEach(key => {
-        counts[key] = 0;
+/* ==========================================
+   UPDATE DASHBOARD
+========================================== */
+
+function updateDashboard(detections) {
+
+    const counts = {
+        people: 0,
+        chair: 0,
+        laptop: 0,
+        mobile: 0,
+        book: 0,
+        box: 0,
+        bag: 0,
+        other: 0
+    };
+
+    detections.forEach(item => {
+        const category = getCategory(item.name || "");
+        counts[category]++;
     });
 
-    items.forEach(item => {
+    const total = detections.length;
 
-        const label = getLabel(item);
+    elements.people.textContent = counts.people;
+    elements.chair.textContent = counts.chair;
+    elements.laptop.textContent = counts.laptop;
+    elements.mobile.textContent = counts.mobile;
+    elements.book.textContent = counts.book;
+    elements.box.textContent = counts.box;
+    elements.bag.textContent = counts.bag;
+    elements.other.textContent = counts.other;
+    elements.total.textContent = total;
 
-        if(!label) return;
+    // Update total graph
+    totalHistory.push(total);
 
-        counts[getCategory(label)]++;
-    });
-
-    const total = Object.values(counts).reduce(
-        (a, b) => a + b,
-        0
-    );
-
-    setText("peopleCount", counts.people);
-    setText("chairCount", counts.chair);
-    setText("laptopCount", counts.laptop);
-    setText("mobileCount", counts.mobile);
-    setText("bookCount", counts.book);
-    setText("boxCount", counts.box);
-    setText("bagCount", counts.bag);
-    setText("otherCount", counts.other);
-    setText("totalCount", total);
-
-    updateGraphs(counts, total);
-    updateHistory(counts, total);
-}
-
-function setText(id, value) {
-
-    document.getElementById(id).textContent = value;
-}
-
-// ========================================
-// CHART SETTINGS
-// ========================================
-
-Chart.defaults.color = "#a9c8e5";
-Chart.defaults.font.family = "Arial";
-
-const miniCharts = {};
-const ratioCharts = {};
-
-// ========================================
-// MINI BAR CHART
-// ========================================
-
-function makeMini(id, color) {
-
-    return new Chart(
-        document.getElementById(id),
-        {
-            type: "bar",
-
-            data: {
-
-                labels: ["1","2","3","4","5","6","7"],
-
-                datasets: [{
-
-                    data: [0,0,0,0,0,0,0],
-
-                    backgroundColor: color,
-
-                    borderRadius: 3
-                }]
-            },
-
-            options: {
-
-                responsive: true,
-
-                maintainAspectRatio: false,
-
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-
-                scales: {
-
-                    x: {
-                        display: false
-                    },
-
-                    y: {
-                        display: false,
-                        beginAtZero: true
-                    }
-                }
-            }
-        }
-    );
-}
-
-// ========================================
-// DONUT CHART
-// ========================================
-
-function makeRatio(id, color1, color2) {
-
-    return new Chart(
-        document.getElementById(id),
-        {
-            type: "doughnut",
-
-            data: {
-
-                labels: ["First","Second"],
-
-                datasets: [{
-
-                    data: [0,1],
-
-                    backgroundColor: [
-                        color1,
-                        color2
-                    ],
-
-                    borderWidth: 0
-                }]
-            },
-
-            options: {
-
-                responsive: true,
-
-                maintainAspectRatio: false,
-
-                cutout: "75%",
-
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                }
-            }
-        }
-    );
-}
-
-// ========================================
-// TOTAL LINE GRAPH
-// ========================================
-
-const totalGraph = new Chart(
-    document.getElementById("totalGraph"),
-    {
-        type: "line",
-
-        data: {
-
-            labels: [],
-
-            datasets: [{
-
-                label: "Total Objects",
-
-                data: [],
-
-                borderColor: "#00e6db",
-
-                backgroundColor: "rgba(0,230,219,.12)",
-
-                fill: true,
-
-                tension: .35,
-
-                pointBackgroundColor: "#8affff"
-            }]
-        },
-
-        options: {
-
-            responsive: true,
-
-            maintainAspectRatio: false,
-
-            plugins: {
-                legend: {
-                    display: false
-                }
-            },
-
-            scales: {
-
-                x: {
-                    ticks: {
-                        maxTicksLimit: 7,
-                        color: "#82a9cc"
-                    },
-
-                    grid: {
-                        color: "#173451"
-                    }
-                },
-
-                y: {
-                    beginAtZero: true,
-
-                    ticks: {
-                        precision: 0,
-                        color: "#82a9cc"
-                    },
-
-                    grid: {
-                        color: "#173451"
-                    }
-                }
-            }
-        }
+    if (totalHistory.length > 12) {
+        totalHistory.shift();
     }
-);
 
-// ========================================
-// INITIALIZE ALL CHARTS
-// ========================================
+    totalChart.data.labels = totalHistory.map((_, i) => i + 1);
+    totalChart.data.datasets[0].data = [...totalHistory];
+    totalChart.update("none");
 
-miniCharts.people = makeMini(
-    "peopleMini",
-    "#168bff"
-);
-
-miniCharts.chair = makeMini(
-    "chairMini",
-    "#b44dff"
-);
-
-miniCharts.laptop = makeMini(
-    "laptopMini",
-    "#00d7d7"
-);
-
-miniCharts.mobile = makeMini(
-    "mobileMini",
-    "#a64dff"
-);
-
-miniCharts.book = makeMini(
-    "bookMini",
-    "#21d66b"
-);
-
-miniCharts.box = makeMini(
-    "boxMini",
-    "#ffae35"
-);
-
-miniCharts.bag = makeMini(
-    "bagMini",
-    "#f044a4"
-);
-
-miniCharts.other = makeMini(
-    "otherMini",
-    "#7aa7d5"
-);
-
-ratioCharts.people = makeRatio(
-    "peopleRatio",
-    "#25e96b",
-    "#244363"
-);
-
-ratioCharts.tech = makeRatio(
-    "techRatio",
-    "#00d7ef",
-    "#a64dff"
-);
-
-ratioCharts.book = makeRatio(
-    "bookRatio",
-    "#ffbd35",
-    "#244363"
-);
-
-ratioCharts.bag = makeRatio(
-    "bagRatio",
-    "#f044a4",
-    "#244363"
-);
-
-// ========================================
-// UPDATE GRAPHS
-// ========================================
-
-function updateGraphs(counts, total) {
-
-    categoryKeys.forEach(key => {
-
-        graphHistory[key].push(counts[key]);
-
-        if(graphHistory[key].length > 7) {
-            graphHistory[key].shift();
-        }
-
-        miniCharts[key].data.datasets[0].data =
-            graphHistory[key];
-
-        miniCharts[key].update("none");
-    });
-
-    updateRatio(
-        ratioCharts.people,
+    // Update category graph
+    categoryChart.data.datasets[0].data = [
         counts.people,
         counts.chair,
-        "peopleRatioText"
-    );
-
-    updateRatio(
-        ratioCharts.tech,
         counts.laptop,
         counts.mobile,
-        "techRatioText"
-    );
-
-    updateRatio(
-        ratioCharts.book,
         counts.book,
-        counts.box,
-        "bookRatioText"
-    );
+        counts.other + counts.box + counts.bag
+    ];
 
-    updateRatio(
-        ratioCharts.bag,
-        counts.bag,
-        counts.other,
-        "bagRatioText"
-    );
+    categoryChart.update("none");
 
-    totalGraph.data.labels.push(
-        new Date().toLocaleTimeString()
-    );
-
-    totalGraph.data.datasets[0].data.push(total);
-
-    if(totalGraph.data.labels.length > 20) {
-
-        totalGraph.data.labels.shift();
-
-        totalGraph.data.datasets[0].data.shift();
-    }
-
-    totalGraph.update("none");
+    // Detection history
+    addHistory(total);
 }
 
-// ========================================
-// UPDATE DONUT PERCENTAGE
-// ========================================
+/* ==========================================
+   DETECTION HISTORY
+========================================== */
 
-function updateRatio(chart, a, b, textId) {
+function addHistory(total) {
 
-    const sum = a + b;
+    const now = new Date().toLocaleTimeString();
 
-    chart.data.datasets[0].data =
-        sum === 0 ? [0,1] : [a,b];
-
-    chart.update("none");
-
-    const percent = sum === 0
-        ? 0
-        : Math.round(a / sum * 100);
-
-    setText(textId, percent + "%");
-}
-
-// ========================================
-// DETECTION HISTORY
-// ========================================
-
-function updateHistory(counts, total) {
-
-    if(total === 0) return;
-
-    if(Date.now() - lastHistoryTime < 5000) {
-        return;
-    }
-
-    lastHistoryTime = Date.now();
-
-    const found = [];
-
-    categoryKeys.forEach(key => {
-
-        if(counts[key] > 0) {
-
-            found.push(
-                key + ": " + counts[key]
-            );
-        }
+    historyItems.unshift({
+        total: total,
+        time: now
     });
 
-    const row = document.createElement("div");
-
-    row.className = "history-row";
-
-    const dot = document.createElement("span");
-
-    dot.className = "history-dot";
-
-    const time = document.createElement("span");
-
-    time.className = "history-time";
-
-    time.textContent =
-        new Date().toLocaleTimeString();
-
-    const description = document.createElement("span");
-
-    description.textContent =
-        "Total " + total + " | " + found.join(", ");
-
-    row.append(dot, time, description);
+    if (historyItems.length > 8) {
+        historyItems.pop();
+    }
 
     const list = document.getElementById("historyList");
 
-    list.prepend(row);
+    list.innerHTML = "";
 
-    while(list.children.length > 30) {
+    historyItems.forEach(item => {
 
-        list.removeChild(list.lastChild);
-    }
+        const div = document.createElement("div");
+        div.className = "history-item";
+
+        const strong = document.createElement("strong");
+        strong.textContent = item.total + " objects detected";
+
+        const small = document.createElement("small");
+        small.textContent = item.time;
+
+        div.appendChild(strong);
+        div.appendChild(small);
+
+        list.appendChild(div);
+    });
+
+    document.getElementById("historyStatus").textContent =
+        historyItems.length + " recent records";
 }
 
-// ========================================
-// READ YOLO BOUNDING BOX
-// ========================================
-
-function getBox(item) {
-
-    let box =
-        item.bbox ??
-        item.box ??
-        item.xyxy ??
-        item.coordinates;
-
-    if(!box && item.x1 !== undefined) {
-
-        box = [
-            item.x1,
-            item.y1,
-            item.x2,
-            item.y2
-        ];
-    }
-
-    if(Array.isArray(box) && box.length >= 4) {
-
-        return box.slice(0,4).map(Number);
-    }
-
-    if(box && typeof box === "object") {
-
-        if(box.x1 !== undefined) {
-
-            return [
-                Number(box.x1),
-                Number(box.y1),
-                Number(box.x2),
-                Number(box.y2)
-            ];
-        }
-
-        if(box.x !== undefined) {
-
-            return [
-                Number(box.x),
-                Number(box.y),
-                Number(box.x) + Number(box.width),
-                Number(box.y) + Number(box.height)
-            ];
-        }
-    }
-
-    return null;
-}
-
-// ========================================
-// DRAW DETECTION BOXES
-// ========================================
-
-function drawDetectionBoxes() {
-
-    if(!stream) return;
-
-    if(video.readyState >= 2) {
-
-        const w = video.videoWidth;
-        const h = video.videoHeight;
-
-        if(w && h) {
-
-            if(
-                overlay.width !== w ||
-                overlay.height !== h
-            ) {
-                resizeOverlay();
-            }
-
-            ctx.clearRect(0, 0, w, h);
-
-            detections.forEach(item => {
-
-                const box = getBox(item);
-
-                if(!box) return;
-
-                const [x1, y1, x2, y2] = box;
-
-                const x = x1;
-                const y = y1;
-
-                const bw = x2 - x1;
-                const bh = y2 - y1;
-
-                if(
-                    !Number.isFinite(x) ||
-                    !Number.isFinite(y) ||
-                    !Number.isFinite(bw) ||
-                    !Number.isFinite(bh) ||
-                    bw <= 0 ||
-                    bh <= 0
-                ) {
-                    return;
-                }
-
-                const label = getLabel(item);
-
-                ctx.strokeStyle = "#00ffb3";
-
-                ctx.lineWidth = Math.max(
-                    2,
-                    w / 400
-                );
-
-                ctx.strokeRect(x, y, bw, bh);
-
-                const fontSize = Math.max(
-                    12,
-                    w / 80
-                );
-
-                ctx.font = "bold " + fontSize + "px Arial";
-
-                const textWidth =
-                    ctx.measureText(label).width;
-
-                const labelHeight = fontSize + 10;
-
-                const labelY = Math.max(
-                    0,
-                    y - labelHeight
-                );
-
-                ctx.fillStyle = "#008d78";
-
-                ctx.fillRect(
-                    x,
-                    labelY,
-                    textWidth + 12,
-                    labelHeight
-                );
-
-                ctx.fillStyle = "#ffffff";
-
-                ctx.fillText(
-                    label,
-                    x + 6,
-                    labelY + fontSize
-                );
-
-            });
-        }
-    }
-
-    animationFrame =
-        requestAnimationFrame(drawDetectionBoxes);
-}
-
-// ========================================
-// CLOCK AND STARTUP
-// ========================================
-
-function updateClock() {
-
-    document.getElementById("clock").textContent =
-        new Date().toLocaleString();
-}
-
-updateClock();
-
-setInterval(updateClock, 1000);
-
-// Website open hone par API check
+/* ==========================================
+   INITIAL API CHECK
+========================================== */
 
 checkAPI();
 
-// Har 30 seconds baad API dobara check
-
-setInterval(checkAPI, 30000);
-
-// Browser resize hone par charts update
-
-window.addEventListener("resize", () => {
-
-    Object.values(miniCharts).forEach(chart => {
-        chart.resize();
-    });
-
-    Object.values(ratioCharts).forEach(chart => {
-        chart.resize();
-    });
-
-    totalGraph.resize();
-});
+// Stop camera when page is closed
+window.addEventListener("beforeunload", stopCamera);
 
 </script>
 
