@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI School Dashboard</title>
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
@@ -23,9 +23,7 @@ html, body {
     overflow: hidden;
 }
 
-body {
-    min-height: 100dvh;
-}
+body { min-height: 100dvh; }
 
 /* HEADER */
 
@@ -40,6 +38,7 @@ header {
     border-radius: 12px;
     margin: 6px 8px;
     box-shadow: 0 0 15px #007bff55;
+    flex-shrink: 0;
 }
 
 .brand {
@@ -82,21 +81,17 @@ main {
     max-width: 1900px;
     margin: auto;
     min-height: 0;
+    overflow: hidden;
 }
 
 /* DASHBOARD GRID */
 
 .dashboard {
-    flex: 1;
+    flex: 1 1 0;
     min-height: 0;
     display: grid;
-
-    /* Camera ko zyada width */
     grid-template-columns: 1fr 2fr 1fr;
-
-    /* Total panel ke liye chhoti second row */
-    grid-template-rows: 1.4fr 0.6fr;
-
+    grid-template-rows: minmax(0, 1.4fr) minmax(0, .6fr);
     gap: 8px;
 }
 
@@ -138,7 +133,6 @@ main {
 .camera-panel {
     grid-column: 2;
     grid-row: 1;
-
     display: flex;
     flex-direction: column;
 }
@@ -163,11 +157,12 @@ main {
     grid-row: 2;
 }
 
-/* CAMERA */
+/* CAMERA FIX */
 
 .camera {
     width: 100%;
-    flex: 1;
+    flex: 1 1 0;
+    min-width: 0;
     min-height: 0;
     position: relative;
     background: #000;
@@ -231,18 +226,9 @@ button {
     font-size: 11px;
 }
 
-button.stop {
-    background: #c93c50;
-}
-
-button.secondary {
-    background: #263c58;
-}
-
-button:hover {
-    filter: brightness(1.2);
-}
-
+button.stop { background: #c93c50; }
+button.secondary { background: #263c58; }
+button:hover { filter: brightness(1.2); }
 button:disabled {
     opacity: .5;
     cursor: not-allowed;
@@ -266,9 +252,7 @@ button:disabled {
     border-bottom: 1px solid #17304b;
 }
 
-.metric:last-child {
-    border-bottom: 0;
-}
+.metric:last-child { border-bottom: 0; }
 
 .metric-label {
     font-size: 11px;
@@ -315,7 +299,7 @@ button:disabled {
     display: block;
 }
 
-/* TOTAL OBJECTS - SMALLER */
+/* TOTAL OBJECTS */
 
 .total-content {
     height: calc(100% - 25px);
@@ -350,16 +334,17 @@ button:disabled {
     height: 100% !important;
 }
 
-/* HISTORY PANEL */
+/* HISTORY FIX */
 
 .history-panel {
-    height: 115px;
-    min-height: 115px;
+    flex: 0 0 clamp(110px, 17vh, 155px);
+    height: auto;
+    min-height: 0;
     flex-shrink: 0;
     padding: 7px 10px;
-
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 }
 
 .history-panel .panel-title {
@@ -369,18 +354,20 @@ button:disabled {
 }
 
 .history-content {
-    flex: 1;
+    flex: 1 1 0;
     min-height: 0;
-
     display: grid;
     grid-template-columns: 1.2fr 1fr;
+    grid-template-rows: minmax(0, 1fr);
     gap: 12px;
+    overflow: hidden;
 }
 
 .history-graph {
     position: relative;
     min-width: 0;
     min-height: 0;
+    overflow: hidden;
 }
 
 .history-graph canvas {
@@ -389,21 +376,19 @@ button:disabled {
 }
 
 .history-list {
+    width: 100%;
     height: 100%;
+    min-height: 0;
+    min-width: 0;
     overflow-y: auto;
+    overflow-x: hidden;
     scrollbar-width: thin;
     scrollbar-color: #087fca #071a32;
     padding-right: 4px;
 }
 
-.history-list::-webkit-scrollbar {
-    width: 5px;
-}
-
-.history-list::-webkit-scrollbar-track {
-    background: #071a32;
-}
-
+.history-list::-webkit-scrollbar { width: 6px; }
+.history-list::-webkit-scrollbar-track { background: #071a32; }
 .history-list::-webkit-scrollbar-thumb {
     background: #087fca;
     border-radius: 5px;
@@ -417,6 +402,8 @@ button:disabled {
     border-bottom: 1px solid #17304b;
     font-size: 10px;
     color: #c6d9ed;
+    min-width: 0;
+    overflow-wrap: anywhere;
 }
 
 .history-dot {
@@ -432,9 +419,7 @@ button:disabled {
     min-width: 70px;
 }
 
-footer {
-    display: none;
-}
+footer { display: none; }
 
 /* SMALL LAPTOPS */
 
@@ -442,7 +427,10 @@ footer {
 
     .dashboard {
         grid-template-columns: 1fr 1.5fr;
-        grid-template-rows: 1.2fr .8fr 1fr;
+        grid-template-rows:
+            minmax(0, 1.2fr)
+            minmax(0, .8fr)
+            minmax(0, 1fr);
     }
 
     .left-top {
@@ -470,23 +458,21 @@ footer {
         grid-row: 3;
     }
 
-    .right-bottom {
-        display: none;
-    }
+    .right-bottom { display: none; }
 
     .history-panel {
-        height: 105px;
-        min-height: 105px;
+        flex-basis: 105px;
     }
 }
 
-/* MOBILE RESPONSIVE */
+/* MOBILE */
 
 @media (max-width: 600px) {
 
     html, body {
         height: auto;
         min-height: 100%;
+        overflow-x: hidden;
         overflow-y: auto;
     }
 
@@ -497,36 +483,24 @@ footer {
         margin: 5px;
     }
 
-    .brand {
-        gap: 8px;
-    }
-
-    .logo {
-        font-size: 25px;
-    }
-
-    h1 {
-        font-size: 15px;
-    }
-
-    .subtitle {
-        font-size: 9px;
-    }
-
-    .live {
-        font-size: 10px;
-    }
+    .brand { gap: 8px; }
+    .logo { font-size: 25px; }
+    h1 { font-size: 15px; }
+    .subtitle { font-size: 9px; }
+    .live { font-size: 10px; }
 
     main {
         height: auto;
         min-height: 0;
         padding: 5px;
         gap: 8px;
+        overflow: visible;
     }
 
     .dashboard {
         display: flex;
         flex-direction: column;
+        flex: none;
         gap: 9px;
     }
 
@@ -540,18 +514,9 @@ footer {
         min-height: 350px;
     }
 
-    .left-top {
-        order: 2;
-    }
-
-    .right-top {
-        order: 3;
-    }
-
-    .left-bottom {
-        order: 4;
-    }
-
+    .left-top { order: 2; }
+    .right-top { order: 3; }
+    .left-bottom { order: 4; }
     .right-bottom {
         order: 5;
         display: block;
@@ -574,53 +539,38 @@ footer {
         min-width: 90px;
     }
 
-    .metric-value {
-        font-size: 25px;
-    }
-
-    .metric canvas {
-        height: 55px !important;
-    }
+    .metric-value { font-size: 25px; }
+    .metric canvas { height: 55px !important; }
 
     .ratio-chart {
         width: 65px;
         height: 65px;
     }
 
-    .ratio-text {
-        font-size: 11px;
-    }
+    .ratio-text { font-size: 11px; }
+    .ratio-text strong { font-size: 19px; }
 
-    .ratio-text strong {
-        font-size: 19px;
-    }
-
-    .total-content {
-        min-height: 120px;
-    }
-
-    .total-number {
-        font-size: 48px;
-    }
+    .total-content { min-height: 120px; }
+    .total-number { font-size: 48px; }
 
     .history-panel {
+        flex: none;
         height: 260px;
         min-height: 260px;
     }
 
     .history-content {
         grid-template-columns: 1fr;
-        grid-template-rows: 110px 1fr;
+        grid-template-rows: 110px minmax(0, 1fr);
         gap: 8px;
     }
 
     .history-list {
         max-height: 120px;
+        overflow-y: auto;
     }
 
-    .history-row {
-        flex-wrap: wrap;
-    }
+    .history-row { flex-wrap: wrap; }
 
     footer {
         display: block;
@@ -635,17 +585,10 @@ footer {
 
 @media (max-width: 360px) {
 
-    header {
-        align-items: flex-start;
-    }
+    header { align-items: flex-start; }
+    h1 { font-size: 13px; }
 
-    h1 {
-        font-size: 13px;
-    }
-
-    .camera-panel {
-        min-height: 310px;
-    }
+    .camera-panel { min-height: 310px; }
 
     .camera-actions button {
         padding: 8px 7px;
@@ -653,7 +596,7 @@ footer {
     }
 }
 
-/* SHORT LAPTOP SCREEN */
+/* SHORT LAPTOP */
 
 @media (min-width: 601px) and (max-height: 700px) {
 
@@ -668,13 +611,9 @@ footer {
         gap: 5px;
     }
 
-    .dashboard {
-        gap: 6px;
-    }
+    .dashboard { gap: 6px; }
 
-    .panel {
-        padding: 7px;
-    }
+    .panel { padding: 7px; }
 
     .panel-title {
         padding-bottom: 4px;
@@ -682,54 +621,35 @@ footer {
         font-size: 12px;
     }
 
-    .metric {
-        padding: 4px 2px;
-    }
-
-    .metric canvas {
-        height: 30px !important;
-    }
-
-    .ratio {
-        padding-top: 3px;
-    }
+    .metric { padding: 4px 2px; }
+    .metric canvas { height: 30px !important; }
+    .ratio { padding-top: 3px; }
 
     .ratio-chart {
         width: 43px;
         height: 43px;
     }
 
-    .history-panel {
-        height: 95px;
-        min-height: 95px;
-    }
+    .history-panel { flex-basis: 95px; }
 }
-
 </style>
 </head>
 
 <body>
 
 <header>
-
     <div class="brand">
         <div class="logo">🎓</div>
-
         <div>
             <h1>AI School Dashboard</h1>
-            <div class="subtitle">
-                Smart Classroom Monitoring System
-            </div>
+            <div class="subtitle">Smart Classroom Monitoring System</div>
         </div>
     </div>
 
     <div>
-        <div class="live" id="apiStatus">
-            ● Connecting API...
-        </div>
+        <div class="live" id="apiStatus">● Connecting API...</div>
         <div class="subtitle" id="clock"></div>
     </div>
-
 </header>
 
 <main>
@@ -739,7 +659,6 @@ footer {
 <!-- STUDENTS AND CHAIRS -->
 
 <section class="panel left-top">
-
     <div class="panel-title">
         <span class="icon">👥</span>
         Students & Chairs
@@ -762,30 +681,24 @@ footer {
     </div>
 
     <div class="ratio">
-        <div class="ratio-chart">
-            <canvas id="peopleRatio"></canvas>
-        </div>
+        <div class="ratio-chart"><canvas id="peopleRatio"></canvas></div>
         <div class="ratio-text">
             <strong id="peopleRatioText">0%</strong>
             People / Chairs
         </div>
     </div>
-
 </section>
 
 <!-- LIVE CAMERA -->
 
 <section class="panel camera-panel">
-
     <div class="panel-title">
         <span class="icon">🔴</span>
         Live Camera
     </div>
 
     <div class="camera">
-
         <video id="video" autoplay muted playsinline></video>
-
         <canvas id="overlay"></canvas>
 
         <div class="camera-placeholder" id="placeholder">
@@ -793,35 +706,22 @@ footer {
             <b>Live Camera Feed</b>
             <small>Click Start Camera to begin detection</small>
         </div>
-
     </div>
 
     <div class="camera-actions">
-
-        <button id="startBtn" onclick="startCamera()">
-            ▶ Start Camera
-        </button>
-
-        <button class="stop" onclick="stopCamera()">
-            ■ Stop
-        </button>
-
-        <button class="secondary" onclick="detectNow()">
-            Detect Now
-        </button>
-
+        <button id="startBtn" onclick="startCamera()">▶ Start Camera</button>
+        <button class="stop" onclick="stopCamera()">■ Stop</button>
+        <button class="secondary" onclick="detectNow()">Detect Now</button>
     </div>
 
     <div class="camera-info" id="cameraInfo">
         Camera stopped | Waiting for detection
     </div>
-
 </section>
 
 <!-- LAPTOP AND MOBILE -->
 
 <section class="panel right-top">
-
     <div class="panel-title">
         <span class="icon">💻</span>
         Laptop & Mobile
@@ -844,21 +744,17 @@ footer {
     </div>
 
     <div class="ratio">
-        <div class="ratio-chart">
-            <canvas id="techRatio"></canvas>
-        </div>
+        <div class="ratio-chart"><canvas id="techRatio"></canvas></div>
         <div class="ratio-text">
             <strong id="techRatioText">0%</strong>
             Laptop / Mobile
         </div>
     </div>
-
 </section>
 
 <!-- BOOKS AND BOXES -->
 
 <section class="panel left-bottom">
-
     <div class="panel-title">
         <span class="icon">📚</span>
         Books & Boxes
@@ -881,47 +777,37 @@ footer {
     </div>
 
     <div class="ratio">
-        <div class="ratio-chart">
-            <canvas id="bookRatio"></canvas>
-        </div>
+        <div class="ratio-chart"><canvas id="bookRatio"></canvas></div>
         <div class="ratio-text">
             <strong id="bookRatioText">0%</strong>
             Books / Boxes
         </div>
     </div>
-
 </section>
 
 <!-- TOTAL OBJECTS -->
 
 <section class="panel total-panel">
-
     <div class="panel-title">
         <span class="icon">∑</span>
         Total Objects
     </div>
 
     <div class="total-content">
-
         <div>
             <div class="total-number" id="totalCount">0</div>
-            <div class="total-caption">
-                Total Detected Objects
-            </div>
+            <div class="total-caption">Total Detected Objects</div>
         </div>
 
         <div class="total-chart">
             <canvas id="totalGraph"></canvas>
         </div>
-
     </div>
-
 </section>
 
 <!-- BAGS AND OTHERS -->
 
 <section class="panel right-bottom">
-
     <div class="panel-title">
         <span class="icon">🎒</span>
         Bags & Others
@@ -944,44 +830,33 @@ footer {
     </div>
 
     <div class="ratio">
-        <div class="ratio-chart">
-            <canvas id="bagRatio"></canvas>
-        </div>
+        <div class="ratio-chart"><canvas id="bagRatio"></canvas></div>
         <div class="ratio-text">
             <strong id="bagRatioText">0%</strong>
             Bags / Others
         </div>
     </div>
-
 </section>
 
 </div>
 
-<!-- DETECTION HISTORY WITH GRAPH -->
+<!-- DETECTION HISTORY -->
 
 <section class="panel history-panel">
-
     <div class="panel-title">
         <span class="icon">◷</span>
         Detection History & Live Graph
     </div>
 
     <div class="history-content">
-
         <div class="history-graph">
             <canvas id="historyGraph"></canvas>
         </div>
 
         <div class="history-list" id="historyList">
-
-            <div class="history-row">
-                Waiting for detection...
-            </div>
-
+            <div class="history-row">Waiting for detection...</div>
         </div>
-
     </div>
-
 </section>
 
 <footer>
@@ -1045,38 +920,24 @@ function getCategory(label) {
     if([
         "person", "people", "student",
         "students", "teacher", "teachers"
-    ].includes(label)) {
-        return "people";
-    }
+    ].includes(label)) return "people";
 
-    if(["chair", "chairs"].includes(label)) {
-        return "chair";
-    }
+    if(["chair", "chairs"].includes(label)) return "chair";
 
-    if(["laptop", "notebook computer"].includes(label)) {
-        return "laptop";
-    }
+    if(["laptop", "notebook computer"].includes(label)) return "laptop";
 
     if([
         "cell phone", "cellphone", "mobile",
         "mobile phone", "phone", "smartphone"
-    ].includes(label)) {
-        return "mobile";
-    }
+    ].includes(label)) return "mobile";
 
-    if(["book", "books"].includes(label)) {
-        return "book";
-    }
+    if(["book", "books"].includes(label)) return "book";
 
-    if(["box", "boxes", "cardboard box"].includes(label)) {
-        return "box";
-    }
+    if(["box", "boxes", "cardboard box"].includes(label)) return "box";
 
     if([
         "backpack", "bag", "handbag", "suitcase"
-    ].includes(label)) {
-        return "bag";
-    }
+    ].includes(label)) return "bag";
 
     return "other";
 }
@@ -1086,7 +947,6 @@ function getCategory(label) {
 // ========================================
 
 function getLabel(item) {
-
     return String(
         item.class_name ??
         item.name ??
@@ -1097,24 +957,18 @@ function getLabel(item) {
 }
 
 // ========================================
-// READ API RESPONSE
+// EXTRACT API RESPONSE
 // ========================================
 
 function extractDetections(data) {
 
     if(Array.isArray(data)) return data;
 
-    if(Array.isArray(data.detections)) {
-        return data.detections;
-    }
+    if(Array.isArray(data.detections)) return data.detections;
 
-    if(Array.isArray(data.results)) {
-        return data.results;
-    }
+    if(Array.isArray(data.results)) return data.results;
 
-    if(Array.isArray(data.objects)) {
-        return data.objects;
-    }
+    if(Array.isArray(data.objects)) return data.objects;
 
     if(data.data && Array.isArray(data.data.detections)) {
         return data.data.detections;
@@ -1137,13 +991,14 @@ async function checkAPI() {
 
     const status = document.getElementById("apiStatus");
 
+    let controller;
+    let timeout;
+
     try {
 
-        const controller = new AbortController();
+        controller = new AbortController();
 
-        const timeout = setTimeout(() => {
-            controller.abort();
-        }, 10000);
+        timeout = setTimeout(() => controller.abort(), 10000);
 
         const response = await fetch(API_URL + "/", {
             method: "GET",
@@ -1153,8 +1008,6 @@ async function checkAPI() {
             signal: controller.signal,
             cache: "no-store"
         });
-
-        clearTimeout(timeout);
 
         if(!response.ok) {
             throw new Error("HTTP " + response.status);
@@ -1182,6 +1035,7 @@ async function checkAPI() {
 
     } finally {
 
+        clearTimeout(timeout);
         apiChecking = false;
     }
 }
@@ -1198,10 +1052,7 @@ async function startCamera() {
 
         if(!navigator.mediaDevices ||
            !navigator.mediaDevices.getUserMedia) {
-
-            throw new Error(
-                "Camera requires HTTPS or localhost."
-            );
+            throw new Error("Camera requires HTTPS or localhost.");
         }
 
         document.getElementById("cameraInfo").textContent =
@@ -1224,15 +1075,9 @@ async function startCamera() {
         stream = await navigator.mediaDevices.getUserMedia({
 
             video: {
-                facingMode: {
-                    ideal: "environment"
-                },
-                width: {
-                    ideal: 1280
-                },
-                height: {
-                    ideal: 720
-                }
+                facingMode: { ideal: "environment" },
+                width: { ideal: 1280 },
+                height: { ideal: 720 }
             },
 
             audio: false
@@ -1242,8 +1087,7 @@ async function startCamera() {
 
         await video.play();
 
-        document.getElementById("placeholder").style.display =
-            "none";
+        document.getElementById("placeholder").style.display = "none";
 
         document.getElementById("cameraInfo").textContent =
             "Camera running | AI detection active";
@@ -1259,7 +1103,6 @@ async function startCamera() {
                     {once: true}
                 );
             }
-
         });
 
         resizeOverlay();
@@ -1275,7 +1118,6 @@ async function startCamera() {
         alert("Camera Error: " + error.message);
 
         console.error(error);
-
     }
 }
 
@@ -1285,9 +1127,7 @@ async function startCamera() {
 
 function resizeOverlay() {
 
-    if(!video.videoWidth || !video.videoHeight) {
-        return;
-    }
+    if(!video.videoWidth || !video.videoHeight) return;
 
     overlay.width = video.videoWidth;
     overlay.height = video.videoHeight;
@@ -1300,39 +1140,26 @@ function resizeOverlay() {
 function stopCamera() {
 
     if(detectionTimer) {
-
         clearInterval(detectionTimer);
         detectionTimer = null;
     }
 
     if(animationFrame) {
-
         cancelAnimationFrame(animationFrame);
         animationFrame = null;
     }
 
     if(stream) {
-
-        stream.getTracks().forEach(track => {
-            track.stop();
-        });
-
+        stream.getTracks().forEach(track => track.stop());
         stream = null;
     }
 
     video.srcObject = null;
-
     detections = [];
 
-    ctx.clearRect(
-        0,
-        0,
-        overlay.width,
-        overlay.height
-    );
+    ctx.clearRect(0, 0, overlay.width, overlay.height);
 
-    document.getElementById("placeholder").style.display =
-        "flex";
+    document.getElementById("placeholder").style.display = "flex";
 
     document.getElementById("cameraInfo").textContent =
         "Camera stopped";
@@ -1346,9 +1173,7 @@ function stopCamera() {
 
 async function detectNow() {
 
-    if(!stream || busy || video.readyState < 2) {
-        return;
-    }
+    if(!stream || busy || video.readyState < 2) return;
 
     if(!apiConnected) {
 
@@ -1377,10 +1202,7 @@ async function detectNow() {
             temp.height
         );
 
-        const image = temp.toDataURL(
-            "image/jpeg",
-            0.75
-        );
+        const image = temp.toDataURL("image/jpeg", 0.75);
 
         const response = await fetch(API_URL + "/detect", {
 
@@ -1402,9 +1224,7 @@ async function detectNow() {
 
         const data = await response.json();
 
-        if(data.error) {
-            throw new Error(data.error);
-        }
+        if(data.error) throw new Error(data.error);
 
         detections = extractDetections(data);
 
@@ -1450,9 +1270,7 @@ function updateDashboard(items) {
 
     const counts = {};
 
-    categoryKeys.forEach(key => {
-        counts[key] = 0;
-    });
+    categoryKeys.forEach(key => counts[key] = 0);
 
     items.forEach(item => {
 
@@ -1479,12 +1297,10 @@ function updateDashboard(items) {
     setText("totalCount", total);
 
     updateGraphs(counts, total);
-
     updateHistory(counts, total);
 }
 
 function setText(id, value) {
-
     document.getElementById(id).textContent = value;
 }
 
@@ -1510,41 +1326,26 @@ function makeMini(id, color) {
             type: "bar",
 
             data: {
-
                 labels: ["1","2","3","4","5","6","7"],
 
                 datasets: [{
-
                     data: [0,0,0,0,0,0,0],
-
                     backgroundColor: color,
-
                     borderRadius: 3
                 }]
             },
 
             options: {
-
                 responsive: true,
-
                 maintainAspectRatio: false,
 
                 plugins: {
-                    legend: {
-                        display: false
-                    }
+                    legend: { display: false }
                 },
 
                 scales: {
-
-                    x: {
-                        display: false
-                    },
-
-                    y: {
-                        display: false,
-                        beginAtZero: true
-                    }
+                    x: { display: false },
+                    y: { display: false, beginAtZero: true }
                 }
             }
         }
@@ -1563,34 +1364,22 @@ function makeRatio(id, color1, color2) {
             type: "doughnut",
 
             data: {
-
                 labels: ["First","Second"],
 
                 datasets: [{
-
                     data: [0,1],
-
-                    backgroundColor: [
-                        color1,
-                        color2
-                    ],
-
+                    backgroundColor: [color1,color2],
                     borderWidth: 0
                 }]
             },
 
             options: {
-
                 responsive: true,
-
                 maintainAspectRatio: false,
-
                 cutout: "75%",
 
                 plugins: {
-                    legend: {
-                        display: false
-                    }
+                    legend: { display: false }
                 }
             }
         }
@@ -1607,63 +1396,43 @@ const totalGraph = new Chart(
         type: "line",
 
         data: {
-
             labels: [],
 
             datasets: [{
-
                 label: "Total Objects",
-
                 data: [],
-
                 borderColor: "#00e6db",
-
                 backgroundColor: "rgba(0,230,219,.12)",
-
                 fill: true,
-
                 tension: .35,
-
                 pointBackgroundColor: "#8affff"
             }]
         },
 
         options: {
-
             responsive: true,
-
             maintainAspectRatio: false,
 
             plugins: {
-                legend: {
-                    display: false
-                }
+                legend: { display: false }
             },
 
             scales: {
-
                 x: {
                     ticks: {
                         maxTicksLimit: 7,
                         color: "#82a9cc"
                     },
-
-                    grid: {
-                        color: "#173451"
-                    }
+                    grid: { color: "#173451" }
                 },
 
                 y: {
                     beginAtZero: true,
-
                     ticks: {
                         precision: 0,
                         color: "#82a9cc"
                     },
-
-                    grid: {
-                        color: "#173451"
-                    }
+                    grid: { color: "#173451" }
                 }
             }
         }
@@ -1680,73 +1449,47 @@ const historyGraph = new Chart(
         type: "line",
 
         data: {
-
             labels: [],
 
             datasets: [{
-
                 label: "Detection History",
-
                 data: [],
-
                 borderColor: "#37b9ff",
-
                 backgroundColor: "rgba(55,185,255,.15)",
-
                 fill: true,
-
                 tension: .4,
-
                 pointRadius: 2,
-
                 pointBackgroundColor: "#00e99a"
             }]
         },
 
         options: {
-
             responsive: true,
-
             maintainAspectRatio: false,
-
             animation: false,
 
             plugins: {
-                legend: {
-                    display: false
-                }
+                legend: { display: false }
             },
 
             scales: {
-
                 x: {
                     ticks: {
                         maxTicksLimit: 8,
                         color: "#82a9cc",
-                        font: {
-                            size: 9
-                        }
+                        font: { size: 9 }
                     },
-
-                    grid: {
-                        color: "#173451"
-                    }
+                    grid: { color: "#173451" }
                 },
 
                 y: {
                     beginAtZero: true,
-
                     ticks: {
                         precision: 0,
                         color: "#82a9cc",
-                        font: {
-                            size: 9
-                        }
+                        font: { size: 9 }
                     },
-
-                    grid: {
-                        color: "#173451"
-                    }
+                    grid: { color: "#173451" }
                 }
             }
         }
@@ -1757,69 +1500,19 @@ const historyGraph = new Chart(
 // INITIALIZE ALL CHARTS
 // ========================================
 
-miniCharts.people = makeMini(
-    "peopleMini",
-    "#168bff"
-);
+miniCharts.people = makeMini("peopleMini", "#168bff");
+miniCharts.chair = makeMini("chairMini", "#b44dff");
+miniCharts.laptop = makeMini("laptopMini", "#00d7d7");
+miniCharts.mobile = makeMini("mobileMini", "#a64dff");
+miniCharts.book = makeMini("bookMini", "#21d66b");
+miniCharts.box = makeMini("boxMini", "#ffae35");
+miniCharts.bag = makeMini("bagMini", "#f044a4");
+miniCharts.other = makeMini("otherMini", "#7aa7d5");
 
-miniCharts.chair = makeMini(
-    "chairMini",
-    "#b44dff"
-);
-
-miniCharts.laptop = makeMini(
-    "laptopMini",
-    "#00d7d7"
-);
-
-miniCharts.mobile = makeMini(
-    "mobileMini",
-    "#a64dff"
-);
-
-miniCharts.book = makeMini(
-    "bookMini",
-    "#21d66b"
-);
-
-miniCharts.box = makeMini(
-    "boxMini",
-    "#ffae35"
-);
-
-miniCharts.bag = makeMini(
-    "bagMini",
-    "#f044a4"
-);
-
-miniCharts.other = makeMini(
-    "otherMini",
-    "#7aa7d5"
-);
-
-ratioCharts.people = makeRatio(
-    "peopleRatio",
-    "#25e96b",
-    "#244363"
-);
-
-ratioCharts.tech = makeRatio(
-    "techRatio",
-    "#00d7ef",
-    "#a64dff"
-);
-
-ratioCharts.book = makeRatio(
-    "bookRatio",
-    "#ffbd35",
-    "#244363"
-);
-
-ratioCharts.bag = makeRatio(
-    "bagRatio",
-    "#f044a4",
-    "#244363"
-);
+ratioCharts.people = makeRatio("peopleRatio", "#25e96b", "#244363");
+ratioCharts.tech = makeRatio("techRatio", "#00d7ef", "#a64dff");
+ratioCharts.book = makeRatio("bookRatio", "#ffbd35", "#244363");
+ratioCharts.bag = makeRatio("bagRatio", "#f044a4", "#244363");
 
 // ========================================
 // UPDATE GRAPHS
@@ -1871,31 +1564,21 @@ function updateGraphs(counts, total) {
 
     const currentTime = new Date().toLocaleTimeString();
 
-    // Total Objects Graph
-
     totalGraph.data.labels.push(currentTime);
-
     totalGraph.data.datasets[0].data.push(total);
 
     if(totalGraph.data.labels.length > 20) {
-
         totalGraph.data.labels.shift();
-
         totalGraph.data.datasets[0].data.shift();
     }
 
     totalGraph.update("none");
 
-    // History Graph
-
     historyGraph.data.labels.push(currentTime);
-
     historyGraph.data.datasets[0].data.push(total);
 
     if(historyGraph.data.labels.length > 30) {
-
         historyGraph.data.labels.shift();
-
         historyGraph.data.datasets[0].data.shift();
     }
 
@@ -1930,9 +1613,7 @@ function updateHistory(counts, total) {
 
     if(total === 0) return;
 
-    if(Date.now() - lastHistoryTime < 5000) {
-        return;
-    }
+    if(Date.now() - lastHistoryTime < 5000) return;
 
     lastHistoryTime = Date.now();
 
@@ -1941,30 +1622,21 @@ function updateHistory(counts, total) {
     categoryKeys.forEach(key => {
 
         if(counts[key] > 0) {
-
-            found.push(
-                key + ": " + counts[key]
-            );
+            found.push(key + ": " + counts[key]);
         }
     });
 
     const row = document.createElement("div");
-
     row.className = "history-row";
 
     const dot = document.createElement("span");
-
     dot.className = "history-dot";
 
     const time = document.createElement("span");
-
     time.className = "history-time";
-
-    time.textContent =
-        new Date().toLocaleTimeString();
+    time.textContent = new Date().toLocaleTimeString();
 
     const description = document.createElement("span");
-
     description.textContent =
         "Total " + total + " | " + found.join(", ");
 
@@ -1975,7 +1647,6 @@ function updateHistory(counts, total) {
     list.prepend(row);
 
     while(list.children.length > 30) {
-
         list.removeChild(list.lastChild);
     }
 }
@@ -1993,24 +1664,16 @@ function getBox(item) {
         item.coordinates;
 
     if(!box && item.x1 !== undefined) {
-
-        box = [
-            item.x1,
-            item.y1,
-            item.x2,
-            item.y2
-        ];
+        box = [item.x1, item.y1, item.x2, item.y2];
     }
 
     if(Array.isArray(box) && box.length >= 4) {
-
         return box.slice(0,4).map(Number);
     }
 
     if(box && typeof box === "object") {
 
         if(box.x1 !== undefined) {
-
             return [
                 Number(box.x1),
                 Number(box.y1),
@@ -2020,7 +1683,6 @@ function getBox(item) {
         }
 
         if(box.x !== undefined) {
-
             return [
                 Number(box.x),
                 Number(box.y),
@@ -2048,10 +1710,7 @@ function drawDetectionBoxes() {
 
         if(w && h) {
 
-            if(
-                overlay.width !== w ||
-                overlay.height !== h
-            ) {
+            if(overlay.width !== w || overlay.height !== h) {
                 resizeOverlay();
             }
 
@@ -2067,7 +1726,6 @@ function drawDetectionBoxes() {
 
                 const x = x1;
                 const y = y1;
-
                 const bw = x2 - x1;
                 const bh = y2 - y1;
 
@@ -2078,37 +1736,24 @@ function drawDetectionBoxes() {
                     !Number.isFinite(bh) ||
                     bw <= 0 ||
                     bh <= 0
-                ) {
-                    return;
-                }
+                ) return;
 
                 const label = getLabel(item);
 
                 ctx.strokeStyle = "#00ffb3";
 
-                ctx.lineWidth = Math.max(
-                    2,
-                    w / 400
-                );
+                ctx.lineWidth = Math.max(2, w / 400);
 
                 ctx.strokeRect(x, y, bw, bh);
 
-                const fontSize = Math.max(
-                    12,
-                    w / 80
-                );
+                const fontSize = Math.max(12, w / 80);
 
                 ctx.font = "bold " + fontSize + "px Arial";
 
-                const textWidth =
-                    ctx.measureText(label).width;
-
+                const textWidth = ctx.measureText(label).width;
                 const labelHeight = fontSize + 10;
 
-                const labelY = Math.max(
-                    0,
-                    y - labelHeight
-                );
+                const labelY = Math.max(0, y - labelHeight);
 
                 ctx.fillStyle = "#008d78";
 
@@ -2126,13 +1771,11 @@ function drawDetectionBoxes() {
                     x + 6,
                     labelY + fontSize
                 );
-
             });
         }
     }
 
-    animationFrame =
-        requestAnimationFrame(drawDetectionBoxes);
+    animationFrame = requestAnimationFrame(drawDetectionBoxes);
 }
 
 // ========================================
@@ -2140,7 +1783,6 @@ function drawDetectionBoxes() {
 // ========================================
 
 function updateClock() {
-
     document.getElementById("clock").textContent =
         new Date().toLocaleString();
 }
@@ -2149,11 +1791,11 @@ updateClock();
 
 setInterval(updateClock, 1000);
 
-// Website open hone par API check
+// Initial API check
 
 checkAPI();
 
-// Har 30 seconds baad API dobara check
+// Recheck every 30 seconds
 
 setInterval(checkAPI, 30000);
 
@@ -2163,17 +1805,14 @@ setInterval(checkAPI, 30000);
 
 window.addEventListener("resize", () => {
 
-    Object.values(miniCharts).forEach(chart => {
-        chart.resize();
-    });
+    Object.values(miniCharts).forEach(chart => chart.resize());
 
-    Object.values(ratioCharts).forEach(chart => {
-        chart.resize();
-    });
+    Object.values(ratioCharts).forEach(chart => chart.resize());
 
     totalGraph.resize();
-
     historyGraph.resize();
+
+    if(stream) resizeOverlay();
 });
 
 </script>
